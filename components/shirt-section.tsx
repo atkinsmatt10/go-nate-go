@@ -3,6 +3,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import { motion } from "framer-motion"
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
 
 export function ShirtSection() {
   return (
@@ -10,19 +11,44 @@ export function ShirtSection() {
       <div className="container px-4 md:px-6">
         <div className="grid items-center gap-6 lg:grid-cols-2 lg:gap-12">
           <motion.div
+            className="relative"
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
           >
-            <Image
-              src="/nate-the-great-shirt.png"
-              width="500"
-              height="500"
-              alt="Nate the Great T-Shirt"
-              className="mx-auto aspect-square overflow-hidden rounded-xl object-contain object-center sm:w-full"
-            />
+            <Dialog>
+              <DialogTrigger asChild>
+                <div className="cursor-pointer group">
+                  <Image
+                    src="/Nate shirt.png"
+                    width="500"
+                    height="500"
+                    alt="Nate the Great T-Shirt - Click to view larger"
+                    className="mx-auto aspect-square overflow-hidden rounded-xl object-contain object-center sm:w-full transition-transform group-hover:scale-105"
+                  />
+                  {/* Click indicator */}
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors rounded-xl flex items-center justify-center opacity-0 group-hover:opacity-100">
+                    <div className="bg-white/90 backdrop-blur-sm rounded-full px-3 py-1 text-sm font-medium text-foreground">
+                      Click to enlarge
+                    </div>
+                  </div>
+                </div>
+              </DialogTrigger>
+              <DialogContent className="max-w-3xl w-full">
+                <div className="relative">
+                  <Image
+                    src="/Nate shirt.png"
+                    width="800"
+                    height="800"
+                    alt="Nate the Great T-Shirt - Large View"
+                    className="w-full h-auto object-contain rounded-lg"
+                  />
+                </div>
+              </DialogContent>
+            </Dialog>
           </motion.div>
+          
           <motion.div
             className="space-y-4"
             initial={{ opacity: 0, x: 50 }}
@@ -32,17 +58,33 @@ export function ShirtSection() {
           >
             <h2 className="text-4xl font-bold tracking-tighter sm:text-5xl text-foreground">Wear Your Support</h2>
             <p className="text-muted-foreground md:text-lg/relaxed">
-              Get your own 'Nate the Great' t-shirt and show your support for Nate and childhood cancer research. These
-              comfortable, high-quality shirts feature a special design inspired by Nate's courage. 100% of the proceeds
-              go to our fundraising goal.
+              Get your own 'Nate the Great' t-shirt featuring our exclusive shark mascot design! This friendly shark with the "LOVE" tattoo represents strength, courage, and community support. These comfortable, high-quality shirts let you show your support for Nate wherever you go.
             </p>
-            <Link
-              href="#"
-              className="inline-flex h-12 items-center justify-center rounded-md bg-primary px-8 text-lg font-bold text-primary-foreground shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-              prefetch={false}
-            >
-              Buy Now
-            </Link>
+            
+            {/* CHOP logo highlight */}
+            <div className="flex items-center gap-4 p-4 bg-background rounded-lg border border-primary/20">
+              <Image
+                src="/idcxwIXBiY_1752452732503.jpeg"
+                width={60}
+                height={60}
+                alt="CHOP - Children's Hospital of Philadelphia"
+                className="flex-shrink-0 w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 object-contain"
+              />
+              <div>
+                <p className="font-semibold text-primary text-sm sm:text-base">100% of proceeds</p>
+                <p className="text-xs sm:text-sm text-muted-foreground">go directly to childhood cancer research</p>
+              </div>
+            </div>
+            
+            <div className="flex justify-center">
+              <Link
+                href="#"
+                className="inline-flex h-12 items-center justify-center rounded-md bg-primary px-8 text-lg font-bold text-primary-foreground shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                prefetch={false}
+              >
+                Buy Now
+              </Link>
+            </div>
           </motion.div>
         </div>
       </div>

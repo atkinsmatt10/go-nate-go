@@ -1,5 +1,5 @@
-import { Fish, Twitter, Facebook, Instagram } from "lucide-react"
-import Link from "next/link"
+import { Fish } from "lucide-react"
+import Image from "next/image"
 
 export function Footer() {
   return (
@@ -11,16 +11,17 @@ export function Footer() {
             &copy; {new Date().getFullYear()} Nate the Great. All rights reserved.
           </p>
         </div>
-        <div className="flex items-center gap-4">
-          <Link href="#" prefetch={false}>
-            <Twitter className="h-5 w-5 text-muted-foreground hover:text-primary" />
-          </Link>
-          <Link href="#" prefetch={false}>
-            <Facebook className="h-5 w-5 text-muted-foreground hover:text-primary" />
-          </Link>
-          <Link href="#" prefetch={false}>
-            <Instagram className="h-5 w-5 text-muted-foreground hover:text-primary" />
-          </Link>
+        <div className="flex flex-col items-center gap-1">
+          <Image
+            src="/nate shark.png"
+            width={40}
+            height={40}
+            alt="Nate's Shark Mascot"
+            className="object-contain"
+          />
+          <p className="text-xs text-muted-foreground">
+            Made with love in Philadelphia
+          </p>
         </div>
       </div>
     </footer>
