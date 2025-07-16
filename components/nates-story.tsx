@@ -1,6 +1,7 @@
 "use client"
 
 import { motion } from "framer-motion"
+import { Badge } from "@/components/ui/badge"
 
 export function NatesStory() {
   return (
@@ -21,10 +22,10 @@ export function NatesStory() {
       </div>
 
       {/* Content with top padding to account for wave */}
-      <div className="relative pt-[80px] md:pt-[100px] lg:pt-[120px] pb-12 md:pb-24 lg:pb-32">
+      <div className="relative pt-[60px] md:pt-[80px] lg:pt-[100px] pb-16 md:pb-24 lg:pb-32">
         <div className="container px-4 md:px-6">
           <motion.div
-            className="max-w-3xl mx-auto space-y-6"
+            className="max-w-3xl mx-auto space-y-8"
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true, margin: "-100px" }}
@@ -54,31 +55,65 @@ export function NatesStory() {
               Our Little Fighter
             </motion.h2>
 
-            {/* First paragraph with staggered reveal */}
-            <motion.p
-              className="text-muted-foreground md:text-lg/relaxed lg:text-base/relaxed xl:text-lg/relaxed text-center sm:text-left"
+            {/* Story Block 1: Early Life & Diagnosis */}
+            <motion.div
+              className="space-y-4"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-50px" }}
               transition={{ duration: 0.6, delay: 0.6 }}
             >
-              Nate is a cheerful and resilient 10-month-old boy with a smile that can light up any room. Recently, he
-              was diagnosed with a rare form of childhood cancer. Despite the challenges, Nate's spirit remains
-              unbroken. He is a true warrior, and we call him 'Nate the Great' for his incredible strength.
-            </motion.p>
+              <div className="flex justify-center sm:justify-start">
+                <Badge variant="outline" className="text-xs font-medium bg-background/80 backdrop-blur-sm border-primary/50 text-foreground">
+                  Diagnosis
+                </Badge>
+              </div>
+              <p className="text-muted-foreground md:text-lg/relaxed text-center sm:text-left">
+                In just a few short months of life, our son Nate has already touched more hearts than we can count. His smile truly lights up every room.
+                <br /><br />
+                But our world changed when Nate was diagnosed with a rare brain tumor. Since that day, he has shown more bravery than most do in a lifetime.
+              </p>
+            </motion.div>
 
-            {/* Second paragraph with staggered reveal */}
-            <motion.p
-              className="text-muted-foreground md:text-lg/relaxed lg:text-base/relaxed xl:text-lg/relaxed text-center sm:text-left"
+            {/* Story Block 2: Treatment & Journey */}
+            <motion.div
+              className="space-y-4"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-50px" }}
               transition={{ duration: 0.6, delay: 0.8 }}
             >
-              We are raising funds to support the groundbreaking cancer research at the Children's Hospital of
-              Philadelphia (CHOP), where Nate is receiving the best possible care. Every dollar raised will help fund
-              vital research to find better treatments and ultimately a cure for children like Nate.
-            </motion.p>
+              <div className="flex justify-center sm:justify-start">
+                <Badge variant="outline" className="text-xs font-medium bg-background/80 backdrop-blur-sm border-primary/50 text-foreground">
+                  Treatment
+                </Badge>
+              </div>
+              <p className="text-muted-foreground md:text-lg/relaxed text-center sm:text-left">
+                Enduring surgeries and long hospital stays with incredible strength, he is, without a doubt, our hero. We are endlessly grateful for the incredible team at Children's Hospital of Philadelphia.
+                <br /><br />
+                From his neurosurgeons and oncologists to the nurses, therapists, and social workers, every single person has played a role in supporting Nate and our family.
+              </p>
+            </motion.div>
+
+            {/* Story Block 3: Recovery & Hope */}
+            <motion.div
+              className="space-y-4"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.6, delay: 1.0 }}
+            >
+              <div className="flex justify-center sm:justify-start">
+                <Badge variant="outline" className="text-xs font-medium bg-background/80 backdrop-blur-sm border-primary/50 text-foreground">
+                  Hope
+                </Badge>
+              </div>
+              <p className="text-muted-foreground md:text-lg/relaxed text-center sm:text-left">
+                While Nate has a long road ahead, he is doing well. Every donation helps fund the critical research, clinical trials, and compassionate care that gives children like him a fighting chance.
+                <br /><br />
+                Thank you for supporting our 'Nate the Great' and the amazing work being done at CHOP.
+              </p>
+            </motion.div>
           </motion.div>
         </div>
       </div>

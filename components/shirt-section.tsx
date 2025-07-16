@@ -7,7 +7,7 @@ import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
 
 export function ShirtSection() {
   return (
-    <section id="shirt" className="w-full py-12 md:py-24 lg:py-32 bg-secondary">
+    <section id="shirt" className="w-full py-16 md:py-24 lg:py-32 bg-secondary">
       <div className="container px-4 md:px-6">
         <div className="grid items-center gap-6 lg:grid-cols-2 lg:gap-12">
           <motion.div
@@ -56,9 +56,9 @@ export function ShirtSection() {
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
-            <h2 className="text-4xl font-bold tracking-tighter sm:text-5xl text-foreground">Wear Your Support</h2>
+            <h2 className="text-4xl font-bold tracking-tighter sm:text-5xl text-foreground">Join the Natey Shark Team</h2>
             <p className="text-muted-foreground md:text-lg/relaxed">
-              Get your own 'Nate the Great' t-shirt featuring our exclusive shark mascot design! This friendly shark with the "LOVE" tattoo represents strength, courage, and community support. These comfortable, high-quality shirts let you show your support for Nate wherever you go.
+              Inspired by his family nickname, 'Natey Shark,' this t-shirt represents our son's incredible strength and fun-loving spirit. By wearing one, you become part of our team, spreading awareness and showing your support for Nate wherever you go. All proceeds help fund the vital cancer research at CHOP that gives our family so much hope.
             </p>
             
             {/* CHOP logo highlight */}
