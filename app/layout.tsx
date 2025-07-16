@@ -2,6 +2,7 @@ import type React from "react"
 import type { Metadata } from "next"
 import { Lilita_One, Inter } from "next/font/google"
 import "./globals.css"
+import { Analytics } from "@vercel/analytics/next"
 
 const lilitaOne = Lilita_One({
   subsets: ["latin"],
@@ -27,7 +28,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${lilitaOne.variable} ${inter.variable}`}>{children}</body>
+      <body className={`${lilitaOne.variable} ${inter.variable}`}>{children}<Analytics /></body>
     </html>
   )
 }
