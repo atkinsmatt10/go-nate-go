@@ -265,7 +265,7 @@ export function HeroSection() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.4 }}
             >
-              Help Nate Fight Childhood Cancer
+              Help <Link href="https://www.natatkins.com/" className="text-primary hover:underline" target="_blank" rel="noopener noreferrer">Nate</Link> Fight Childhood Cancer
             </motion.h1>
             
             {/* Sub-headline */}
@@ -275,7 +275,7 @@ export function HeroSection() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.5 }}
             >
-              Meet <Link href="https://www.natatkins.com/" className="text-primary hover:underline" target="_blank" rel="noopener noreferrer">Nate</Link>, our sweet and incredibly strong little man. At just 8 weeks old, he was diagnosed with a rare brain tumor and began his brave fight. Join us in supporting Nate and funding the life-saving care at CHOP that gives so many children like Nate a fighting chance.
+              Meet Nate, our sweet and incredibly strong little man. At just 8 weeks old, he was diagnosed with a rare brain tumor and began his brave fight. Join us in supporting Nate and funding the life-saving care at CHOP that gives so many children like Nate a fighting chance.
             </motion.p>
           </div>
 

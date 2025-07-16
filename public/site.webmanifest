@@ -1,0 +1,23 @@
+{
+  "name": "Nate the Great's Fundraiser for CHOP",
+  "short_name": "Nate's Fundraiser",
+  "description": "Support Nate's Fight, Fund a Cure for Childhood Cancer. Join our mission to support vital cancer research at Children's Hospital of Philadelphia (CHOP).",
+  "icons": [
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "theme_color": "#42a8a9",
+  "background_color": "#2a3f54",
+  "display": "standalone",
+  "start_url": "/",
+  "scope": "/",
+  "orientation": "portrait"
+}
