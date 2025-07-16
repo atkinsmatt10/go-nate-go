@@ -3,7 +3,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import { motion } from "framer-motion"
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 
 export function ShirtSection() {
   return (
@@ -28,14 +28,17 @@ export function ShirtSection() {
                     className="mx-auto aspect-square overflow-hidden rounded-xl object-contain object-center sm:w-full transition-transform group-hover:scale-105"
                   />
                   {/* Click indicator */}
-                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors rounded-xl flex items-center justify-center opacity-0 group-hover:opacity-100">
-                    <div className="bg-white/90 backdrop-blur-sm rounded-full px-3 py-1 text-sm font-medium text-foreground">
-                      Click to enlarge
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300 rounded-xl flex items-center justify-center opacity-0 group-hover:opacity-100">
+                    <div className="bg-white/95 backdrop-blur-sm rounded-full px-4 py-2 text-sm font-semibold text-gray-800 shadow-lg border border-white/20 transform scale-95 group-hover:scale-100 transition-transform duration-200">
+                      🔍 Click to enlarge
                     </div>
                   </div>
                 </div>
               </DialogTrigger>
               <DialogContent className="max-w-3xl w-full">
+                <DialogTitle className="sr-only">
+                  Nate the Great T-Shirt - Enlarged View
+                </DialogTitle>
                 <div className="relative">
                   <Image
                     src="/Nate shirt.png"
@@ -78,7 +81,9 @@ export function ShirtSection() {
             
             <div className="flex justify-center">
               <Link
-                href="#"
+                href="https://www.customink.com/fundraising/nate-the-great1"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="inline-flex h-12 items-center justify-center rounded-md bg-primary px-8 text-lg font-bold text-primary-foreground shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
                 prefetch={false}
               >
