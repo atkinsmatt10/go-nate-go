@@ -59,7 +59,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/Nate-image.png",
+        url: "/IMG_99081.png",
         width: 1200,
         height: 630,
         alt: "Nate the Great – Our Little Fighter",
@@ -75,7 +75,7 @@ export const metadata: Metadata = {
     title: "Nate the Great's Fundraiser for CHOP",
     description:
       "Support Nate's fight against childhood brain cancer by donating today.",
-    images: ["/Nate-image.png"],
+    images: ["/IMG_99081.png"],
   },
 
   icons: {
