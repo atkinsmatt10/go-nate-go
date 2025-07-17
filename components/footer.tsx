@@ -18,7 +18,7 @@ export function Footer() {
             className="object-contain"
           />
           <p className="text-xs text-muted-foreground text-center">
-            Made with love in Philadelphia
+            Built with ❤️ for Nate the Great
           </p>
         </div>
       </div>
