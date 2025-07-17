@@ -5,12 +5,6 @@
 [![Support CHOP](https://img.shields.io/badge/Support-CHOP-blue?style=for-the-badge)](https://chop.donordrive.com/teams/15164)
 [![Buy Nate Shirt](https://img.shields.io/badge/Buy-Nate%20Shirt-green?style=for-the-badge)](https://www.customink.com/fundraising/nate-the-great1)
 
-## Meet Nate the Great 🦈
-
-![Nate the Great](public/Nate-image.png)
-
-![Nate Shark](public/nate%20shark.png)
-
 ## Our Story 💙
 
 Meet Nate :) our sweet, funny, and incredibly strong little man. In just two short months of life, he's already touched more hearts than we can count. Nate is truly the best thing that's ever happened to our family - his smile lights up every room, and his spirit is inspiring.
@@ -41,11 +35,11 @@ While Nate still has a long road ahead, he is doing well, and we're so proud of 
 
 This is an open source fundraising website built to support Team Nate the Great and the Children's Hospital of Philadelphia. The site is built with modern web technologies and deployed on Vercel.
 
-### Tech Stack
-- Next.js
-- TypeScript
-- Tailwind CSS
-- Vercel Deployment
+## Meet Nate the Great 🦈
+
+![Nate the Great](public/Nate-image.png)
+
+![Nate Shark](public/IMG_9843.png)
 
 ## Thank You! 🙏
 
