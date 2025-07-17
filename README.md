@@ -2,8 +2,14 @@
 
 **2025 Parkway Run & Walk** | **Open Source Fundraiser**
 
-[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/atkinsmatt10s-projects/v0-gonatego)
 [![Support CHOP](https://img.shields.io/badge/Support-CHOP-blue?style=for-the-badge)](https://chop.donordrive.com/teams/15164)
+[![Buy Nate Shirt](https://img.shields.io/badge/Buy-Nate%20Shirt-green?style=for-the-badge)](https://www.customink.com/fundraising/nate-the-great1)
+
+## Meet Nate the Great 🦈
+
+![Nate the Great](public/Nate-image.png)
+
+![Nate Shark](public/nate%20shark.png)
 
 ## Our Story 💙
 
