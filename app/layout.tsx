@@ -1,6 +1,6 @@
 /* app/layout.tsx */
 import type { Metadata, Viewport } from "next"
-import { Lilita_One, Inter } from "next/font/google"
+import { Lilita_One, Work_Sans } from "next/font/google"
 import "./globals.css"
 import { Analytics } from "@vercel/analytics/next"
 
@@ -9,9 +9,9 @@ const lilitaOne = Lilita_One({
   weight: "400",
   variable: "--font-lilita-one",
 })
-const inter = Inter({
+const workSans = Work_Sans({
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-work-sans",
 })
 
 /* ---------- Viewport ---------- */
@@ -103,7 +103,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" dir="ltr">
-      <body className={`${lilitaOne.variable} ${inter.variable}`}>
+      <body className={`${lilitaOne.variable} ${workSans.variable}`}>
         {children}
         <Analytics />
         {/* --- Structured data for rich results --- */}

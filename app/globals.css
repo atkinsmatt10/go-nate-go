@@ -65,7 +65,7 @@
   }
   body {
     @apply bg-background text-foreground font-sans;
-    font-family: var(--font-inter);
+    font-family: var(--font-work-sans);
   }
   h1,
   h2,
