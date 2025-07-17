@@ -1,11 +1,58 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { motion } from "framer-motion"
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Badge } from "@/components/ui/badge"
+
+// Client-side cache
+let clientCache: { count: number; timestamp: number } | null = null
+const CLIENT_CACHE_DURATION = 2 * 60 * 1000 // 2 minutes
 
 export function ShirtSection() {
+  const [shirtCount, setShirtCount] = useState<number | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchShirtCount = async () => {
+      // Check client-side cache first
+      const now = Date.now()
+      if (clientCache && (now - clientCache.timestamp) < CLIENT_CACHE_DURATION) {
+        setShirtCount(clientCache.count)
+        setIsLoading(false)
+        return
+      }
+
+      try {
+        const response = await fetch('/api/shirt-count')
+        const data = await response.json()
+        setShirtCount(data.count)
+        
+        // Update client cache
+        clientCache = {
+          count: data.count,
+          timestamp: now
+        }
+      } catch (error) {
+        console.error('Failed to fetch shirt count:', error)
+        setShirtCount(0) // fallback
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    fetchShirtCount()
+  }, [])
+
+  const formatCount = (count: number | null) => {
+    if (count === null) return "Loading supporters..."
+    if (count === 0) return "Be the first amazing supporter"
+    if (count === 1) return "1 shirt from amazing supporters"
+    return `${count} shirts from amazing supporters`
+  }
+
   return (
     <section id="shirt" className="w-full py-16 md:py-24 lg:py-32 bg-secondary">
       <div className="container px-4 md:px-6">
@@ -59,7 +106,19 @@ export function ShirtSection() {
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
-            <h2 className="text-4xl font-bold tracking-tighter sm:text-5xl text-foreground">Join the Natey Shark Team</h2>
+            <div className="space-y-3">
+              <h2 className="text-4xl font-bold tracking-tighter sm:text-5xl text-foreground">
+                Join the Natey Shark Team
+              </h2>
+              <div className="flex justify-start">
+                <div className={`bg-slate-700/90 text-white px-3 py-1 rounded-full text-sm font-medium backdrop-blur-sm transition-all duration-300 border border-slate-300/30 hover:border-slate-300/50 ${
+                  isLoading ? 'animate-pulse' : 'hover:bg-slate-600/90'
+                }`}>
+                  {formatCount(shirtCount)}
+                </div>
+              </div>
+            </div>
+            
             <p className="text-muted-foreground md:text-lg/relaxed">
               Inspired by his family nickname, 'Natey Shark,' this t-shirt represents our son's incredible strength and fun-loving spirit. By wearing one, you become part of our team, spreading awareness and showing your support for Nate wherever you go. All proceeds help fund the vital cancer research at CHOP that gives our family so much hope.
             </p>
