@@ -3,6 +3,7 @@ import type { Metadata, Viewport } from "next"
 import { Lilita_One, Work_Sans } from "next/font/google"
 import "./globals.css"
 import { Analytics } from "@vercel/analytics/next"
+import { SpeedInsights } from "@vercel/speed-insights/next" // for performance insights
 
 const lilitaOne = Lilita_One({
   subsets: ["latin"],
@@ -105,6 +106,7 @@ export default function RootLayout({
     <html lang="en" dir="ltr">
       <body className={`${lilitaOne.variable} ${workSans.variable}`}>
         {children}
+        <SpeedInsights />
         <Analytics />
         {/* --- Structured data for rich results --- */}
         <script
