@@ -140,7 +140,7 @@ export function ShirtSection() {
             
             <div className="flex justify-center">
               <Link
-                href="https://www.customink.com/fundraising/nate-the-great1"
+                href="https://shop.gonatego.com"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex h-12 items-center justify-center rounded-md bg-primary px-8 text-lg font-bold text-primary-foreground shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
