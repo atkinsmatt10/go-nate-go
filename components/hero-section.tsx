@@ -299,7 +299,9 @@ export function HeroSection() {
             
             {/* Secondary CTA - Shop Now */}
             <Link
-              href="#shirt"
+              href="https://shop.gonatego.com"
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex h-14 items-center justify-center rounded-lg border-2 border-primary bg-transparent px-8 text-xl font-bold text-primary shadow-sm transition-all hover:bg-primary hover:text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
               prefetch={false}
             >
