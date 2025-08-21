@@ -1,11 +1,38 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef, useCallback } from "react"
 import Image from "next/image"
 import Link from "next/link"
-import { motion } from "framer-motion"
-import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { motion, AnimatePresence } from "framer-motion"
 import { Badge } from "@/components/ui/badge"
+
+// Merchandise items for carousel
+const merchandiseItems = [
+  {
+    src: "/unisex-garment-dyed-heavyweight-t-shirt-navy-front-68a5f15854564.jpg",
+    alt: "Nate the Great Heavyweight Tee",
+    productUrl: "https://shop.gonatego.com/products/unisex-garment-dyed-heavyweight-t-shirt",
+    price: "$35.00"
+  },
+  {
+    src: "/unisex-premium-sweatshirt-navy-blazer-front-68a5f05c76dd3.jpg",
+    alt: "Nate the Great Premium Midweight Crew",
+    productUrl: "https://shop.gonatego.com/products/unisex-premium-sweatshirt",
+    price: "$55.00"
+  },
+  {
+    src: "/waffle-beanie-navy-front-68a5f0a9e7b3c.jpg",
+    alt: "Nate the Great Thermal Waffle Beanie",
+    productUrl: "https://shop.gonatego.com/products/waffle-beanie",
+    price: "$25.00"
+  },
+  {
+    src: "/baby-short-sleeve-one-piece-black-front-68a5f10c1bf9a.jpg",
+    alt: "Nate the Great Baby One-Piece",
+    productUrl: "https://shop.gonatego.com/products/baby-short-sleeve-one-piece",
+    price: "$25.00"
+  }
+]
 
 // Client-side cache
 let clientCache: { count: number; timestamp: number } | null = null
@@ -14,6 +41,9 @@ const CLIENT_CACHE_DURATION = 2 * 60 * 1000 // 2 minutes
 export function ShirtSection() {
   const [shirtCount, setShirtCount] = useState<number | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [currentImage, setCurrentImage] = useState(0)
+  const [direction, setDirection] = useState(0)
+  const intervalRef = useRef<NodeJS.Timeout | null>(null)
 
   useEffect(() => {
     const fetchShirtCount = async () => {
@@ -46,11 +76,71 @@ export function ShirtSection() {
     fetchShirtCount()
   }, [])
 
+  // Function to start the auto-advance timer
+  const startAutoAdvance = useCallback(() => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current)
+    }
+    intervalRef.current = setInterval(() => {
+      setDirection(1)
+      setCurrentImage((prev) => (prev + 1) % merchandiseItems.length)
+    }, 5000) // Change image every 5 seconds
+  }, [])
+
+  // Function to reset the timer (used when user manually navigates)
+  const resetTimer = useCallback(() => {
+    startAutoAdvance()
+  }, [startAutoAdvance])
+
+  useEffect(() => {
+    startAutoAdvance()
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current)
+      }
+    }
+  }, [startAutoAdvance])
+
+  const handleImageClick = (index: number) => {
+    setDirection(index > currentImage ? 1 : -1)
+    setCurrentImage(index)
+    resetTimer() // Reset the auto-advance timer
+  }
+
   const formatCount = (count: number | null) => {
     if (count === null) return "Loading supporters..."
     if (count === 0) return "Be the first amazing supporter"
     if (count === 1) return "1 shirt from amazing supporters"
     return `${count} shirts from amazing supporters`
+  }
+
+  // Animation variants for the carousel
+  const slideVariants = {
+    enter: (direction: number) => ({
+      x: direction > 0 ? 300 : -300,
+      opacity: 0,
+      scale: 0.9,
+      rotateY: direction > 0 ? 15 : -15,
+    }),
+    center: {
+      zIndex: 1,
+      x: 0,
+      opacity: 1,
+      scale: 1,
+      rotateY: 0,
+    },
+    exit: (direction: number) => ({
+      zIndex: 0,
+      x: direction < 0 ? 300 : -300,
+      opacity: 0,
+      scale: 0.9,
+      rotateY: direction < 0 ? 15 : -15,
+    }),
+  }
+
+  const swipeConfidenceThreshold = 10000
+  const swipePower = (offset: number, velocity: number) => {
+    return Math.abs(offset) * velocity
   }
 
   return (
@@ -64,39 +154,105 @@ export function ShirtSection() {
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
           >
-            <Dialog>
-              <DialogTrigger asChild>
-                <div className="cursor-pointer group">
-                  <Image
-                    src="/Nate shirt.png"
-                    width="500"
-                    height="500"
-                    alt="Nate the Great T-Shirt - Click to view larger"
-                    className="mx-auto aspect-square overflow-hidden rounded-xl object-contain object-center sm:w-full transition-transform group-hover:scale-105"
+            {/* Merchandise Carousel */}
+            <div className="relative w-full max-w-lg mx-auto">
+              <div className="relative aspect-square overflow-hidden rounded-2xl shadow-lg">
+                <AnimatePresence initial={false} custom={direction}>
+                  <motion.div
+                    key={currentImage}
+                    custom={direction}
+                    variants={slideVariants}
+                    initial="enter"
+                    animate="center"
+                    exit="exit"
+                    transition={{
+                      x: { type: "spring", stiffness: 300, damping: 30 },
+                      opacity: { duration: 0.3 },
+                      scale: { duration: 0.3 },
+                      rotateY: { duration: 0.3 }
+                    }}
+                    drag="x"
+                    dragConstraints={{ left: 0, right: 0 }}
+                    dragElastic={1}
+                    onDragEnd={(e, { offset, velocity }) => {
+                      const swipe = swipePower(offset.x, velocity.x)
+
+                      if (swipe < -swipeConfidenceThreshold) {
+                        setDirection(1)
+                        setCurrentImage((prev) => (prev + 1) % merchandiseItems.length)
+                        resetTimer()
+                      } else if (swipe > swipeConfidenceThreshold) {
+                        setDirection(-1)
+                        setCurrentImage((prev) => (prev - 1 + merchandiseItems.length) % merchandiseItems.length)
+                        resetTimer()
+                      }
+                    }}
+                    className="absolute inset-0 cursor-grab active:cursor-grabbing"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <Link
+                      href={merchandiseItems[currentImage].productUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="cursor-pointer group w-full h-full block"
+                    >
+                      <Image
+                        src={merchandiseItems[currentImage].src}
+                        width={500}
+                        height={500}
+                        alt={`${merchandiseItems[currentImage].alt} - Click to shop`}
+                        className="w-full h-full object-contain object-center transition-transform group-hover:scale-105"
+                        quality={85}
+                        sizes="(max-width: 768px) 100vw, 500px"
+                        priority={currentImage === 0}
+                      />
+                      {/* Click indicator */}
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300 rounded-2xl flex items-center justify-center opacity-0 group-hover:opacity-100">
+                        <div className="bg-white/95 backdrop-blur-sm rounded-lg px-4 py-3 text-sm font-semibold text-gray-800 shadow-lg border border-white/20 transform scale-95 group-hover:scale-100 transition-transform duration-200">
+                          <div className="text-center">
+                            <div className="text-primary text-lg font-bold">{merchandiseItems[currentImage].price}</div>
+                            <div className="flex items-center gap-1 text-xs text-gray-600">
+                              🛒 Click to shop
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </Link>
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+              
+              {/* Product Info */}
+              <div className="text-center mt-4">
+                <h3 className="font-semibold text-lg text-foreground">
+                  {merchandiseItems[currentImage].alt}
+                </h3>
+                <p className="text-primary font-bold text-xl">
+                  {merchandiseItems[currentImage].price}
+                </p>
+              </div>
+              
+              {/* Carousel Indicators */}
+              <div className="flex justify-center space-x-2 mt-4">
+                {merchandiseItems.map((_, index) => (
+                  <motion.button
+                    key={index}
+                    onClick={() => handleImageClick(index)}
+                    className={`w-2 h-2 rounded-full transition-colors duration-200 ${
+                      index === currentImage ? 'bg-primary' : 'bg-gray-300'
+                    }`}
+                    aria-label={`Go to ${merchandiseItems[index].alt}`}
+                    whileHover={{ scale: 1.2 }}
+                    whileTap={{ scale: 0.9 }}
+                    animate={{
+                      scale: index === currentImage ? 1.2 : 1,
+                      opacity: index === currentImage ? 1 : 0.7
+                    }}
                   />
-                  {/* Click indicator */}
-                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300 rounded-xl flex items-center justify-center opacity-0 group-hover:opacity-100">
-                    <div className="bg-white/95 backdrop-blur-sm rounded-full px-4 py-2 text-sm font-semibold text-gray-800 shadow-lg border border-white/20 transform scale-95 group-hover:scale-100 transition-transform duration-200">
-                      🔍 Click to enlarge
-                    </div>
-                  </div>
-                </div>
-              </DialogTrigger>
-              <DialogContent className="max-w-3xl w-full">
-                <DialogTitle className="sr-only">
-                  Nate the Great T-Shirt - Enlarged View
-                </DialogTitle>
-                <div className="relative">
-                  <Image
-                    src="/Nate shirt.png"
-                    width="800"
-                    height="800"
-                    alt="Nate the Great T-Shirt - Large View"
-                    className="w-full h-auto object-contain rounded-lg"
-                  />
-                </div>
-              </DialogContent>
-            </Dialog>
+                ))}
+              </div>
+            </div>
           </motion.div>
           
           <motion.div
@@ -120,7 +276,7 @@ export function ShirtSection() {
             </div>
             
             <p className="text-muted-foreground md:text-lg/relaxed">
-              Inspired by his family nickname, 'Natey Shark,' this t-shirt represents our son's incredible strength and fun-loving spirit. By wearing one, you become part of our team, spreading awareness and showing your support for Nate wherever you go. All proceeds help fund the vital cancer research at CHOP that gives our family so much hope.
+              Inspired by his family nickname, 'Natey Shark,' our merchandise collection represents our son's incredible strength and fun-loving spirit. By wearing any of these items, you become part of our team, spreading awareness and showing your support for Nate wherever you go. All proceeds help fund the vital cancer research at CHOP that gives our family so much hope.
             </p>
             
             {/* CHOP logo highlight */}

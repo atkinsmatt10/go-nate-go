@@ -3,7 +3,7 @@
 **2025 Parkway Run & Walk** | **Open Source Fundraiser**
 
 [![Support CHOP](https://img.shields.io/badge/Support-CHOP-blue?style=for-the-badge)](https://chop.donordrive.com/teams/15164)
-[![Buy Nate Shirt](https://img.shields.io/badge/Buy-Nate%20Shirt-green?style=for-the-badge)](https://www.customink.com/fundraising/nate-the-great1)
+[![Shop Now](https://img.shields.io/badge/Shop-Now-green?style=for-the-badge)](https://shop.gonatego.com)
 
 ## Our Story 💙
 
@@ -28,7 +28,7 @@ While Nate still has a long road ahead, he is doing well, and we're so proud of 
 ### Ways to Support
 
 - **💝 [Donate to Team Nate the Great](https://chop.donordrive.com/teams/15164)** - Every donation goes directly to CHOP
-- **👕 [Buy a "Nate the Great" Shirt](https://www.customink.com/fundraising/nate-the-great1)** - Wear your support with pride
+- **🛍️ [Shop Now](https://shop.gonatego.com)** - Browse our collection and wear your support with pride
 - **📢 Share Our Story** - Help us spread awareness
 
 ## Project Information

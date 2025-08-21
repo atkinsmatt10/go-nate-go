@@ -106,7 +106,7 @@ export default function NotFound() {
                 href="/#shirt" 
                 className="text-primary hover:text-primary/80 transition-colors underline"
               >
-                Buy a Shirt
+                Shop Now
               </Link>
             </motion.div>
           </motion.div>
