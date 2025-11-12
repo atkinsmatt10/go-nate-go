@@ -268,32 +268,6 @@ export function HeroSection() {
             >
               Help <Link href="https://www.natatkins.com/" className="text-primary hover:underline" target="_blank" rel="noopener noreferrer">Nate</Link> Fight Childhood Cancer
             </motion.h1>
-
-            {/* Childhood Cancer Awareness Month Badge */}
-            <motion.div
-              className="flex justify-center"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.45 }}
-            >
-              <Badge className="bg-gradient-to-r from-slate-100 to-gray-100 border border-slate-200 text-slate-700 px-3 py-1.5 text-sm">
-                <Image
-                  src="/ribbon.png"
-                  width={16}
-                  height={16}
-                  alt="Gold ribbon"
-                  className="mr-2"
-                />
-                September is Childhood Cancer Awareness Month
-                <Image
-                  src="/ribbon.png"
-                  width={16}
-                  height={16}
-                  alt="Gold ribbon"
-                  className="ml-2"
-                />
-              </Badge>
-            </motion.div>
             
             {/* Sub-headline */}
             <motion.p 
