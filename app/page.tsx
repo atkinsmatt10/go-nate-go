@@ -1,6 +1,7 @@
 import { HeroSection } from "@/components/hero-section"
 import { NatesStory } from "@/components/nates-story"
 import { FundraisingProgress } from "@/components/fundraising-progress"
+import { SharingNatesStory } from "@/components/sharing-nates-story"
 import { ShirtSection } from "@/components/shirt-section"
 import { Footer } from "@/components/footer"
 
@@ -12,6 +13,7 @@ export default function Component() {
         <NatesStory />
         <FundraisingProgress />
         <ShirtSection />
+        <SharingNatesStory />
       </main>
       <Footer />
     </div>

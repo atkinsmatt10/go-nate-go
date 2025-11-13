@@ -57,6 +57,8 @@
     "react-dom": "^19",
     "react-hook-form": "latest",
     "react-resizable-panels": "latest",
+    "react-social-media-embed": "^2.5.18",
+    "react-tweet": "^3.2.2",
     "recharts": "latest",
     "sonner": "latest",
     "swr": "^2.2.4",
