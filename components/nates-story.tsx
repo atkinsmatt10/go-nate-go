@@ -2,6 +2,9 @@
 
 import { motion } from "framer-motion"
 import { Badge } from "@/components/ui/badge"
+import { Card, CardContent } from "@/components/ui/card"
+import { ExternalLink } from "lucide-react"
+import Image from "next/image"
 
 export function NatesStory() {
   return (
@@ -113,6 +116,56 @@ export function NatesStory() {
                 <br /><br />
                 Thank you for supporting our 'Nate the Great' and the amazing work being done at CHOP.
               </p>
+            </motion.div>
+
+            {/* Read Full Story Card with Logo */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.6, delay: 1.2 }}
+            >
+              <a
+                href="https://curethekids.org/story/nates-journey-strength-beyond-his-seven-weeks/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block group"
+              >
+                <Card className="hover:shadow-lg transition-all duration-300 border-primary/30 bg-background/80 backdrop-blur-sm hover:border-primary/60 cursor-pointer overflow-hidden">
+                  <CardContent className="p-0">
+                    <div className="flex flex-col sm:flex-row items-center gap-6 p-6">
+                      {/* Logo Section */}
+                      <div className="flex-shrink-0">
+                        <div className="relative w-40 h-32 sm:w-48 sm:h-36">
+                          <Image
+                            src="/logo1-color.webp"
+                            alt="Pediatric Brain Tumor Foundation"
+                            fill
+                            className="object-contain"
+                          />
+                        </div>
+                      </div>
+                      
+                      {/* Text Content */}
+                      <div className="flex-1 text-center sm:text-left">
+                        <h3 className="text-xl md:text-2xl font-semibold text-foreground mb-2 group-hover:text-primary transition-colors">
+                          Read Nate's Full Story
+                        </h3>
+                        <p className="text-muted-foreground text-sm md:text-base">
+                          Discover our family's experience with Nate and his journey of strength beyond his seven weeks
+                        </p>
+                      </div>
+                      
+                      {/* Icon */}
+                      <div className="flex-shrink-0">
+                        <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                          <ExternalLink className="w-5 h-5 text-primary group-hover:scale-110 transition-transform" />
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </a>
             </motion.div>
           </motion.div>
         </div>
