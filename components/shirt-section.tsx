@@ -34,47 +34,10 @@ const merchandiseItems = [
   }
 ]
 
-// Client-side cache
-let clientCache: { count: number; timestamp: number } | null = null
-const CLIENT_CACHE_DURATION = 2 * 60 * 1000 // 2 minutes
-
 export function ShirtSection() {
-  const [shirtCount, setShirtCount] = useState<number | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
   const [currentImage, setCurrentImage] = useState(0)
   const [direction, setDirection] = useState(0)
   const intervalRef = useRef<NodeJS.Timeout | null>(null)
-
-  useEffect(() => {
-    const fetchShirtCount = async () => {
-      // Check client-side cache first
-      const now = Date.now()
-      if (clientCache && (now - clientCache.timestamp) < CLIENT_CACHE_DURATION) {
-        setShirtCount(clientCache.count)
-        setIsLoading(false)
-        return
-      }
-
-      try {
-        const response = await fetch('/api/shirt-count')
-        const data = await response.json()
-        setShirtCount(data.count)
-        
-        // Update client cache
-        clientCache = {
-          count: data.count,
-          timestamp: now
-        }
-      } catch (error) {
-        console.error('Failed to fetch shirt count:', error)
-        setShirtCount(0) // fallback
-      } finally {
-        setIsLoading(false)
-      }
-    }
-
-    fetchShirtCount()
-  }, [])
 
   // Function to start the auto-advance timer
   const startAutoAdvance = useCallback(() => {
@@ -105,13 +68,6 @@ export function ShirtSection() {
     setDirection(index > currentImage ? 1 : -1)
     setCurrentImage(index)
     resetTimer() // Reset the auto-advance timer
-  }
-
-  const formatCount = (count: number | null) => {
-    if (count === null) return "Loading supporters..."
-    if (count === 0) return "Be the first amazing supporter"
-    if (count === 1) return "1 shirt from amazing supporters"
-    return `${count} shirts from amazing supporters`
   }
 
   // Animation variants for the carousel
@@ -267,10 +223,8 @@ export function ShirtSection() {
                 Join the Natey Shark Team
               </h2>
               <div className="flex justify-start">
-                <div className={`bg-slate-700/90 text-white px-3 py-1 rounded-full text-sm font-medium backdrop-blur-sm transition-all duration-300 border border-slate-300/30 hover:border-slate-300/50 ${
-                  isLoading ? 'animate-pulse' : 'hover:bg-slate-600/90'
-                }`}>
-                  {formatCount(shirtCount)}
+                <div className="bg-slate-700/90 text-white px-3 py-1 rounded-full text-sm font-medium backdrop-blur-sm transition-all duration-300 border border-slate-300/30 hover:border-slate-300/50 hover:bg-slate-600/90">
+                  100+ shirts from amazing supporters
                 </div>
               </div>
             </div>
