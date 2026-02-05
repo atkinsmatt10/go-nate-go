@@ -2,7 +2,7 @@
 
 import Image from "next/image"
 import Link from "next/link"
-import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion"
+import { motion, AnimatePresence, useScroll, useTransform, useMotionValue, useSpring } from "framer-motion"
 import { useState, useEffect, useRef, useCallback } from "react"
 import { Badge } from "@/components/ui/badge"
 
@@ -38,6 +38,38 @@ export function HeroSection() {
   const [direction, setDirection] = useState(0)
   const intervalRef = useRef<NodeJS.Timeout | null>(null)
   const sectionRef = useRef<HTMLElement>(null)
+  const cardRef = useRef<HTMLDivElement>(null)
+
+  // 3D tilt effect values
+  const mouseX = useMotionValue(0)
+  const mouseY = useMotionValue(0)
+  
+  // Smooth spring animation for the tilt
+  const rotateX = useSpring(useTransform(mouseY, [-0.5, 0.5], [8, -8]), {
+    stiffness: 150,
+    damping: 20
+  })
+  const rotateY = useSpring(useTransform(mouseX, [-0.5, 0.5], [-8, 8]), {
+    stiffness: 150,
+    damping: 20
+  })
+
+  // Handle mouse move for 3D tilt
+  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    if (!cardRef.current) return
+    const rect = cardRef.current.getBoundingClientRect()
+    const centerX = rect.left + rect.width / 2
+    const centerY = rect.top + rect.height / 2
+    const x = (e.clientX - centerX) / rect.width
+    const y = (e.clientY - centerY) / rect.height
+    mouseX.set(x)
+    mouseY.set(y)
+  }, [mouseX, mouseY])
+
+  const handleMouseLeave = useCallback(() => {
+    mouseX.set(0)
+    mouseY.set(0)
+  }, [mouseX, mouseY])
 
   // Parallax wave animation
   const { scrollYProgress } = useScroll({
@@ -163,14 +195,27 @@ export function HeroSection() {
             />
           </motion.div>
 
-          {/* Enhanced Photo Carousel with Smooth Animations - MOVED UP */}
+          {/* Enhanced Photo Carousel with 3D Tilt Effect */}
           <motion.div
+            ref={cardRef}
             className="relative w-full max-w-md mx-auto"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5, delay: 0.2 }}
+            onMouseMove={handleMouseMove}
+            onMouseLeave={handleMouseLeave}
+            style={{
+              perspective: 1000,
+            }}
           >
-            <div className="relative aspect-square overflow-hidden rounded-2xl shadow-lg">
+            <motion.div 
+              className="relative aspect-square overflow-hidden rounded-2xl shadow-lg"
+              style={{
+                rotateX,
+                rotateY,
+                transformStyle: "preserve-3d",
+              }}
+            >
               <AnimatePresence initial={false} custom={direction}>
                 <motion.div
                   key={currentImage}
@@ -235,7 +280,7 @@ export function HeroSection() {
                   style={{ height: "auto" }}
                 />
               </motion.div>
-            </div>
+            </motion.div>
             
             {/* Enhanced Carousel Indicators */}
             <div className="flex justify-center space-x-2 mt-4">
