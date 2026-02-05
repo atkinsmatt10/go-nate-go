@@ -45,13 +45,13 @@ export function HeroSection() {
   const mouseY = useMotionValue(0)
   
   // Smooth spring animation for the tilt
-  const rotateX = useSpring(useTransform(mouseY, [-0.5, 0.5], [8, -8]), {
-    stiffness: 150,
-    damping: 20
+  const rotateX = useSpring(useTransform(mouseY, [-0.5, 0.5], [15, -15]), {
+    stiffness: 100,
+    damping: 15
   })
-  const rotateY = useSpring(useTransform(mouseX, [-0.5, 0.5], [-8, 8]), {
-    stiffness: 150,
-    damping: 20
+  const rotateY = useSpring(useTransform(mouseX, [-0.5, 0.5], [-15, 15]), {
+    stiffness: 100,
+    damping: 15
   })
 
   // Handle mouse move for 3D tilt
