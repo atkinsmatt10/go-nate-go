@@ -196,12 +196,9 @@ export function HeroSection() {
           </motion.div>
 
           {/* Enhanced Photo Carousel with 3D Tilt Effect */}
-          <motion.div
+          <div
             ref={cardRef}
             className="relative w-full max-w-md mx-auto"
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
             style={{
@@ -209,11 +206,15 @@ export function HeroSection() {
             }}
           >
             <motion.div 
-              className="relative aspect-square overflow-hidden rounded-2xl shadow-lg"
+              className="relative aspect-square overflow-hidden rounded-2xl shadow-2xl"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
               style={{
                 rotateX,
                 rotateY,
                 transformStyle: "preserve-3d",
+                transformOrigin: "center center",
               }}
             >
               <AnimatePresence initial={false} custom={direction}>
@@ -283,7 +284,7 @@ export function HeroSection() {
             </motion.div>
             
             {/* Enhanced Carousel Indicators */}
-            <div className="flex justify-center space-x-2 mt-4">
+            <div className="flex justify-center gap-2 mt-4">
               {images.map((_, index) => (
                 <motion.button
                   key={index}
@@ -301,7 +302,7 @@ export function HeroSection() {
                 />
               ))}
             </div>
-          </motion.div>
+          </div>
 
           <div className="space-y-4">
             {/* Powerful Headline */}
