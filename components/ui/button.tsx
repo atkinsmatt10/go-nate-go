@@ -1,7 +1,10 @@
+"use client"
+
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { cva, type VariantProps } from "class-variance-authority"
 
+import { type HapticIntent, useHapticFeedback } from "@/hooks/use-haptic-feedback"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
@@ -37,16 +40,35 @@ export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean
+  haptic?: HapticIntent | false
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
+  (
+    { className, variant, size, asChild = false, haptic, onClick, disabled, ...props },
+    ref
+  ) => {
+    const { trigger } = useHapticFeedback()
     const Comp = asChild ? Slot : "button"
+
+    const handleClick = React.useCallback<React.MouseEventHandler<HTMLButtonElement>>(
+      (event) => {
+        if (!disabled && haptic !== false) {
+          trigger(haptic ?? (variant === "destructive" ? "warning" : "medium"))
+        }
+
+        onClick?.(event)
+      },
+      [disabled, haptic, onClick, trigger, variant]
+    )
+
     return (
       <Comp
         className={cn(buttonVariants({ variant, size, className }))}
         ref={ref}
         {...props}
+        {...(!asChild ? { disabled } : {})}
+        onClick={handleClick}
       />
     )
   }

@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { Progress } from "@/components/ui/progress"
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
 import { motion } from "framer-motion"
 import Link from "next/link"
 import useSWR from 'swr'
@@ -124,15 +125,20 @@ export function FundraisingProgress() {
             </div>
           </div>
           <div className="mt-6">
-            <Link
-              href="https://chop.donordrive.com/teams/15164?wait=1"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex h-14 items-center justify-center rounded-lg bg-primary px-8 text-xl font-bold text-primary-foreground shadow-lg transition-all hover:bg-primary/90 hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
-              prefetch={false}
+            <Button
+              asChild
+              size="lg"
+              className="h-14 text-xl font-bold shadow-lg transition-all hover:shadow-xl"
             >
-              Donate Directly
-            </Link>
+              <Link
+                href="https://chop.donordrive.com/teams/15164?wait=1"
+                target="_blank"
+                rel="noopener noreferrer"
+                prefetch={false}
+              >
+                Donate Directly
+              </Link>
+            </Button>
           </div>
         </motion.div>
       </div>

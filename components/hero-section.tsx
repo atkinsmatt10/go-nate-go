@@ -4,7 +4,8 @@ import Image from "next/image"
 import Link from "next/link"
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion"
 import { useState, useEffect, useRef, useCallback } from "react"
-import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { useHapticFeedback } from "@/hooks/use-haptic-feedback"
 
 const images = [
   {
@@ -38,6 +39,7 @@ export function HeroSection() {
   const [direction, setDirection] = useState(0)
   const intervalRef = useRef<NodeJS.Timeout | null>(null)
   const sectionRef = useRef<HTMLElement>(null)
+  const { trigger } = useHapticFeedback()
 
   // Parallax wave animation
   const { scrollYProgress } = useScroll({
@@ -74,6 +76,7 @@ export function HeroSection() {
   const handleImageClick = (index: number) => {
     setDirection(index > currentImage ? 1 : -1)
     setCurrentImage(index)
+    trigger("selection")
     resetTimer() // Reset the auto-advance timer
   }
 
@@ -194,10 +197,12 @@ export function HeroSection() {
                     if (swipe < -swipeConfidenceThreshold) {
                       setDirection(1)
                       setCurrentImage((prev) => (prev + 1) % images.length)
+                      trigger("selection")
                       resetTimer() // Reset the auto-advance timer
                     } else if (swipe > swipeConfidenceThreshold) {
                       setDirection(-1)
                       setCurrentImage((prev) => (prev - 1 + images.length) % images.length)
+                      trigger("selection")
                       resetTimer() // Reset the auto-advance timer
                     }
                   }}
@@ -288,26 +293,38 @@ export function HeroSection() {
             transition={{ duration: 0.5, delay: 0.6 }}
           >
             {/* Primary CTA - Donate Now */}
-            <Link
-              href="https://chop.donordrive.com/teams/15164?wait=1"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex h-14 items-center justify-center rounded-lg bg-primary px-8 text-xl font-bold text-primary-foreground shadow-lg transition-all hover:bg-primary/90 hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
-              prefetch={false}
+            <Button
+              asChild
+              size="lg"
+              className="h-14 text-xl font-bold shadow-lg transition-all hover:shadow-xl"
             >
-              Donate Now
-            </Link>
+              <Link
+                href="https://chop.donordrive.com/teams/15164?wait=1"
+                target="_blank"
+                rel="noopener noreferrer"
+                prefetch={false}
+              >
+                Donate Now
+              </Link>
+            </Button>
             
             {/* Secondary CTA - Shop Now */}
-            <Link
-              href="https://shop.gonatego.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex h-14 items-center justify-center rounded-lg border-2 border-primary bg-transparent px-8 text-xl font-bold text-primary shadow-sm transition-all hover:bg-primary hover:text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
-              prefetch={false}
+            <Button
+              asChild
+              variant="outline"
+              size="lg"
+              haptic="light"
+              className="h-14 border-2 border-primary bg-transparent text-xl font-bold text-primary shadow-sm transition-all hover:bg-primary hover:text-primary-foreground"
             >
-              Shop Now
-            </Link>
+              <Link
+                href="https://shop.gonatego.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                prefetch={false}
+              >
+                Shop Now
+              </Link>
+            </Button>
           </motion.div>
         </motion.div>
       </div>

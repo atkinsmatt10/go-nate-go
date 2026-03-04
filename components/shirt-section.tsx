@@ -4,7 +4,8 @@ import { useEffect, useState, useRef, useCallback } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
-import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { useHapticFeedback } from "@/hooks/use-haptic-feedback"
 
 // Merchandise items for carousel
 const merchandiseItems = [
@@ -38,6 +39,7 @@ export function ShirtSection() {
   const [currentImage, setCurrentImage] = useState(0)
   const [direction, setDirection] = useState(0)
   const intervalRef = useRef<NodeJS.Timeout | null>(null)
+  const { trigger } = useHapticFeedback()
 
   // Function to start the auto-advance timer
   const startAutoAdvance = useCallback(() => {
@@ -67,6 +69,7 @@ export function ShirtSection() {
   const handleImageClick = (index: number) => {
     setDirection(index > currentImage ? 1 : -1)
     setCurrentImage(index)
+    trigger("selection")
     resetTimer() // Reset the auto-advance timer
   }
 
@@ -136,10 +139,12 @@ export function ShirtSection() {
                       if (swipe < -swipeConfidenceThreshold) {
                         setDirection(1)
                         setCurrentImage((prev) => (prev + 1) % merchandiseItems.length)
+                        trigger("selection")
                         resetTimer()
                       } else if (swipe > swipeConfidenceThreshold) {
                         setDirection(-1)
                         setCurrentImage((prev) => (prev - 1 + merchandiseItems.length) % merchandiseItems.length)
+                        trigger("selection")
                         resetTimer()
                       }
                     }}
@@ -230,7 +235,7 @@ export function ShirtSection() {
             </div>
             
             <p className="text-muted-foreground md:text-lg/relaxed">
-              Inspired by his family nickname, 'Natey Shark,' our merchandise collection represents our son's incredible strength and fun-loving spirit. By wearing any of these items, you become part of our team, spreading awareness and showing your support for Nate wherever you go. All proceeds help fund the vital cancer research at CHOP that gives our family so much hope.
+              Inspired by his family nickname, &apos;Natey Shark,&apos; our merchandise collection represents our son&apos;s incredible strength and fun-loving spirit. By wearing any of these items, you become part of our team, spreading awareness and showing your support for Nate wherever you go. All proceeds help fund the vital cancer research at CHOP that gives our family so much hope.
             </p>
             
             {/* CHOP logo highlight */}
@@ -249,15 +254,20 @@ export function ShirtSection() {
             </div>
             
             <div className="flex justify-center">
-              <Link
-                href="https://shop.gonatego.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex h-14 items-center justify-center rounded-lg bg-primary px-8 text-xl font-bold text-primary-foreground shadow-lg transition-all hover:bg-primary/90 hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
-                prefetch={false}
+              <Button
+                asChild
+                size="lg"
+                className="h-14 text-xl font-bold shadow-lg transition-all hover:shadow-xl"
               >
-                Buy Now
-              </Link>
+                <Link
+                  href="https://shop.gonatego.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  prefetch={false}
+                >
+                  Buy Now
+                </Link>
+              </Button>
             </div>
           </motion.div>
         </div>
