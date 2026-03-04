@@ -43,7 +43,7 @@ export function NatesStory() {
               transition={{ duration: 0.6, delay: 0.2 }}
             >
               <div className="inline-block rounded-lg bg-primary/20 px-4 py-2 text-sm font-medium text-primary border border-primary/30 backdrop-blur-sm">
-                Nate's Journey
+                Nate&apos;s Journey
               </div>
             </motion.div>
 
@@ -92,7 +92,7 @@ export function NatesStory() {
                 </Badge>
               </div>
               <p className="text-muted-foreground md:text-lg/relaxed text-center sm:text-left">
-                Enduring surgeries and long hospital stays with incredible strength, he is, without a doubt, our hero. We are endlessly grateful for the incredible team at Children's Hospital of Philadelphia.
+                Enduring surgeries and long hospital stays with incredible strength, he is, without a doubt, our hero. We are endlessly grateful for the incredible team at Children&apos;s Hospital of Philadelphia.
                 <br /><br />
                 From his neurosurgeons and oncologists to the nurses, therapists, and social workers, every single person has played a role in supporting Nate and our family.
               </p>
@@ -114,7 +114,7 @@ export function NatesStory() {
               <p className="text-muted-foreground md:text-lg/relaxed text-center sm:text-left">
                 While Nate has a long road ahead, he is doing well. Every donation helps fund the critical research, clinical trials, and compassionate care that gives children like him a fighting chance.
                 <br /><br />
-                Thank you for supporting our 'Nate the Great' and the amazing work being done at CHOP.
+                Thank you for supporting our &apos;Nate the Great&apos; and the amazing work being done at CHOP.
               </p>
             </motion.div>
 
@@ -149,10 +149,10 @@ export function NatesStory() {
                       {/* Text Content */}
                       <div className="flex-1 text-center sm:text-left">
                         <h3 className="text-xl md:text-2xl font-semibold text-foreground mb-2 group-hover:text-primary transition-colors">
-                          Read Nate's Full Story
+                          Read Nate&apos;s Full Story
                         </h3>
                         <p className="text-muted-foreground text-sm md:text-base">
-                          Discover our family's experience with Nate and his journey of strength beyond his seven weeks
+                          Discover our family&apos;s experience with Nate and his journey of strength beyond his seven weeks
                         </p>
                       </div>
                       

@@ -1,9 +1,10 @@
 "use client"
 
 import { motion } from "framer-motion"
+import Image from "next/image"
 import { Tweet } from "react-tweet"
 import { InstagramEmbed } from "react-social-media-embed"
-import { Suspense, useEffect } from "react"
+import { Suspense } from "react"
 import Script from "next/script"
 
 // Loading skeleton component for social media posts
@@ -43,9 +44,10 @@ function SubstackCard({
       {image && (
         <a href={url} target="_blank" rel="noopener noreferrer">
           <div className="relative w-full aspect-[16/9]">
-            <img 
+            <Image
               src={image} 
               alt={title}
+              fill
               className="w-full h-full object-cover"
             />
           </div>
@@ -299,10 +301,10 @@ export function SharingNatesStory() {
                 Social Media
               </div>
               <h2 className="text-4xl font-bold tracking-tighter sm:text-5xl text-foreground">
-                Sharing Nate's Story
+                Sharing Nate&apos;s Story
               </h2>
               <p className="text-muted-foreground md:text-lg max-w-2xl mx-auto">
-                See how Nate's journey has touched hearts and inspired communities across social media
+                See how Nate&apos;s journey has touched hearts and inspired communities across social media
               </p>
             </motion.div>
 
@@ -408,4 +410,3 @@ export function SharingNatesStory() {
     </>
   )
 }
-

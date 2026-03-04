@@ -50,7 +50,7 @@ export default function NotFound() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.4 }}
             >
-              Oops! Looks like you're swimming in uncharted waters
+              Oops! Looks like you&apos;re swimming in uncharted waters
             </motion.h2>
             
             {/* Description */}
@@ -60,7 +60,7 @@ export default function NotFound() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.5 }}
             >
-              The page you're looking for doesn't exist, but don't worry - Nate's shark friend will help guide you back to safety!
+              The page you&apos;re looking for doesn&apos;t exist, but don&apos;t worry - Nate&apos;s shark friend will help guide you back to safety!
             </motion.p>
 
             {/* Action Buttons */}
@@ -100,7 +100,7 @@ export default function NotFound() {
                 href="/#story" 
                 className="text-primary hover:text-primary/80 transition-colors underline"
               >
-                Read Nate's Story
+                Read Nate&apos;s Story
               </Link>
               <Link 
                 href="/#shirt" 
