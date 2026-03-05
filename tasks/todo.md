@@ -63,3 +63,19 @@
 - Enable Apple Pay, Google Pay, and Link in Stripe Dashboard payment method settings.
 - Add production domain in Stripe Payment Method Domains (required for Apple Pay on web and recommended for wallet reliability).
 - Serve checkout over HTTPS in production; wallet availability depends on browser/device capability.
+
+# Stripe Checkout Cleanup Plan
+
+## Tasks
+- [x] Migrate the donation flow from manual `PaymentIntent` Elements usage to Stripe Checkout Sessions with `ui_mode: "custom"` and React checkout components
+- [x] Add explicit donor email capture and pass it through the session so Checkout has the customer context Stripe expects
+- [x] Restore wallet-first checkout with `ExpressCheckoutElement` and keep `PaymentElement` as the fallback form
+- [x] Update the donation return page to read Checkout Session status while preserving compatibility with older `payment_intent` return links
+- [x] Run validation checks for touched TypeScript (`pnpm lint`, `pnpm exec tsc --noEmit`) and record results
+
+## Review / Results
+- `pnpm lint`: passed
+- `pnpm exec tsc --noEmit`: passed
+- `pnpm build`: passed
+- Runtime smoke test: `POST /api/stripe/checkout-session` on `http://localhost:3006` returned a Checkout Session client secret and session ID for a `$50.00` test donation using `donor@example.com`.
+- Runtime smoke test: `GET /api/stripe/checkout-session?session_id=cs_test_a1Nu7nCoi2wJ1ifdMdUMzm6Awpd4aWRP0sObi47Y4cJgMMPoTdBo4MGok5` returned `status: open`, `paymentStatus: unpaid`, `amountTotal: 5000`, and the expected donor email in `customerDetails`.

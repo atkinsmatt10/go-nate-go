@@ -3,23 +3,31 @@
 import Image from "next/image"
 import Link from "next/link"
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react"
-import { Elements, PaymentElement, useElements, useStripe } from "@stripe/react-stripe-js"
+import {
+  CheckoutProvider,
+  ExpressCheckoutElement,
+  PaymentElement,
+  useCheckout,
+} from "@stripe/react-stripe-js/checkout"
 import {
   loadStripe,
-  type PaymentIntentResult,
-  type StripePaymentElementOptions,
+  type StripeCheckoutExpressCheckoutElementOptions,
+  type StripeCheckoutPaymentElementOptions,
+  type StripeExpressCheckoutElementConfirmEvent,
+  type StripeExpressCheckoutElementReadyEvent,
 } from "@stripe/stripe-js"
 import { motion, useReducedMotion, type Variants } from "framer-motion"
 import { ArrowLeft, Gift, Heart, ShieldCheck, Sparkles, Stethoscope } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
-interface PaymentIntentResponse {
+interface CheckoutSessionResponse {
   clientSecret?: string
   error?: string
 }
 
-interface PaymentFormProps {
+interface CheckoutFormProps {
   amountLabel: string
+  donorEmail: string
 }
 
 const PRESET_AMOUNTS: readonly number[] = [25, 50, 100, 250]
@@ -29,10 +37,11 @@ const donationCtaClassName =
   "h-12 w-full rounded-2xl border border-[#2f6272] bg-[#42a8a9] text-base font-bold text-white shadow-[0_16px_26px_rgba(34,59,84,0.28)] transition-[background-color,transform,box-shadow] duration-200 hover:-translate-y-0.5 hover:bg-[#369799]"
 const amountOptionBaseClass =
   "h-11 rounded-2xl border text-sm font-bold touch-manipulation transition-[background-color,border-color,color,transform,box-shadow] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2f6272] focus-visible:ring-offset-2 sm:text-base"
-const amountOptionSelectedClass = "border-[#2f6272] bg-[#42a8a9] text-white shadow-[0_12px_20px_rgba(34,59,84,0.22)]"
+const amountOptionSelectedClass =
+  "border-[#2f6272] bg-[#42a8a9] text-white shadow-[0_12px_20px_rgba(34,59,84,0.22)]"
 const amountOptionDefaultClass =
   "border-[#a8c4d8] bg-white/90 text-[#223b54] hover:-translate-y-0.5 hover:border-[#42a8a9] hover:bg-white"
-const paymentElementOptions: StripePaymentElementOptions = {
+const paymentElementOptions: StripeCheckoutPaymentElementOptions = {
   layout: {
     type: "accordion",
     defaultCollapsed: false,
@@ -42,6 +51,31 @@ const paymentElementOptions: StripePaymentElementOptions = {
     applePay: "auto",
     googlePay: "auto",
     link: "auto",
+  },
+}
+const expressCheckoutOptions: StripeCheckoutExpressCheckoutElementOptions = {
+  buttonHeight: 50,
+  buttonTheme: {
+    applePay: "black",
+    googlePay: "black",
+  },
+  buttonType: {
+    applePay: "donate",
+    googlePay: "donate",
+  },
+  layout: {
+    maxColumns: 2,
+    maxRows: 2,
+    overflow: "auto",
+  },
+  paymentMethodOrder: ["apple_pay", "google_pay", "link"],
+  paymentMethods: {
+    amazonPay: "never",
+    applePay: "always",
+    googlePay: "always",
+    klarna: "never",
+    link: "auto",
+    paypal: "never",
   },
 }
 
@@ -56,10 +90,15 @@ function getAmountOptionClassName(isSelected: boolean): string {
   return `${amountOptionBaseClass} ${isSelected ? amountOptionSelectedClass : amountOptionDefaultClass}`
 }
 
+function isValidEmail(email: string): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+}
+
 const impactHighlights = [
   {
     title: "Emergency Care",
-    description: "Supports the CHOP teams that relieved pressure and stabilized Nate when hydrocephalus was discovered.",
+    description:
+      "Supports the CHOP teams that relieved pressure and stabilized Nate when hydrocephalus was discovered.",
     icon: Stethoscope,
     color: "#d9ecf8",
   },
@@ -71,7 +110,8 @@ const impactHighlights = [
   },
   {
     title: "Family Support",
-    description: "Honors the doctors, nurses, staff, family, and friends who carry families through hard moments.",
+    description:
+      "Honors the doctors, nurses, staff, family, and friends who carry families through hard moments.",
     icon: Heart,
     color: "#e4f3ff",
   },
@@ -102,85 +142,121 @@ const revealChildVariants: Variants = {
   },
 }
 
-function PaymentForm({ amountLabel }: PaymentFormProps) {
-  const stripe = useStripe()
-  const elements = useElements()
+function CheckoutForm({ amountLabel, donorEmail }: CheckoutFormProps) {
+  const checkoutState = useCheckout()
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
   const [errorMessage, setErrorMessage] = useState<string>("")
+  const [walletsAvailable, setWalletsAvailable] = useState<boolean>(false)
 
-  async function confirmDonationPayment(): Promise<PaymentIntentResult | null> {
-    if (!stripe || !elements) {
-      return null
+  async function confirmDonationPayment(
+    expressCheckoutConfirmEvent?: StripeExpressCheckoutElementConfirmEvent,
+  ): Promise<void> {
+    if (checkoutState.type === "loading" || isSubmitting) {
+      return
     }
 
-    const returnUrl = `${window.location.origin}/donate/return`
-
-    return stripe.confirmPayment({
-      elements,
-      confirmParams: {
-        return_url: returnUrl,
-      },
-      redirect: "if_required",
-    })
-  }
-
-  async function handleSubmit(event: FormEvent<HTMLFormElement>): Promise<void> {
-    event.preventDefault()
-
-    if (!stripe || !elements || isSubmitting) {
+    if (checkoutState.type === "error") {
+      setErrorMessage(checkoutState.error.message || "Unable to load Stripe checkout.")
       return
     }
 
     setIsSubmitting(true)
     setErrorMessage("")
 
-    const result = await confirmDonationPayment()
-    if (!result) {
-      setErrorMessage("Payment is still loading. Please try again.")
+    const confirmResult = await checkoutState.checkout.confirm({
+      email: donorEmail,
+      expressCheckoutConfirmEvent,
+      redirect: "if_required",
+      returnUrl: `${window.location.origin}/donate/return?session_id={CHECKOUT_SESSION_ID}`,
+    })
+
+    if (confirmResult.type === "error") {
+      setErrorMessage(
+        confirmResult.error.message ?? "Unable to complete donation. Check payment details and try again.",
+      )
       setIsSubmitting(false)
       return
     }
 
-    if (result.error) {
-      setErrorMessage(result.error.message ?? "Unable to complete donation. Check payment details and try again.")
-      setIsSubmitting(false)
-      return
-    }
-
-    if (result.paymentIntent?.id) {
-      window.location.assign(`/donate/return?payment_intent=${result.paymentIntent.id}`)
-      return
-    }
-
-    setIsSubmitting(false)
+    window.location.assign(`/donate/return?session_id=${confirmResult.session.id}`)
   }
+
+  function handleSubmit(event: FormEvent<HTMLFormElement>): void {
+    event.preventDefault()
+    void confirmDonationPayment()
+  }
+
+  function handleExpressCheckoutConfirm(event: StripeExpressCheckoutElementConfirmEvent): void {
+    void confirmDonationPayment(event)
+  }
+
+  function handleExpressCheckoutReady(event: StripeExpressCheckoutElementReadyEvent): void {
+    const availablePaymentMethods = event.availablePaymentMethods
+    const hasWallets = availablePaymentMethods
+      ? Object.values(availablePaymentMethods).some(Boolean)
+      : false
+
+    setWalletsAvailable(hasWallets)
+  }
+
+  const canSubmit =
+    checkoutState.type === "success" &&
+    checkoutState.checkout.canConfirm &&
+    !isSubmitting
+
+  const checkoutError =
+    checkoutState.type === "success" ? checkoutState.checkout.lastPaymentError?.message ?? "" : ""
+
+  const combinedErrorMessage = errorMessage || checkoutError
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
-      <div className="rounded-[1.25rem] border border-[#9fc5d8] bg-white/92 p-4 shadow-[0_14px_30px_rgba(34,59,84,0.16)] sm:p-5">
-        <p className="mb-4 rounded-xl border border-[#b8d5e5] bg-[#edf7fd] px-3 py-2 text-center text-sm font-semibold text-[#2d5f79]">
-          Fastest checkout options appear first: Apple Pay, Google Pay, and Link
-        </p>
+      <div className="space-y-4 rounded-[1.25rem] border border-[#9fc5d8] bg-white/92 p-4 shadow-[0_14px_30px_rgba(34,59,84,0.16)] sm:p-5">
+        <div className="rounded-xl border border-[#b8d5e5] bg-[#edf7fd] px-3 py-2 text-center text-sm font-semibold text-[#2d5f79]">
+          Stripe Checkout is handling the secure payment flow for this donation.
+        </div>
+
+        <div className="space-y-3">
+          <div className="flex items-center justify-between gap-3">
+            <p className="text-sm font-semibold text-[#223b54]">Faster checkout</p>
+            <span className="text-xs font-medium uppercase tracking-[0.12em] text-[#58748a]">
+              Apple Pay, Google Pay, Link
+            </span>
+          </div>
+
+          <ExpressCheckoutElement
+            options={expressCheckoutOptions}
+            onConfirm={handleExpressCheckoutConfirm}
+            onReady={handleExpressCheckoutReady}
+          />
+
+          {walletsAvailable ? (
+            <p className="text-center text-xs font-medium text-[#58748a]">
+              One-tap wallet buttons appear automatically when the browser and device support them.
+            </p>
+          ) : null}
+        </div>
+
+        <div className="flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.14em] text-[#6a8396]">
+          <span className="h-px flex-1 bg-[#c8dae6]" />
+          Or pay with card
+          <span className="h-px flex-1 bg-[#c8dae6]" />
+        </div>
 
         <PaymentElement options={paymentElementOptions} />
       </div>
 
-      {errorMessage ? (
+      {combinedErrorMessage ? (
         <div
           className="rounded-xl border border-[#9bbacc] bg-[#edf6fb] px-3 py-2 text-sm font-medium text-[#223b54]"
           role="status"
           aria-live="polite"
         >
-          {errorMessage}
+          {combinedErrorMessage}
         </div>
       ) : null}
 
-      <Button
-        type="submit"
-        size="lg"
-        className={donationCtaClassName}
-        disabled={!stripe || isSubmitting}
-      >
+      <Button type="submit" size="lg" className={donationCtaClassName} disabled={!canSubmit}>
         {isSubmitting ? "Processing Donation…" : `Donate ${amountLabel}`}
       </Button>
     </form>
@@ -191,10 +267,12 @@ export default function DonatePage() {
   const [amountSelectionMode, setAmountSelectionMode] = useState<"preset" | "custom">("preset")
   const [selectedPreset, setSelectedPreset] = useState<number>(50)
   const [customAmountInput, setCustomAmountInput] = useState<string>("")
-  const [clientSecret, setClientSecret] = useState<string>("")
-  const [isCreatingIntent, setIsCreatingIntent] = useState<boolean>(false)
+  const [donorEmail, setDonorEmail] = useState<string>("")
+  const [checkoutClientSecret, setCheckoutClientSecret] = useState<string>("")
+  const [isCreatingSession, setIsCreatingSession] = useState<boolean>(false)
   const [errorMessage, setErrorMessage] = useState<string>("")
   const customAmountInputRef = useRef<HTMLInputElement>(null)
+  const donorEmailInputRef = useRef<HTMLInputElement>(null)
   const prefersReducedMotion = useReducedMotion()
 
   const donationAmountInDollars = useMemo(() => {
@@ -226,50 +304,54 @@ export default function DonatePage() {
     if (donationAmountInDollars === null) {
       return "Amount"
     }
+
     return formatUsd(donationAmountInDollars)
   }, [donationAmountInDollars])
 
-  const elementsOptions = useMemo(
+  const checkoutOptions = useMemo(
     () => ({
-      clientSecret,
-      appearance: {
-        theme: "stripe" as const,
-        variables: {
-          fontFamily: "Work Sans, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif",
-          colorPrimary: "#42a8a9",
-          colorBackground: "#f7fbff",
-          colorText: "#223b54",
-          colorDanger: "#dc2626",
-          borderRadius: "14px",
-          spacingUnit: "4px",
-        },
-        rules: {
-          ".Input": {
-            border: "1px solid #9bb7cc",
-            boxShadow: "none",
-            backgroundColor: "#fff",
+      clientSecret: checkoutClientSecret,
+      defaultValues: donorEmail ? { email: donorEmail } : undefined,
+      elementsOptions: {
+        appearance: {
+          theme: "stripe" as const,
+          variables: {
+            fontFamily: "Work Sans, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif",
+            colorPrimary: "#42a8a9",
+            colorBackground: "#f7fbff",
+            colorText: "#223b54",
+            colorDanger: "#dc2626",
+            borderRadius: "14px",
+            spacingUnit: "4px",
           },
-          ".Input:focus": {
-            border: "1px solid #42a8a9",
-            boxShadow: "0 0 0 3px rgba(66,168,169,0.25)",
-          },
-          ".Label": {
-            color: "#223b54",
-            fontWeight: "600",
+          rules: {
+            ".Input": {
+              border: "1px solid #9bb7cc",
+              boxShadow: "none",
+              backgroundColor: "#fff",
+            },
+            ".Input:focus": {
+              border: "1px solid #42a8a9",
+              boxShadow: "0 0 0 3px rgba(66,168,169,0.25)",
+            },
+            ".Label": {
+              color: "#223b54",
+              fontWeight: "600",
+            },
           },
         },
       },
     }),
-    [clientSecret],
+    [checkoutClientSecret, donorEmail],
   )
 
-  function resetPaymentState(): void {
-    setClientSecret("")
+  function resetCheckoutState(): void {
+    setCheckoutClientSecret("")
     setErrorMessage("")
   }
 
   useEffect(() => {
-    const hasUnsavedDonationState = Boolean(clientSecret || customAmountInput.trim())
+    const hasUnsavedDonationState = Boolean(checkoutClientSecret || customAmountInput.trim() || donorEmail.trim())
     if (!hasUnsavedDonationState) {
       return
     }
@@ -283,12 +365,18 @@ export default function DonatePage() {
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload)
     }
-  }, [clientSecret, customAmountInput])
+  }, [checkoutClientSecret, customAmountInput, donorEmail])
 
-  async function initializePaymentIntent(): Promise<void> {
+  async function initializeCheckoutSession(): Promise<void> {
     if (donationAmountInCents === null || donationAmountInCents < 100) {
       setErrorMessage("Please enter a valid donation amount (minimum $1.00).")
       customAmountInputRef.current?.focus()
+      return
+    }
+
+    if (!isValidEmail(donorEmail.trim())) {
+      setErrorMessage("Enter a valid email so Stripe can attach it to your donation checkout.")
+      donorEmailInputRef.current?.focus()
       return
     }
 
@@ -297,31 +385,34 @@ export default function DonatePage() {
       return
     }
 
-    setIsCreatingIntent(true)
+    setIsCreatingSession(true)
     setErrorMessage("")
 
     try {
-      const response = await fetch("/api/stripe/payment-intent", {
+      const response = await fetch("/api/stripe/checkout-session", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ amountInCents: donationAmountInCents }),
+        body: JSON.stringify({
+          amountInCents: donationAmountInCents,
+          email: donorEmail.trim(),
+        }),
       })
 
-      const payload = (await response.json()) as PaymentIntentResponse
+      const payload = (await response.json()) as CheckoutSessionResponse
 
       if (!response.ok || !payload.clientSecret) {
-        setErrorMessage(payload.error ?? "Unable to initialize payment. Please try again.")
-        setIsCreatingIntent(false)
+        setErrorMessage(payload.error ?? "Unable to initialize checkout. Please try again.")
+        setIsCreatingSession(false)
         return
       }
 
-      setClientSecret(payload.clientSecret)
-      setIsCreatingIntent(false)
+      setCheckoutClientSecret(payload.clientSecret)
+      setIsCreatingSession(false)
     } catch {
-      setErrorMessage("Unable to initialize payment. Please try again.")
-      setIsCreatingIntent(false)
+      setErrorMessage("Unable to initialize checkout. Please try again.")
+      setIsCreatingSession(false)
     }
   }
 
@@ -398,9 +489,9 @@ export default function DonatePage() {
               </h1>
 
               <p className="mt-4 max-w-xl text-base text-[#314c65] sm:text-lg">
-                Nate was born on May 2, 2025. In late June, vomiting and unusual sleepiness led to an emergency CHOP visit,
-                where doctors found hydrocephalus caused by a rare choroid plexus tumor. After multiple surgeries, he underwent
-                gross total resection on January 2, 2026.
+                Nate was born on May 2, 2025. In late June, vomiting and unusual sleepiness led to an emergency CHOP
+                visit, where doctors found hydrocephalus caused by a rare choroid plexus tumor. After multiple
+                surgeries, he underwent gross total resection on January 2, 2026.
               </p>
             </div>
 
@@ -449,8 +540,9 @@ export default function DonatePage() {
               <div className="min-w-0">
                 <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#2d7088]">From Our Family</p>
                 <p className="mt-1 text-sm text-[#314d66]">
-                  We can never fully thank CHOP&apos;s neurosurgery and neuro-oncology teams, or all of the doctors, nurses, and
-                  staff who cared for Nate and us. Sharing his story honors that care and helps fund research for the next child.
+                  We can never fully thank CHOP&apos;s neurosurgery and neuro-oncology teams, or all of the doctors,
+                  nurses, and staff who cared for Nate and us. Sharing his story honors that care and helps fund
+                  research for the next child.
                 </p>
               </div>
             </div>
@@ -467,7 +559,7 @@ export default function DonatePage() {
             <div className="relative">
               <h2 className="text-balance text-3xl leading-tight text-[#1d344d] sm:text-4xl">Make a Donation</h2>
               <p className="mt-2 text-sm text-[#526a7f] sm:text-base">
-                Choose an amount, then checkout with Apple Pay, Google Pay, Link, or card.
+                Choose an amount, add your email, then checkout with Apple Pay, Google Pay, Link, or card.
               </p>
 
               <section className="mt-5 space-y-4">
@@ -482,7 +574,7 @@ export default function DonatePage() {
                         onClick={() => {
                           setAmountSelectionMode("preset")
                           setSelectedPreset(amount)
-                          resetPaymentState()
+                          resetCheckoutState()
                         }}
                         className={getAmountOptionClassName(isSelected)}
                       >
@@ -495,7 +587,7 @@ export default function DonatePage() {
                     type="button"
                     onClick={() => {
                       setAmountSelectionMode("custom")
-                      resetPaymentState()
+                      resetCheckoutState()
                     }}
                     className={getAmountOptionClassName(amountSelectionMode === "custom")}
                   >
@@ -512,7 +604,9 @@ export default function DonatePage() {
                       Custom amount
                     </label>
                     <div className="relative">
-                      <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#557189]">$</span>
+                      <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#557189]">
+                        $
+                      </span>
                       <input
                         ref={customAmountInputRef}
                         id="custom-amount"
@@ -529,13 +623,39 @@ export default function DonatePage() {
                         value={customAmountInput}
                         onChange={(event) => {
                           setCustomAmountInput(event.target.value)
-                          resetPaymentState()
+                          resetCheckoutState()
                         }}
                         className="h-12 w-full rounded-2xl border border-[#a9c3d5] bg-white pl-8 pr-3 text-base text-[#223b54] shadow-sm outline-none transition-[border-color,box-shadow] duration-200 focus:border-[#42a8a9] focus:ring-4 focus:ring-[#d6ecec]"
                       />
                     </div>
                   </div>
                 ) : null}
+
+                <div className="space-y-2 text-left">
+                  <label
+                    htmlFor="donor-email"
+                    className="text-xs font-bold uppercase tracking-[0.14em] text-[#2b617a]"
+                  >
+                    Email for donation confirmation
+                  </label>
+                  <input
+                    ref={donorEmailInputRef}
+                    id="donor-email"
+                    name="email"
+                    type="email"
+                    inputMode="email"
+                    autoComplete="email"
+                    placeholder="you@example.com"
+                    aria-describedby={errorMessage ? "donation-form-error" : undefined}
+                    aria-invalid={errorMessage ? "true" : "false"}
+                    value={donorEmail}
+                    onChange={(event) => {
+                      setDonorEmail(event.target.value)
+                      resetCheckoutState()
+                    }}
+                    className="h-12 w-full rounded-2xl border border-[#a9c3d5] bg-white px-4 text-base text-[#223b54] shadow-sm outline-none transition-[border-color,box-shadow] duration-200 focus:border-[#42a8a9] focus:ring-4 focus:ring-[#d6ecec]"
+                  />
+                </div>
               </section>
 
               <div className="mt-5 rounded-2xl border border-[#b8cfde] bg-[#eef6fb] px-4 py-3 text-[#1f344a]">
@@ -546,11 +666,11 @@ export default function DonatePage() {
                 <ul className="mt-3 space-y-2 border-t border-[#c7d8e4] pt-3 text-left text-sm text-[#4f667b]">
                   <li className="flex items-start gap-2">
                     <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-[#2f5c7b]" aria-hidden="true" />
-                    Secure checkout with Stripe wallets and cards.
+                    Secure checkout powered by Stripe Checkout components.
                   </li>
                   <li className="flex items-start gap-2">
                     <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-[#42a8a9]" aria-hidden="true" />
-                    A receipt is sent immediately after payment.
+                    Wallet buttons show automatically when your device and browser support them.
                   </li>
                 </ul>
               </div>
@@ -567,27 +687,29 @@ export default function DonatePage() {
               ) : null}
 
               <div className="mt-4">
-                {!clientSecret ? (
+                {!checkoutClientSecret ? (
                   <Button
                     type="button"
                     size="lg"
                     className={donationCtaClassName}
-                    onClick={initializePaymentIntent}
-                    disabled={isCreatingIntent}
+                    onClick={() => {
+                      void initializeCheckoutSession()
+                    }}
+                    disabled={isCreatingSession}
                   >
-                    {isCreatingIntent ? "Preparing Payment…" : "Continue to Payment"}
+                    {isCreatingSession ? "Preparing Checkout…" : "Continue to Secure Checkout"}
                   </Button>
                 ) : (
                   <div className="space-y-4">
-                    <Elements stripe={stripePromise} options={elementsOptions}>
-                      <PaymentForm amountLabel={amountLabel} />
-                    </Elements>
+                    <CheckoutProvider stripe={stripePromise} options={checkoutOptions}>
+                      <CheckoutForm amountLabel={amountLabel} donorEmail={donorEmail.trim()} />
+                    </CheckoutProvider>
                     <button
                       type="button"
-                      onClick={resetPaymentState}
+                      onClick={resetCheckoutState}
                       className="w-full text-center text-sm font-semibold text-[#4f667b] underline-offset-4 transition-colors duration-200 hover:text-[#223b54] hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2f6272] focus-visible:ring-offset-2"
                     >
-                      Change Donation Amount
+                      Change Donation Details
                     </button>
                   </div>
                 )}
