@@ -72,9 +72,12 @@ export function NatesStory() {
                 </Badge>
               </div>
               <p className="text-muted-foreground md:text-lg/relaxed text-center sm:text-left">
-                In just a few short months of life, our son Nate has already touched more hearts than we can count. His smile truly lights up every room.
+                Nate was born on May 2, 2025. In late June, he began vomiting and became unusually sleepy, changes that set off
+                alarms for us that something was wrong.
                 <br /><br />
-                But our world changed when Nate was diagnosed with a rare brain tumor. Since that day, he has shown more bravery than most do in a lifetime.
+                We brought him to Children&apos;s Hospital of Philadelphia (CHOP) emergency room, where imaging showed
+                hydrocephalus caused by a rare choroid plexus tumor. Within hours, the neurosurgery team had a plan to relieve
+                pressure and stabilize him.
               </p>
             </motion.div>
 
@@ -92,9 +95,11 @@ export function NatesStory() {
                 </Badge>
               </div>
               <p className="text-muted-foreground md:text-lg/relaxed text-center sm:text-left">
-                Enduring surgeries and long hospital stays with incredible strength, he is, without a doubt, our hero. We are endlessly grateful for the incredible team at Children&apos;s Hospital of Philadelphia.
+                Over the next week, he underwent three surgeries, including an EVD placement and biopsy.
                 <br /><br />
-                From his neurosurgeons and oncologists to the nurses, therapists, and social workers, every single person has played a role in supporting Nate and our family.
+                Because of Nate&apos;s young age, tiny body weight, and the vascular nature of the tumor, the neurosurgery team
+                determined that complete resection was not safe at that time. Instead, he underwent another surgery to place a
+                shunt that controlled the hydrocephalus, and we were able to bring him home and give him time to grow.
               </p>
             </motion.div>
 
@@ -112,9 +117,19 @@ export function NatesStory() {
                 </Badge>
               </div>
               <p className="text-muted-foreground md:text-lg/relaxed text-center sm:text-left">
-                While Nate has a long road ahead, he is doing well. Every donation helps fund the critical research, clinical trials, and compassionate care that gives children like him a fighting chance.
+                Fast forward 6 months, Nate was bigger and stronger and ready for surgery to remove the tumor completely. On
+                January 2, 2026, his neurosurgeon completed a gross total resection.
                 <br /><br />
-                Thank you for supporting our &apos;Nate the Great&apos; and the amazing work being done at CHOP.
+                Recovery brought its own challenges, including placing another shunt that will likely be there for life, but Nate
+                did amazing. He is now nearly 10 months old, at home, crawling and pulling himself up, and is the happiest kid in
+                the room.
+                <br /><br />
+                We will never be able to truly convey the gratitude we have for CHOP&apos;s neurosurgery and neuro-oncology teams,
+                as well as all of the doctors, nurses, and staff that took care of him and us on this journey. We also will never
+                be able to thank our family and friends enough who were there for us during the hardest of times.
+                <br /><br />
+                Sharing Nate&apos;s story is our way of honoring the care that saved him, helping other families spot concerning
+                signs sooner, and raising money to fund research so that treatments exist for the next child who needs them.
               </p>
             </motion.div>
 
@@ -152,7 +167,7 @@ export function NatesStory() {
                           Read Nate&apos;s Full Story
                         </h3>
                         <p className="text-muted-foreground text-sm md:text-base">
-                          Discover our family&apos;s experience with Nate and his journey of strength beyond his seven weeks
+                          Read about Nate&apos;s diagnosis, surgeries, recovery, and the care team that helped save his life.
                         </p>
                       </div>
                       

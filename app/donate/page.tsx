@@ -42,20 +42,20 @@ function getAmountOptionClassName(isSelected: boolean): string {
 
 const impactHighlights = [
   {
-    title: "Critical Care",
-    description: "Helps provide specialized pediatric care for children fighting brain tumors.",
+    title: "Emergency Care",
+    description: "Supports the CHOP teams that relieved pressure and stabilized Nate when hydrocephalus was discovered.",
     icon: Stethoscope,
     color: "#d9ecf8",
   },
   {
-    title: "Research",
-    description: "Accelerates research projects that improve treatment outcomes at CHOP.",
+    title: "Treatment Access",
+    description: "Funds research so treatment options exist for the next child who needs them.",
     icon: Sparkles,
     color: "#d7f1f1",
   },
   {
     title: "Family Support",
-    description: "Supports families with resources and compassionate care during treatment.",
+    description: "Honors the doctors, nurses, staff, family, and friends who carry families through hard moments.",
     icon: Heart,
     color: "#e4f3ff",
   },
@@ -360,12 +360,13 @@ export default function DonatePage() {
               </p>
 
               <h1 className="mt-4 max-w-[14ch] text-balance text-4xl leading-[1.04] text-[#1d344d] sm:text-6xl">
-                Help Nate Turn Courage Into Cures
+                Help Nate Fight Childhood Cancer
               </h1>
 
               <p className="mt-4 max-w-xl text-base text-[#314c65] sm:text-lg">
-                Your donation fuels pediatric cancer research, better treatment options, and family support services
-                at Children&apos;s Hospital of Philadelphia.
+                Nate was born on May 2, 2025. In late June, vomiting and unusual sleepiness led to an emergency CHOP visit,
+                where doctors found hydrocephalus caused by a rare choroid plexus tumor. After multiple surgeries, he underwent
+                gross total resection on January 2, 2026.
               </p>
             </div>
 
@@ -412,9 +413,10 @@ export default function DonatePage() {
               />
 
               <div className="min-w-0">
-                <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#2d7088]">Nate the Great Fund</p>
+                <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#2d7088]">From Our Family</p>
                 <p className="mt-1 text-sm text-[#314d66]">
-                  Every gift, big or small, powers hope for children like Nate and families facing childhood cancer.
+                  We can never fully thank CHOP&apos;s neurosurgery and neuro-oncology teams, or all of the doctors, nurses, and
+                  staff who cared for Nate and us. Sharing his story honors that care and helps fund research for the next child.
                 </p>
               </div>
             </div>

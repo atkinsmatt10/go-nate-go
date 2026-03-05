@@ -105,7 +105,8 @@ export function FundraisingProgress() {
           <div className="space-y-2">
             <h2 className="text-4xl font-bold tracking-tighter sm:text-5xl text-foreground">Help Us Reach Our Goal</h2>
             <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-              All proceeds from shirt sales and donations go directly to cancer research at CHOP.
+              We are raising money to honor the care that saved Nate, help families spot concerning signs sooner, and fund
+              research so that better treatments exist for the next child who needs them.
             </p>
           </div>
           <div className="w-full max-w-2xl space-y-4">
