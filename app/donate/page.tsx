@@ -14,7 +14,6 @@ import {
   type StripeCheckoutExpressCheckoutElementOptions,
   type StripeCheckoutPaymentElementOptions,
   type StripeExpressCheckoutElementConfirmEvent,
-  type StripeExpressCheckoutElementReadyEvent,
 } from "@stripe/stripe-js"
 import { motion, useReducedMotion, type Variants } from "framer-motion"
 import { ArrowLeft, Gift, Heart, ShieldCheck, Sparkles, Stethoscope } from "lucide-react"
@@ -146,7 +145,6 @@ function CheckoutForm({ amountLabel, donorEmail }: CheckoutFormProps) {
   const checkoutState = useCheckout()
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
   const [errorMessage, setErrorMessage] = useState<string>("")
-  const [walletsAvailable, setWalletsAvailable] = useState<boolean>(false)
 
   async function confirmDonationPayment(
     expressCheckoutConfirmEvent?: StripeExpressCheckoutElementConfirmEvent,
@@ -190,15 +188,6 @@ function CheckoutForm({ amountLabel, donorEmail }: CheckoutFormProps) {
     void confirmDonationPayment(event)
   }
 
-  function handleExpressCheckoutReady(event: StripeExpressCheckoutElementReadyEvent): void {
-    const availablePaymentMethods = event.availablePaymentMethods
-    const hasWallets = availablePaymentMethods
-      ? Object.values(availablePaymentMethods).some(Boolean)
-      : false
-
-    setWalletsAvailable(hasWallets)
-  }
-
   const canSubmit =
     checkoutState.type === "success" &&
     checkoutState.checkout.canConfirm &&
@@ -212,30 +201,10 @@ function CheckoutForm({ amountLabel, donorEmail }: CheckoutFormProps) {
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
       <div className="space-y-4 rounded-[1.25rem] border border-[#9fc5d8] bg-white/92 p-4 shadow-[0_14px_30px_rgba(34,59,84,0.16)] sm:p-5">
-        <div className="rounded-xl border border-[#b8d5e5] bg-[#edf7fd] px-3 py-2 text-center text-sm font-semibold text-[#2d5f79]">
-          Stripe Checkout is handling the secure payment flow for this donation.
-        </div>
-
-        <div className="space-y-3">
-          <div className="flex items-center justify-between gap-3">
-            <p className="text-sm font-semibold text-[#223b54]">Faster checkout</p>
-            <span className="text-xs font-medium uppercase tracking-[0.12em] text-[#58748a]">
-              Apple Pay, Google Pay, Link
-            </span>
-          </div>
-
-          <ExpressCheckoutElement
-            options={expressCheckoutOptions}
-            onConfirm={handleExpressCheckoutConfirm}
-            onReady={handleExpressCheckoutReady}
-          />
-
-          {walletsAvailable ? (
-            <p className="text-center text-xs font-medium text-[#58748a]">
-              One-tap wallet buttons appear automatically when the browser and device support them.
-            </p>
-          ) : null}
-        </div>
+        <ExpressCheckoutElement
+          options={expressCheckoutOptions}
+          onConfirm={handleExpressCheckoutConfirm}
+        />
 
         <div className="flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.14em] text-[#6a8396]">
           <span className="h-px flex-1 bg-[#c8dae6]" />
