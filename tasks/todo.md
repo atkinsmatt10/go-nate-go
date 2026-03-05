@@ -43,3 +43,23 @@
 - API verification: `GET /api/stripe/payment-intent?payment_intent=pi_3T7bx76sv3pYqwb3025ori4V` returned `status: succeeded`.
 - Direct Stripe API verification (test secret key): `paymentIntents.retrieve("pi_3T7bx76sv3pYqwb3025ori4V")` returned `status: succeeded`, `amount: 5000`, `currency: usd`.
 - Artifacts: `/tmp/stripe-playwright-before-submit.png`, `/tmp/stripe-playwright-return.png`.
+
+# Donations Wallet Optimization Plan
+
+## Tasks
+- [x] Add Stripe Express Checkout (Apple Pay, Google Pay, Link) above the existing Payment Element on `/donate`
+- [x] Keep the current PaymentIntent + PaymentElement fallback flow intact for unsupported devices/browsers
+- [x] Improve wallet visibility and guidance text to make one-tap payment options obvious
+- [x] Run validation checks for touched TypeScript (`pnpm lint`, `pnpm exec tsc --noEmit`)
+- [x] Record review/results and launch prerequisites (dashboard/payment method domain setup)
+
+## Review / Results
+- `pnpm lint`: passed
+- `pnpm exec tsc --noEmit`: passed
+- Added `ExpressCheckoutElement` with wallet-first ordering and donation-specific button types (`apple_pay`, `google_pay`, `link`) before the card form.
+- Preserved fallback behavior: if wallets are unavailable or fail to load, the standard `PaymentElement` checkout remains available.
+- Updated donation copy to explicitly call out Apple Pay, Google Pay, Link, and card options.
+- Launch prerequisites:
+- Enable Apple Pay, Google Pay, and Link in Stripe Dashboard payment method settings.
+- Add production domain in Stripe Payment Method Domains (required for Apple Pay on web and recommended for wallet reliability).
+- Serve checkout over HTTPS in production; wallet availability depends on browser/device capability.
