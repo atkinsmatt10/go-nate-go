@@ -49,6 +49,7 @@ export async function POST(request: Request) {
       automatic_payment_methods: {
         enabled: true,
       },
+      excluded_payment_method_types: ["amazon_pay"],
       metadata: {
         campaign: "nate-the-great",
         type: "donation",

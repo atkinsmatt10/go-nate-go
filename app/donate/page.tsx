@@ -61,7 +61,12 @@ const paymentElementOptions: StripePaymentElementOptions = {
     type: "accordion",
     defaultCollapsed: false,
   },
-  paymentMethodOrder: ["link", "card"],
+  paymentMethodOrder: ["card"],
+  wallets: {
+    applePay: "never",
+    googlePay: "never",
+    link: "never",
+  },
 }
 
 function formatUsd(amountInDollars: number): string {
@@ -237,6 +242,9 @@ function PaymentForm({ amountLabel }: PaymentFormProps) {
       <div className="rounded-[1.25rem] border border-[#9fc5d8] bg-white/92 p-4 shadow-[0_14px_30px_rgba(34,59,84,0.16)] sm:p-5">
         {hasExpressCheckoutWallets !== false ? (
           <div className="space-y-4">
+            <p className="rounded-xl border border-[#b8d5e5] bg-[#edf7fd] px-3 py-2 text-center text-sm font-semibold text-[#2d5f79]">
+              Fastest checkout: Apple Pay, Google Pay, or Link
+            </p>
             <ExpressCheckoutElement
               options={expressCheckoutOptions}
               onReady={handleExpressCheckoutReady}
@@ -247,7 +255,7 @@ function PaymentForm({ amountLabel }: PaymentFormProps) {
             />
             <div className="flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.12em] text-[#4f667b]">
               <span className="h-px flex-1 bg-[#c7d8e4]" aria-hidden="true" />
-              <span>Or Continue with Secure Card Checkout</span>
+              <span>Or Continue with Card Checkout</span>
               <span className="h-px flex-1 bg-[#c7d8e4]" aria-hidden="true" />
             </div>
           </div>
