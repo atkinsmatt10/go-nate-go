@@ -3,13 +3,10 @@
 import Image from "next/image"
 import Link from "next/link"
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react"
-import { Elements, ExpressCheckoutElement, PaymentElement, useElements, useStripe } from "@stripe/react-stripe-js"
+import { Elements, PaymentElement, useElements, useStripe } from "@stripe/react-stripe-js"
 import {
   loadStripe,
   type PaymentIntentResult,
-  type StripeExpressCheckoutElementConfirmEvent,
-  type StripeExpressCheckoutElementOptions,
-  type StripeExpressCheckoutElementReadyEvent,
   type StripePaymentElementOptions,
 } from "@stripe/stripe-js"
 import { motion, useReducedMotion, type Variants } from "framer-motion"
@@ -35,37 +32,16 @@ const amountOptionBaseClass =
 const amountOptionSelectedClass = "border-[#2f6272] bg-[#42a8a9] text-white shadow-[0_12px_20px_rgba(34,59,84,0.22)]"
 const amountOptionDefaultClass =
   "border-[#a8c4d8] bg-white/90 text-[#223b54] hover:-translate-y-0.5 hover:border-[#42a8a9] hover:bg-white"
-const expressCheckoutOptions: StripeExpressCheckoutElementOptions = {
-  buttonHeight: 48,
-  buttonType: {
-    applePay: "donate",
-    googlePay: "donate",
-  },
-  layout: {
-    maxColumns: 1,
-    maxRows: 3,
-    overflow: "never",
-  },
-  paymentMethodOrder: ["apple_pay", "google_pay", "link"],
-  paymentMethods: {
-    amazonPay: "never",
-    applePay: "always",
-    googlePay: "always",
-    klarna: "never",
-    link: "auto",
-    paypal: "never",
-  },
-}
 const paymentElementOptions: StripePaymentElementOptions = {
   layout: {
     type: "accordion",
     defaultCollapsed: false,
   },
-  paymentMethodOrder: ["card"],
+  paymentMethodOrder: ["apple_pay", "google_pay", "link", "card"],
   wallets: {
-    applePay: "never",
-    googlePay: "never",
-    link: "never",
+    applePay: "auto",
+    googlePay: "auto",
+    link: "auto",
   },
 }
 
@@ -131,7 +107,6 @@ function PaymentForm({ amountLabel }: PaymentFormProps) {
   const elements = useElements()
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
   const [errorMessage, setErrorMessage] = useState<string>("")
-  const [hasExpressCheckoutWallets, setHasExpressCheckoutWallets] = useState<boolean | null>(null)
 
   async function confirmDonationPayment(): Promise<PaymentIntentResult | null> {
     if (!stripe || !elements) {
@@ -180,90 +155,12 @@ function PaymentForm({ amountLabel }: PaymentFormProps) {
     setIsSubmitting(false)
   }
 
-  function handleExpressCheckoutReady(event: StripeExpressCheckoutElementReadyEvent): void {
-    const availablePaymentMethods = event.availablePaymentMethods
-    const hasAvailablePaymentMethods =
-      availablePaymentMethods?.applePay === true ||
-      availablePaymentMethods?.googlePay === true ||
-      availablePaymentMethods?.link === true
-
-    setHasExpressCheckoutWallets(hasAvailablePaymentMethods)
-  }
-
-  async function handleExpressCheckoutConfirm(event: StripeExpressCheckoutElementConfirmEvent): Promise<void> {
-    if (!stripe || !elements || isSubmitting) {
-      event.paymentFailed({
-        reason: "fail",
-        message: "Payment is still loading. Please try again in a moment.",
-      })
-      return
-    }
-
-    setIsSubmitting(true)
-    setErrorMessage("")
-
-    const result = await confirmDonationPayment()
-    if (!result) {
-      event.paymentFailed({
-        reason: "fail",
-        message: "Unable to complete donation right now.",
-      })
-      setErrorMessage("Unable to complete donation right now.")
-      setIsSubmitting(false)
-      return
-    }
-
-    if (result.error) {
-      const walletErrorMessage = result.error.message ?? "Unable to complete donation. Please try another payment option."
-      event.paymentFailed({
-        reason: "fail",
-        message: walletErrorMessage,
-      })
-      setErrorMessage(walletErrorMessage)
-      setIsSubmitting(false)
-      return
-    }
-
-    if (result.paymentIntent?.id) {
-      window.location.assign(`/donate/return?payment_intent=${result.paymentIntent.id}`)
-      return
-    }
-
-    event.paymentFailed({
-      reason: "fail",
-      message: "Unable to complete donation. Please try another payment option.",
-    })
-    setErrorMessage("Unable to complete donation. Please try another payment option.")
-    setIsSubmitting(false)
-  }
-
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
       <div className="rounded-[1.25rem] border border-[#9fc5d8] bg-white/92 p-4 shadow-[0_14px_30px_rgba(34,59,84,0.16)] sm:p-5">
-        {hasExpressCheckoutWallets !== false ? (
-          <div className="space-y-4">
-            <p className="rounded-xl border border-[#b8d5e5] bg-[#edf7fd] px-3 py-2 text-center text-sm font-semibold text-[#2d5f79]">
-              Fastest checkout: Apple Pay, Google Pay, or Link
-            </p>
-            <ExpressCheckoutElement
-              options={expressCheckoutOptions}
-              onReady={handleExpressCheckoutReady}
-              onLoadError={() => {
-                setHasExpressCheckoutWallets(false)
-              }}
-              onConfirm={handleExpressCheckoutConfirm}
-            />
-            <div className="flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.12em] text-[#4f667b]">
-              <span className="h-px flex-1 bg-[#c7d8e4]" aria-hidden="true" />
-              <span>Or Continue with Card Checkout</span>
-              <span className="h-px flex-1 bg-[#c7d8e4]" aria-hidden="true" />
-            </div>
-          </div>
-        ) : (
-          <p className="mb-4 rounded-xl border border-[#c1d5e4] bg-[#f2f8fc] px-3 py-2 text-sm text-[#4f667b]">
-            Apple Pay, Google Pay, and Link are unavailable on this device right now. You can still donate securely below.
-          </p>
-        )}
+        <p className="mb-4 rounded-xl border border-[#b8d5e5] bg-[#edf7fd] px-3 py-2 text-center text-sm font-semibold text-[#2d5f79]">
+          Fastest checkout options appear first: Apple Pay, Google Pay, and Link
+        </p>
 
         <PaymentElement options={paymentElementOptions} />
       </div>
