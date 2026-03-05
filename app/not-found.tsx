@@ -80,9 +80,7 @@ export default function NotFound() {
               
               {/* Donate Button */}
               <Link
-                href="https://chop.donordrive.com/teams/15164?wait=1"
-                target="_blank"
-                rel="noopener noreferrer"
+                href="/donate"
                 className="inline-flex h-14 items-center justify-center rounded-lg border-2 border-primary bg-transparent px-8 text-xl font-bold text-primary shadow-sm transition-all hover:bg-primary hover:text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               >
                 Support Nate Instead

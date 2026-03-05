@@ -299,10 +299,7 @@ export function HeroSection() {
               className="h-14 text-xl font-bold shadow-lg transition-all hover:shadow-xl"
             >
               <Link
-                href="https://chop.donordrive.com/teams/15164?wait=1"
-                target="_blank"
-                rel="noopener noreferrer"
-                prefetch={false}
+                href="/donate"
               >
                 Donate Now
               </Link>
