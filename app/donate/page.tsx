@@ -26,7 +26,6 @@ interface CheckoutSessionResponse {
 
 interface CheckoutFormProps {
   amountLabel: string
-  donorEmail: string
 }
 
 const PRESET_AMOUNTS: readonly number[] = [25, 50, 100, 250]
@@ -141,7 +140,7 @@ const revealChildVariants: Variants = {
   },
 }
 
-function CheckoutForm({ amountLabel, donorEmail }: CheckoutFormProps) {
+function CheckoutForm({ amountLabel }: CheckoutFormProps) {
   const checkoutState = useCheckout()
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
   const [errorMessage, setErrorMessage] = useState<string>("")
@@ -162,7 +161,6 @@ function CheckoutForm({ amountLabel, donorEmail }: CheckoutFormProps) {
     setErrorMessage("")
 
     const confirmResult = await checkoutState.checkout.confirm({
-      email: donorEmail,
       expressCheckoutConfirmEvent,
       redirect: "if_required",
       returnUrl: `${window.location.origin}/donate/return?session_id={CHECKOUT_SESSION_ID}`,
@@ -280,7 +278,6 @@ export default function DonatePage() {
   const checkoutOptions = useMemo(
     () => ({
       clientSecret: checkoutClientSecret,
-      defaultValues: donorEmail ? { email: donorEmail } : undefined,
       elementsOptions: {
         appearance: {
           theme: "stripe" as const,
@@ -311,7 +308,7 @@ export default function DonatePage() {
         },
       },
     }),
-    [checkoutClientSecret, donorEmail],
+    [checkoutClientSecret],
   )
 
   function resetCheckoutState(): void {
@@ -671,7 +668,7 @@ export default function DonatePage() {
                 ) : (
                   <div className="space-y-4">
                     <CheckoutProvider stripe={stripePromise} options={checkoutOptions}>
-                      <CheckoutForm amountLabel={amountLabel} donorEmail={donorEmail.trim()} />
+                      <CheckoutForm amountLabel={amountLabel} />
                     </CheckoutProvider>
                     <button
                       type="button"

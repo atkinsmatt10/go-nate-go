@@ -79,3 +79,17 @@
 - `pnpm build`: passed
 - Runtime smoke test: `POST /api/stripe/checkout-session` on `http://localhost:3006` returned a Checkout Session client secret and session ID for a `$50.00` test donation using `donor@example.com`.
 - Runtime smoke test: `GET /api/stripe/checkout-session?session_id=cs_test_a1Nu7nCoi2wJ1ifdMdUMzm6Awpd4aWRP0sObi47Y4cJgMMPoTdBo4MGok5` returned `status: open`, `paymentStatus: unpaid`, `amountTotal: 5000`, and the expected donor email in `customerDetails`.
+
+# Stripe Checkout Email Fix Plan
+
+## Tasks
+- [x] Remove duplicate email handoff in custom Checkout client
+- [x] Verify TypeScript and lint pass
+- [x] Re-run local donation checkout initialization flow
+
+## Review / Results
+- `pnpm lint`: passed
+- `pnpm exec tsc --noEmit`: passed
+- Runtime API verification: `POST /api/stripe/checkout-session` on `http://localhost:3006` returned a new Checkout Session client secret and session ID for a `$50.00` donation using `donor@example.com`.
+- Runtime UI verification: browser automation loaded `http://localhost:3006/donate`, advanced to the mounted Checkout UI, and did not surface the previous email-conflict error during session initialization.
+- Dev server verification: local logs showed only successful `POST /api/stripe/checkout-session` responses after the patch.
