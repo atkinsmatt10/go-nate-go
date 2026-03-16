@@ -1,12 +1,15 @@
 "use client"
 
-import { motion } from "framer-motion"
+import { motion, useReducedMotion } from "framer-motion"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { ExternalLink } from "lucide-react"
 import Image from "next/image"
+import { getRevealProps } from "@/lib/motion"
 
 export function NatesStory() {
+  const prefersReducedMotion = useReducedMotion() ?? false
+
   return (
     <section id="story" className="w-full relative bg-secondary">
       {/* Wave Shape at the top */}
@@ -29,18 +32,12 @@ export function NatesStory() {
         <div className="container px-4 md:px-6">
           <motion.div
             className="max-w-3xl mx-auto space-y-8"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.8 }}
+            {...getRevealProps(prefersReducedMotion, { distance: 0, duration: 0.22, margin: "-100px" })}
           >
             {/* Nate's Journey tag - integrated into the peak of the wave area */}
             <motion.div
               className="flex justify-center"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.6, delay: 0.2 }}
+              {...getRevealProps(prefersReducedMotion, { delay: 0.04, margin: "-50px" })}
             >
               <div className="inline-block rounded-lg bg-primary/20 px-4 py-2 text-sm font-medium text-primary border border-primary/30 backdrop-blur-sm">
                 Nate&apos;s Journey
@@ -50,10 +47,7 @@ export function NatesStory() {
             {/* Main Headline with reveal animation */}
             <motion.h2
               className="text-4xl font-bold tracking-tighter sm:text-5xl text-foreground text-center"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.6, delay: 0.4 }}
+              {...getRevealProps(prefersReducedMotion, { delay: 0.08, margin: "-50px" })}
             >
               Our Little Fighter
             </motion.h2>
@@ -61,10 +55,7 @@ export function NatesStory() {
             {/* Story Block 1: Early Life & Diagnosis */}
             <motion.div
               className="space-y-4"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.6, delay: 0.6 }}
+              {...getRevealProps(prefersReducedMotion, { delay: 0.12, margin: "-50px" })}
             >
               <div className="flex justify-center sm:justify-start">
                 <Badge variant="outline" className="text-xs font-medium bg-background/80 backdrop-blur-sm border-primary/50 text-foreground">
@@ -84,10 +75,7 @@ export function NatesStory() {
             {/* Story Block 2: Treatment & Journey */}
             <motion.div
               className="space-y-4"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.6, delay: 0.8 }}
+              {...getRevealProps(prefersReducedMotion, { delay: 0.16, margin: "-50px" })}
             >
               <div className="flex justify-center sm:justify-start">
                 <Badge variant="outline" className="text-xs font-medium bg-background/80 backdrop-blur-sm border-primary/50 text-foreground">
@@ -106,10 +94,7 @@ export function NatesStory() {
             {/* Story Block 3: Recovery & Hope */}
             <motion.div
               className="space-y-4"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.6, delay: 1.0 }}
+              {...getRevealProps(prefersReducedMotion, { delay: 0.2, margin: "-50px" })}
             >
               <div className="flex justify-center sm:justify-start">
                 <Badge variant="outline" className="text-xs font-medium bg-background/80 backdrop-blur-sm border-primary/50 text-foreground">
@@ -135,10 +120,7 @@ export function NatesStory() {
 
             {/* Read Full Story Card with Logo */}
             <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.6, delay: 1.2 }}
+              {...getRevealProps(prefersReducedMotion, { delay: 0.24, margin: "-50px" })}
             >
               <a
                 href="https://curethekids.org/story/nates-journey-strength-beyond-his-seven-weeks/"
@@ -146,7 +128,7 @@ export function NatesStory() {
                 rel="noopener noreferrer"
                 className="block group"
               >
-                <Card className="hover:shadow-lg transition-all duration-300 border-primary/30 bg-background/80 backdrop-blur-sm hover:border-primary/60 cursor-pointer overflow-hidden">
+                <Card className="cursor-pointer overflow-hidden border-primary/30 bg-background/80 backdrop-blur-sm transition-[box-shadow,border-color] duration-200 ease-snappy-out hover:border-primary/60 hover:shadow-lg">
                   <CardContent className="p-0">
                     <div className="flex flex-col sm:flex-row items-center gap-6 p-6">
                       {/* Logo Section */}

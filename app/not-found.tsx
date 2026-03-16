@@ -2,37 +2,27 @@
 
 import Image from "next/image"
 import Link from "next/link"
-import { motion } from "framer-motion"
+import { motion, useReducedMotion } from "framer-motion"
+import { getPageRevealProps, getScaleInProps } from "@/lib/motion"
 
 export default function NotFound() {
+  const prefersReducedMotion = useReducedMotion() ?? false
+
   return (
     <div className="flex flex-col min-h-dvh bg-background text-foreground">
       <main className="flex-1 flex items-center justify-center">
         <div className="container px-4 md:px-6">
           <motion.div
             className="flex flex-col items-center justify-center space-y-8 text-center max-w-2xl mx-auto"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
+            {...getPageRevealProps(prefersReducedMotion)}
           >
             {/* Large 404 */}
-            <motion.div
-              className="text-center"
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6, ease: "easeOut" }}
-            >
+            <motion.div className="text-center" {...getScaleInProps(prefersReducedMotion, { duration: 0.24, scale: 0.96 })}>
               <h1 className="text-8xl md:text-9xl font-bold text-primary">404</h1>
             </motion.div>
 
             {/* Nate Shark on its own line */}
-            <motion.div
-              className="flex justify-center"
-              initial={{ opacity: 0, rotate: -10 }}
-              animate={{ opacity: 1, rotate: 0 }}
-              transition={{ duration: 0.8, delay: 0.3, type: "spring", bounce: 0.4 }}
-              whileHover={{ scale: 1.1, rotate: 5 }}
-            >
+            <motion.div className="flex justify-center" {...getPageRevealProps(prefersReducedMotion, { delay: 0.06, distance: 12 })}>
               <Image
                 src="/nate shark.png"
                 width={120}
@@ -44,36 +34,30 @@ export default function NotFound() {
             </motion.div>
 
             {/* Headline */}
-            <motion.h2 
+            <motion.h2
               className="text-3xl md:text-4xl font-bold text-foreground"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.4 }}
+              {...getPageRevealProps(prefersReducedMotion, { delay: 0.1 })}
             >
               Oops! Looks like you&apos;re swimming in uncharted waters
             </motion.h2>
             
             {/* Description */}
-            <motion.p 
+            <motion.p
               className="text-muted-foreground text-lg md:text-xl leading-relaxed max-w-md"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.5 }}
+              {...getPageRevealProps(prefersReducedMotion, { delay: 0.14 })}
             >
               The page you&apos;re looking for doesn&apos;t exist, but don&apos;t worry - Nate&apos;s shark friend will help guide you back to safety!
             </motion.p>
 
             {/* Action Buttons */}
-            <motion.div 
+            <motion.div
               className="flex flex-col gap-4 w-full max-w-sm"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.6 }}
+              {...getPageRevealProps(prefersReducedMotion, { delay: 0.18 })}
             >
               {/* Go Home Button */}
               <Link
                 href="/"
-                className="inline-flex h-14 items-center justify-center rounded-lg bg-primary px-8 text-xl font-bold text-primary-foreground shadow-lg transition-all hover:bg-primary/90 hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                className="inline-flex h-14 items-center justify-center rounded-lg bg-primary px-8 text-xl font-bold text-primary-foreground shadow-lg transition-[background-color,box-shadow,transform] duration-150 ease-snappy-out active:scale-[0.98] hover:bg-primary/90 hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               >
                 Go Home
               </Link>
@@ -81,7 +65,7 @@ export default function NotFound() {
               {/* Donate Button */}
               <Link
                 href="/donate"
-                className="inline-flex h-14 items-center justify-center rounded-lg border-2 border-primary bg-transparent px-8 text-xl font-bold text-primary shadow-sm transition-all hover:bg-primary hover:text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                className="inline-flex h-14 items-center justify-center rounded-lg border-2 border-primary bg-transparent px-8 text-xl font-bold text-primary shadow-sm transition-[background-color,color,border-color,box-shadow,transform] duration-150 ease-snappy-out active:scale-[0.98] hover:bg-primary hover:text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               >
                 Support Nate Instead
               </Link>
@@ -90,9 +74,7 @@ export default function NotFound() {
             {/* Additional Links */}
             <motion.div
               className="flex flex-wrap justify-center gap-6 pt-4"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5, delay: 0.8 }}
+              {...getPageRevealProps(prefersReducedMotion, { delay: 0.22, distance: 0 })}
             >
               <Link 
                 href="/#story" 

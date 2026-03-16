@@ -3,9 +3,14 @@
 import { useEffect, useState, useRef, useCallback } from "react"
 import Image from "next/image"
 import Link from "next/link"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { useHapticFeedback } from "@/hooks/use-haptic-feedback"
+import {
+  CAROUSEL_TRANSITION,
+  getCarouselSlideVariants,
+  getRevealProps,
+} from "@/lib/motion"
 
 // Merchandise items for carousel
 const merchandiseItems = [
@@ -40,6 +45,7 @@ export function ShirtSection() {
   const [direction, setDirection] = useState(0)
   const intervalRef = useRef<NodeJS.Timeout | null>(null)
   const { trigger } = useHapticFeedback()
+  const prefersReducedMotion = useReducedMotion() ?? false
 
   // Function to start the auto-advance timer
   const startAutoAdvance = useCallback(() => {
@@ -74,28 +80,7 @@ export function ShirtSection() {
   }
 
   // Animation variants for the carousel
-  const slideVariants = {
-    enter: (direction: number) => ({
-      x: direction > 0 ? 300 : -300,
-      opacity: 0,
-      scale: 0.9,
-      rotateY: direction > 0 ? 15 : -15,
-    }),
-    center: {
-      zIndex: 1,
-      x: 0,
-      opacity: 1,
-      scale: 1,
-      rotateY: 0,
-    },
-    exit: (direction: number) => ({
-      zIndex: 0,
-      x: direction < 0 ? 300 : -300,
-      opacity: 0,
-      scale: 0.9,
-      rotateY: direction < 0 ? 15 : -15,
-    }),
-  }
+  const slideVariants = getCarouselSlideVariants(prefersReducedMotion)
 
   const swipeConfidenceThreshold = 10000
   const swipePower = (offset: number, velocity: number) => {
@@ -108,10 +93,7 @@ export function ShirtSection() {
         <div className="grid items-center gap-6 lg:grid-cols-2 lg:gap-12">
           <motion.div
             className="relative"
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
+            {...getRevealProps(prefersReducedMotion, { distance: 12 })}
           >
             {/* Merchandise Carousel */}
             <div className="relative w-full max-w-lg mx-auto">
@@ -124,15 +106,10 @@ export function ShirtSection() {
                     initial="enter"
                     animate="center"
                     exit="exit"
-                    transition={{
-                      x: { type: "spring", stiffness: 300, damping: 30 },
-                      opacity: { duration: 0.3 },
-                      scale: { duration: 0.3 },
-                      rotateY: { duration: 0.3 }
-                    }}
+                    transition={CAROUSEL_TRANSITION}
                     drag="x"
                     dragConstraints={{ left: 0, right: 0 }}
-                    dragElastic={1}
+                    dragElastic={prefersReducedMotion ? 0.05 : 0.18}
                     onDragEnd={(e, { offset, velocity }) => {
                       const swipe = swipePower(offset.x, velocity.x)
 
@@ -149,8 +126,7 @@ export function ShirtSection() {
                       }
                     }}
                     className="absolute inset-0 cursor-grab active:cursor-grabbing"
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
+                    whileTap={prefersReducedMotion ? undefined : { scale: 0.99 }}
                   >
                     <Link
                       href={merchandiseItems[currentImage].productUrl}
@@ -163,14 +139,14 @@ export function ShirtSection() {
                         width={500}
                         height={500}
                         alt={`${merchandiseItems[currentImage].alt} - Click to shop`}
-                        className="w-full h-full object-contain object-center transition-transform group-hover:scale-105"
+                        className="w-full h-full object-contain object-center transition-transform duration-200 ease-snappy-out group-hover:scale-[1.02]"
                         quality={85}
                         sizes="(max-width: 768px) 100vw, 500px"
                         priority={currentImage === 0}
                       />
                       {/* Click indicator */}
-                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300 rounded-2xl flex items-center justify-center opacity-0 group-hover:opacity-100">
-                        <div className="bg-white/95 backdrop-blur-sm rounded-lg px-4 py-3 text-sm font-semibold text-gray-800 shadow-lg border border-white/20 transform scale-95 group-hover:scale-100 transition-transform duration-200">
+                      <div className="absolute inset-0 rounded-2xl bg-black/0 opacity-0 transition-[background-color,opacity] duration-200 ease-snappy-out group-hover:bg-black/20 group-hover:opacity-100 flex items-center justify-center">
+                        <div className="bg-white/95 backdrop-blur-sm rounded-lg px-4 py-3 text-sm font-semibold text-gray-800 shadow-lg border border-white/20 transform scale-95 group-hover:scale-100 transition-transform duration-150 ease-snappy-out">
                           <div className="text-center">
                             <div className="text-primary text-lg font-bold">{merchandiseItems[currentImage].price}</div>
                             <div className="flex items-center gap-1 text-xs text-gray-600">
@@ -204,12 +180,12 @@ export function ShirtSection() {
                       index === currentImage ? 'bg-primary' : 'bg-gray-300'
                     }`}
                     aria-label={`Go to ${merchandiseItems[index].alt}`}
-                    whileHover={{ scale: 1.2 }}
-                    whileTap={{ scale: 0.9 }}
+                    whileTap={prefersReducedMotion ? undefined : { scale: 0.92 }}
                     animate={{
-                      scale: index === currentImage ? 1.2 : 1,
+                      scale: index === currentImage ? 1.12 : 1,
                       opacity: index === currentImage ? 1 : 0.7
                     }}
+                    transition={CAROUSEL_TRANSITION}
                   />
                 ))}
               </div>
@@ -218,17 +194,14 @@ export function ShirtSection() {
           
           <motion.div
             className="space-y-4"
-            initial={{ opacity: 0, x: 50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.2 }}
+            {...getRevealProps(prefersReducedMotion, { delay: 0.06 })}
           >
             <div className="space-y-3">
               <h2 className="text-4xl font-bold tracking-tighter sm:text-5xl text-foreground">
                 Join the Natey Shark Team
               </h2>
               <div className="flex justify-start">
-                <div className="bg-slate-700/90 text-white px-3 py-1 rounded-full text-sm font-medium backdrop-blur-sm transition-all duration-300 border border-slate-300/30 hover:border-slate-300/50 hover:bg-slate-600/90">
+                <div className="rounded-full border border-slate-300/30 bg-slate-700/90 px-3 py-1 text-sm font-medium text-white backdrop-blur-sm transition-[background-color,border-color] duration-200 ease-snappy-out hover:border-slate-300/50 hover:bg-slate-600/90">
                   100+ shirts from amazing supporters
                 </div>
               </div>
@@ -257,7 +230,7 @@ export function ShirtSection() {
               <Button
                 asChild
                 size="lg"
-                className="h-14 text-xl font-bold shadow-lg transition-all hover:shadow-xl"
+                className="h-14 text-xl font-bold shadow-lg transition-[box-shadow,transform] duration-150 ease-snappy-out hover:shadow-xl"
               >
                 <Link
                   href="https://shop.gonatego.com"

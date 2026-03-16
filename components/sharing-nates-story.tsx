@@ -1,11 +1,12 @@
 "use client"
 
-import { motion } from "framer-motion"
+import { motion, useReducedMotion } from "framer-motion"
 import Image from "next/image"
 import { Tweet } from "react-tweet"
 import { InstagramEmbed } from "react-social-media-embed"
 import { Suspense } from "react"
 import Script from "next/script"
+import { getRevealProps } from "@/lib/motion"
 
 // Loading skeleton component for social media posts
 function PostSkeleton() {
@@ -194,6 +195,8 @@ function LinkedInEmbed({ url }: { url: string }) {
 }
 
 export function SharingNatesStory() {
+  const prefersReducedMotion = useReducedMotion() ?? false
+
   // Placeholder tweet IDs - replace these with actual tweet IDs
   const tweetIds = [
     "1983295045806546968", // PBTF tweet about Nate
@@ -284,18 +287,12 @@ export function SharingNatesStory() {
         <div className="container px-4 md:px-6">
           <motion.div
             className="max-w-7xl mx-auto space-y-12"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.8 }}
+            {...getRevealProps(prefersReducedMotion, { distance: 0, duration: 0.22, margin: "-100px" })}
           >
             {/* Section Header */}
             <motion.div
               className="text-center space-y-4"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.6, delay: 0.2 }}
+              {...getRevealProps(prefersReducedMotion, { delay: 0.04, margin: "-50px" })}
             >
               <div className="inline-block rounded-lg bg-primary/20 px-4 py-2 text-sm font-medium text-primary border border-primary/30 backdrop-blur-sm">
                 Social Media
@@ -312,20 +309,14 @@ export function SharingNatesStory() {
               {/* Social Media Grid */}
               <motion.div
                 className="columns-1 sm:columns-2 lg:columns-3 gap-6"
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-50px" }}
-                transition={{ duration: 0.6, delay: 0.4 }}
+                {...getRevealProps(prefersReducedMotion, { delay: 0.08, margin: "-50px" })}
               >
               {/* X/Twitter Posts */}
               {tweetIds.map((tweetId, index) => (
                 <motion.div
                   key={`tweet-${tweetId}`}
                   className="break-inside-avoid mb-6"
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.4, delay: 0.6 + index * 0.1 }}
+                  {...getRevealProps(prefersReducedMotion, { delay: 0.1 + index * 0.04 })}
                 >
                   <div className="w-full">
                     <Suspense fallback={<PostSkeleton />}>
@@ -340,10 +331,7 @@ export function SharingNatesStory() {
                 <motion.div
                   key={`instagram-${index}`}
                   className="break-inside-avoid mb-6"
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.4, delay: 0.9 + index * 0.1 }}
+                  {...getRevealProps(prefersReducedMotion, { delay: 0.16 + index * 0.04 })}
                 >
                   <div className="w-full">
                     <Suspense fallback={<PostSkeleton />}>
@@ -363,10 +351,7 @@ export function SharingNatesStory() {
                 <motion.div
                   key={`linkedin-${index}`}
                   className="break-inside-avoid mb-6"
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.4, delay: 1.3 + index * 0.1 }}
+                  {...getRevealProps(prefersReducedMotion, { delay: 0.22 + index * 0.04 })}
                 >
                   <LinkedInEmbed url={url} />
                 </motion.div>
@@ -377,10 +362,7 @@ export function SharingNatesStory() {
                 <motion.div
                   key={`substack-${index}`}
                   className="break-inside-avoid mb-6"
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.4, delay: 1.2 + index * 0.1 }}
+                  {...getRevealProps(prefersReducedMotion, { delay: 0.18 + index * 0.04 })}
                 >
                   {post.useCard ? (
                     <SubstackCard 

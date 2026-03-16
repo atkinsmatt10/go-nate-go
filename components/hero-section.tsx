@@ -2,10 +2,16 @@
 
 import Image from "next/image"
 import Link from "next/link"
-import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion"
+import { motion, AnimatePresence, useReducedMotion, useScroll, useTransform } from "framer-motion"
 import { useState, useEffect, useRef, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { useHapticFeedback } from "@/hooks/use-haptic-feedback"
+import {
+  CAROUSEL_TRANSITION,
+  getCarouselSlideVariants,
+  getPageRevealProps,
+  getScaleInProps,
+} from "@/lib/motion"
 
 const images = [
   {
@@ -40,6 +46,7 @@ export function HeroSection() {
   const intervalRef = useRef<NodeJS.Timeout | null>(null)
   const sectionRef = useRef<HTMLElement>(null)
   const { trigger } = useHapticFeedback()
+  const prefersReducedMotion = useReducedMotion() ?? false
 
   // Parallax wave animation
   const { scrollYProgress } = useScroll({
@@ -81,28 +88,7 @@ export function HeroSection() {
   }
 
   // Animation variants for the carousel
-  const slideVariants = {
-    enter: (direction: number) => ({
-      x: direction > 0 ? 300 : -300,
-      opacity: 0,
-      scale: 0.9,
-      rotateY: direction > 0 ? 15 : -15,
-    }),
-    center: {
-      zIndex: 1,
-      x: 0,
-      opacity: 1,
-      scale: 1,
-      rotateY: 0,
-    },
-    exit: (direction: number) => ({
-      zIndex: 0,
-      x: direction < 0 ? 300 : -300,
-      opacity: 0,
-      scale: 0.9,
-      rotateY: direction < 0 ? 15 : -15,
-    }),
-  }
+  const slideVariants = getCarouselSlideVariants(prefersReducedMotion)
 
   const swipeConfidenceThreshold = 10000
   const swipePower = (offset: number, velocity: number) => {
@@ -113,11 +99,9 @@ export function HeroSection() {
     <section ref={sectionRef} className="relative w-full py-12 md:py-20 lg:py-24 overflow-hidden">
       {/* Subtle Parallax Wave Background */}
       <motion.div
-        style={{ y: waveY }}
+        style={prefersReducedMotion ? undefined : { y: waveY }}
         className="absolute inset-0 -z-10 pointer-events-none"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1, ease: "easeOut" }}
+        {...getPageRevealProps(prefersReducedMotion, { distance: 0, duration: 0.3 })}
       >
         <svg
           viewBox="0 0 1200 120"
@@ -146,16 +130,10 @@ export function HeroSection() {
       <div className="container px-4 md:px-6">
         <motion.div
           className="flex flex-col items-center justify-center space-y-6 text-center"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
+          {...getPageRevealProps(prefersReducedMotion)}
         >
           {/* Logo */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
-          >
+          <motion.div {...getScaleInProps(prefersReducedMotion, { duration: 0.26, scale: 0.96 })}>
             <Image
               src="/Nate-the-great-logo.png"
               width="600"
@@ -167,12 +145,7 @@ export function HeroSection() {
           </motion.div>
 
           {/* Enhanced Photo Carousel with Smooth Animations - MOVED UP */}
-          <motion.div
-            className="relative w-full max-w-md mx-auto"
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-          >
+          <motion.div className="relative w-full max-w-md mx-auto" {...getScaleInProps(prefersReducedMotion, { delay: 0.04, scale: 0.98 })}>
             <div className="relative aspect-square overflow-hidden rounded-2xl shadow-lg">
               <AnimatePresence initial={false} custom={direction}>
                 <motion.div
@@ -182,15 +155,10 @@ export function HeroSection() {
                   initial="enter"
                   animate="center"
                   exit="exit"
-                  transition={{
-                    x: { type: "spring", stiffness: 300, damping: 30 },
-                    opacity: { duration: 0.3 },
-                    scale: { duration: 0.3 },
-                    rotateY: { duration: 0.3 }
-                  }}
+                  transition={CAROUSEL_TRANSITION}
                   drag="x"
                   dragConstraints={{ left: 0, right: 0 }}
-                  dragElastic={1}
+                  dragElastic={prefersReducedMotion ? 0.05 : 0.18}
                   onDragEnd={(e, { offset, velocity }) => {
                     const swipe = swipePower(offset.x, velocity.x)
 
@@ -207,8 +175,7 @@ export function HeroSection() {
                     }
                   }}
                   className="absolute inset-0 cursor-grab active:cursor-grabbing"
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
+                  whileTap={prefersReducedMotion ? undefined : { scale: 0.99 }}
                 >
                   <Image
                     src={images[currentImage].src}
@@ -224,13 +191,7 @@ export function HeroSection() {
               </AnimatePresence>
               
               {/* Peeking Shark Mascot */}
-              <motion.div
-                className="absolute -bottom-2 -right-2 z-10"
-                initial={{ opacity: 0, y: 20, rotate: -5 }}
-                animate={{ opacity: 1, y: 0, rotate: 0 }}
-                transition={{ duration: 0.8, delay: 0.8, type: "spring", bounce: 0.4 }}
-                whileHover={{ scale: 1.1, rotate: 5 }}
-              >
+              <motion.div className="absolute -bottom-2 -right-2 z-10" {...getPageRevealProps(prefersReducedMotion, { delay: 0.18, distance: 12 })}>
                 <Image
                   src="/nate shark.png"
                   width={80}
@@ -252,12 +213,12 @@ export function HeroSection() {
                     index === currentImage ? 'bg-primary' : 'bg-gray-300'
                   }`}
                   aria-label={`Go to image ${index + 1}`}
-                  whileHover={{ scale: 1.2 }}
-                  whileTap={{ scale: 0.9 }}
+                  whileTap={prefersReducedMotion ? undefined : { scale: 0.92 }}
                   animate={{
-                    scale: index === currentImage ? 1.2 : 1,
+                    scale: index === currentImage ? 1.12 : 1,
                     opacity: index === currentImage ? 1 : 0.7
                   }}
+                  transition={CAROUSEL_TRANSITION}
                 />
               ))}
             </div>
@@ -265,21 +226,17 @@ export function HeroSection() {
 
           <div className="space-y-4">
             {/* Powerful Headline */}
-            <motion.h1 
+            <motion.h1
               className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl text-foreground"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.4 }}
+              {...getPageRevealProps(prefersReducedMotion, { delay: 0.08 })}
             >
               Help Nate Fight Childhood Cancer
             </motion.h1>
             
             {/* Sub-headline */}
-            <motion.p 
+            <motion.p
               className="max-w-[700px] mx-auto text-muted-foreground text-lg md:text-xl leading-relaxed"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.5 }}
+              {...getPageRevealProps(prefersReducedMotion, { delay: 0.12 })}
             >
               Born in May 2025, Nate&apos;s world changed at just eight weeks old. Vomiting and extreme sleepiness led to a
               terrifying diagnosis at CHOP: a rare choroid plexus tumor causing hydrocephalus. Emergency surgeries saved his
@@ -289,17 +246,15 @@ export function HeroSection() {
           </div>
 
           {/* Call-to-Action Buttons */}
-          <motion.div 
+          <motion.div
             className="flex flex-col gap-4 w-full max-w-sm sm:max-w-md"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.6 }}
+            {...getPageRevealProps(prefersReducedMotion, { delay: 0.16 })}
           >
             {/* Primary CTA - Donate Now */}
             <Button
               asChild
               size="lg"
-              className="h-14 text-xl font-bold shadow-lg transition-all hover:shadow-xl"
+              className="h-14 text-xl font-bold shadow-lg transition-[box-shadow,transform] duration-150 ease-snappy-out hover:shadow-xl"
             >
               <Link
                 href="/donate"
@@ -314,7 +269,7 @@ export function HeroSection() {
               variant="outline"
               size="lg"
               haptic="light"
-              className="h-14 border-2 border-primary bg-transparent text-xl font-bold text-primary shadow-sm transition-all hover:bg-primary hover:text-primary-foreground"
+              className="h-14 border-2 border-primary bg-transparent text-xl font-bold text-primary shadow-sm transition-[background-color,color,border-color,box-shadow,transform] duration-150 ease-snappy-out hover:bg-primary hover:text-primary-foreground"
             >
               <Link
                 href="https://shop.gonatego.com"

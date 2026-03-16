@@ -18,6 +18,7 @@ import {
 import { motion, useReducedMotion, type Variants } from "framer-motion"
 import { ArrowLeft, Gift, Heart, ShieldCheck, Sparkles, Stethoscope } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { MOTION_EASE_OUT } from "@/lib/motion"
 
 interface CheckoutSessionResponse {
   clientSecret?: string
@@ -32,9 +33,9 @@ const PRESET_AMOUNTS: readonly number[] = [25, 50, 100, 250]
 const publishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
 const stripePromise = publishableKey ? loadStripe(publishableKey) : null
 const donationCtaClassName =
-  "h-12 w-full rounded-2xl border border-[#2f6272] bg-[#42a8a9] text-base font-bold text-white shadow-[0_16px_26px_rgba(34,59,84,0.28)] transition-[background-color,transform,box-shadow] duration-200 hover:-translate-y-0.5 hover:bg-[#369799]"
+  "h-12 w-full rounded-2xl border border-[#2f6272] bg-[#42a8a9] text-base font-bold text-white shadow-[0_16px_26px_rgba(34,59,84,0.28)] transition-[background-color,transform,box-shadow] duration-150 ease-snappy-out active:scale-[0.98] hover:-translate-y-0.5 hover:bg-[#369799]"
 const amountOptionBaseClass =
-  "h-11 rounded-2xl border text-sm font-bold touch-manipulation transition-[background-color,border-color,color,transform,box-shadow] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2f6272] focus-visible:ring-offset-2 sm:text-base"
+  "h-11 rounded-2xl border text-sm font-bold touch-manipulation transition-[background-color,border-color,color,transform,box-shadow] duration-150 ease-snappy-out active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2f6272] focus-visible:ring-offset-2 sm:text-base"
 const amountOptionSelectedClass =
   "border-[#2f6272] bg-[#42a8a9] text-white shadow-[0_12px_20px_rgba(34,59,84,0.22)]"
 const amountOptionDefaultClass =
@@ -119,8 +120,8 @@ const staggerParentVariants: Variants = {
   hidden: {},
   show: {
     transition: {
-      staggerChildren: 0.12,
-      delayChildren: 0.08,
+      staggerChildren: 0.06,
+      delayChildren: 0.02,
     },
   },
 }
@@ -134,8 +135,8 @@ const revealChildVariants: Variants = {
     opacity: 1,
     y: 0,
     transition: {
-      duration: 0.6,
-      ease: "easeOut",
+      duration: 0.32,
+      ease: MOTION_EASE_OUT,
     },
   },
 }
@@ -420,7 +421,7 @@ export default function DonatePage() {
         >
           <Link
             href="/"
-            className="inline-flex items-center gap-2 rounded-full border border-[#a6c0d4] bg-white/85 px-4 py-2 text-sm font-semibold text-[#223b54] shadow-sm transition-[background-color,border-color,color,transform,box-shadow] duration-200 hover:-translate-y-0.5 hover:border-[#42a8a9] hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2f6272] focus-visible:ring-offset-2"
+            className="inline-flex items-center gap-2 rounded-full border border-[#a6c0d4] bg-white/85 px-4 py-2 text-sm font-semibold text-[#223b54] shadow-sm transition-[background-color,border-color,color,transform,box-shadow] duration-150 ease-snappy-out active:scale-[0.98] hover:-translate-y-0.5 hover:border-[#42a8a9] hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2f6272] focus-visible:ring-offset-2"
           >
             <ArrowLeft className="h-4 w-4" aria-hidden="true" />
             Back Home
@@ -476,10 +477,10 @@ export default function DonatePage() {
                       prefersReducedMotion
                         ? undefined
                         : {
-                            y: -4,
+                            y: -2,
                           }
                     }
-                    transition={{ type: "spring", stiffness: 320, damping: 26 }}
+                    transition={{ type: "spring", duration: 0.28, bounce: 0.1 }}
                   >
                     <span
                       className="mb-2 inline-flex h-9 w-9 items-center justify-center rounded-xl text-slate-800"

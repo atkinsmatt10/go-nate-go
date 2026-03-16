@@ -1,12 +1,13 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Progress } from "@/components/ui/progress"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { motion } from "framer-motion"
+import { motion, useReducedMotion } from "framer-motion"
 import Link from "next/link"
 import useSWR from 'swr'
+import { getRevealProps } from "@/lib/motion"
 
 // Fetcher function for SWR
 const fetcher = (url: string) => fetch(url).then(res => {
@@ -15,11 +16,13 @@ const fetcher = (url: string) => fetch(url).then(res => {
 })
 
 export function FundraisingProgress() {
-  const [progress, setProgress] = useState(0)
   const fallbackAmount = 16250
   const fallbackGoal = 25000
   const [animatedRaised, setAnimatedRaised] = useState(0)
   const [animatedDonations, setAnimatedDonations] = useState(0)
+  const prefersReducedMotion = useReducedMotion() ?? false
+  const animatedRaisedRef = useRef(0)
+  const animatedDonationsRef = useRef(0)
 
   // Fetch real-time donation data
   const { data, error, isLoading } = useSWR('/api/donations', fetcher, {
@@ -31,76 +34,74 @@ export function FundraisingProgress() {
   const raised = data?.total || fallbackAmount // Fallback to previous value
   const goal = data?.goal || fallbackGoal // Use dynamic goal from API
   const numDonations = data?.numDonations || 0
-  
-  useEffect(() => {
-    const calculatedProgress = (raised / goal) * 100
-    const timer = setTimeout(() => setProgress(calculatedProgress), 500)
-    return () => clearTimeout(timer)
-  }, [raised, goal])
+  const progress = (raised / goal) * 100
 
   // Animate the raised amount when it changes
   useEffect(() => {
-    if (raised !== animatedRaised) {
-      const duration = 800
-      const startValue = animatedRaised
-      const endValue = raised
-      const startTime = Date.now()
-
-      const animate = () => {
-        const elapsed = Date.now() - startTime
-        const progress = Math.min(elapsed / duration, 1)
-        
-        // Easing function for smooth animation
-        const eased = 1 - Math.pow(1 - progress, 3)
-        const currentValue = startValue + (endValue - startValue) * eased
-        
-        setAnimatedRaised(Math.round(currentValue))
-        
-        if (progress < 1) {
-          requestAnimationFrame(animate)
-        }
-      }
-      
-      requestAnimationFrame(animate)
+    if (raised === animatedRaisedRef.current) {
+      return
     }
-  }, [raised, animatedRaised])
+
+    const duration = prefersReducedMotion ? 180 : 520
+    const startValue = animatedRaisedRef.current
+    const endValue = raised
+    const startTime = Date.now()
+    let frameId = 0
+
+    const animate = () => {
+      const elapsed = Date.now() - startTime
+      const animationProgress = Math.min(elapsed / duration, 1)
+      const eased = 1 - Math.pow(1 - animationProgress, 3)
+      const currentValue = Math.round(startValue + (endValue - startValue) * eased)
+
+      animatedRaisedRef.current = currentValue
+      setAnimatedRaised(currentValue)
+
+      if (animationProgress < 1) {
+        frameId = requestAnimationFrame(animate)
+      }
+    }
+
+    frameId = requestAnimationFrame(animate)
+    return () => cancelAnimationFrame(frameId)
+  }, [prefersReducedMotion, raised])
 
   // Animate the donation count when it changes
   useEffect(() => {
-    if (numDonations !== animatedDonations) {
-      const duration = 600
-      const startValue = animatedDonations
-      const endValue = numDonations
-      const startTime = Date.now()
-
-      const animate = () => {
-        const elapsed = Date.now() - startTime
-        const progress = Math.min(elapsed / duration, 1)
-        
-        // Easing function for smooth animation
-        const eased = 1 - Math.pow(1 - progress, 3)
-        const currentValue = startValue + (endValue - startValue) * eased
-        
-        setAnimatedDonations(Math.round(currentValue))
-        
-        if (progress < 1) {
-          requestAnimationFrame(animate)
-        }
-      }
-      
-      requestAnimationFrame(animate)
+    if (numDonations === animatedDonationsRef.current) {
+      return
     }
-  }, [numDonations, animatedDonations])
+
+    const duration = prefersReducedMotion ? 160 : 420
+    const startValue = animatedDonationsRef.current
+    const endValue = numDonations
+    const startTime = Date.now()
+    let frameId = 0
+
+    const animate = () => {
+      const elapsed = Date.now() - startTime
+      const animationProgress = Math.min(elapsed / duration, 1)
+      const eased = 1 - Math.pow(1 - animationProgress, 3)
+      const currentValue = Math.round(startValue + (endValue - startValue) * eased)
+
+      animatedDonationsRef.current = currentValue
+      setAnimatedDonations(currentValue)
+
+      if (animationProgress < 1) {
+        frameId = requestAnimationFrame(animate)
+      }
+    }
+
+    frameId = requestAnimationFrame(animate)
+    return () => cancelAnimationFrame(frameId)
+  }, [numDonations, prefersReducedMotion])
 
   return (
     <section id="donate" className="w-full py-16 md:py-24 lg:py-32">
       <div className="container px-4 md:px-6">
         <motion.div
           className="flex flex-col items-center justify-center space-y-6 text-center"
-          initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
+          {...getRevealProps(prefersReducedMotion, { margin: "-96px" })}
         >
           <div className="space-y-2">
             <h2 className="text-4xl font-bold tracking-tighter sm:text-5xl text-foreground">Help Us Reach Our Goal</h2>
@@ -129,7 +130,7 @@ export function FundraisingProgress() {
             <Button
               asChild
               size="lg"
-              className="h-14 text-xl font-bold shadow-lg transition-all hover:shadow-xl"
+              className="h-14 text-xl font-bold shadow-lg transition-[box-shadow,transform] duration-150 ease-snappy-out hover:shadow-xl"
             >
               <Link
                 href="/donate"
