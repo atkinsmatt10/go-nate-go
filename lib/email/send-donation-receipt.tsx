@@ -2,8 +2,13 @@ import "server-only"
 import type Stripe from "stripe"
 import { DonationReceiptEmail } from "@/components/emails/donation-receipt-email"
 import { getResendClient, getResendFromEmail, getResendReplyToEmail } from "@/lib/resend"
+import { getStripeClient } from "@/lib/stripe"
 
 const DONATION_LABEL = "Donation to Team Nate the Great"
+const DEFAULT_SUPPORT_EMAIL = "atkinsmatt10@gmail.com"
+const DEFAULT_SUPPORT_PHONE = "+1 781-864-8780"
+
+let cachedStripeSenderText: string | null = null
 
 interface SendDonationReceiptParams {
   eventId: string
@@ -34,13 +39,16 @@ export async function sendDonationReceiptEmail({
       : paymentIntent.latest_charge
 
   const amountText = formatAmount(session.amount_total, session.currency)
-  const paidAtText = formatPaidAt(latestCharge?.created ?? session.created)
+  const paidAt = new Date((latestCharge?.created ?? session.created) * 1000)
+  const receiptSentAt = new Date()
+  const { dateText: donationDateText, timeText: donationTimeText } = formatDateAndTime(paidAt)
   const receiptNumber = latestCharge?.receipt_number || session.id
   const paymentMethodText = formatPaymentMethod(latestCharge)
   const siteOrigin = getSiteOrigin()
   const statusPageUrl = `${siteOrigin}/donate/return?session_id=${encodeURIComponent(session.id)}`
-  const replyToEmail = getResendReplyToEmail()
-  const supportPhone = process.env.DONATION_RECEIPT_SUPPORT_PHONE?.trim() || undefined
+  const replyToEmail = getSupportEmail()
+  const supportPhone = process.env.DONATION_RECEIPT_SUPPORT_PHONE?.trim() || DEFAULT_SUPPORT_PHONE
+  const stripeSenderText = await getStripeSenderText()
   const resend = getResendClient()
   const subjectPrefix = session.livemode ? "" : "[Test] "
 
@@ -53,25 +61,35 @@ export async function sendDonationReceiptEmail({
       react: (
         <DonationReceiptEmail
           amountText={amountText}
-          donationDateText={paidAtText}
+          deliveredByText="Stripe for Nate the Great"
+          donationDateText={donationDateText}
           donationLabel={DONATION_LABEL}
+          donationTimeText={donationTimeText}
           paymentMethodText={paymentMethodText}
+          receiptEmailedText={formatReceiptEmailedAt(receiptSentAt)}
           receiptNumber={receiptNumber}
           recipientEmail={recipientEmail}
-          replyToEmail={replyToEmail}
+          replyToSupportText={`Nate the Great <${replyToEmail}>`}
           siteOrigin={siteOrigin}
           statusPageUrl={statusPageUrl}
+          stripeSenderText={stripeSenderText}
+          supportEmail={replyToEmail}
           supportPhone={supportPhone}
         />
       ),
       text: buildPlainTextReceipt({
         amountText,
-        donationDateText: paidAtText,
+        deliveredByText: "Stripe for Nate the Great",
+        donationDateText,
+        donationTimeText,
         paymentMethodText,
+        receiptEmailedText: formatReceiptEmailedAt(receiptSentAt),
         receiptNumber,
         recipientEmail,
         replyToEmail,
         statusPageUrl,
+        stripeSenderText,
+        supportEmail: replyToEmail,
         supportPhone,
       }),
       tags: [
@@ -87,6 +105,10 @@ export async function sendDonationReceiptEmail({
   if (error) {
     throw new Error(`Resend error sending donation receipt: ${error.message}`)
   }
+}
+
+function getSupportEmail(): string {
+  return getResendReplyToEmail() || DEFAULT_SUPPORT_EMAIL
 }
 
 function getRecipientEmail(session: Stripe.Checkout.Session): string | null {
@@ -116,32 +138,40 @@ function formatAmount(amountInCents: number | null, currency: string | null): st
   }).format(amountInCents / 100)
 }
 
-function formatPaidAt(unixTimestampInSeconds: number): string {
+function formatDateAndTime(date: Date): { dateText: string; timeText: string } {
+  return {
+    dateText: new Intl.DateTimeFormat("en-US", {
+      dateStyle: "medium",
+      timeZone: "America/New_York",
+    }).format(date),
+    timeText: new Intl.DateTimeFormat("en-US", {
+      timeStyle: "medium",
+      timeZone: "America/New_York",
+    }).format(date),
+  }
+}
+
+function formatReceiptEmailedAt(date: Date): string {
   return new Intl.DateTimeFormat("en-US", {
     dateStyle: "medium",
     timeStyle: "short",
     timeZone: "America/New_York",
-  }).format(new Date(unixTimestampInSeconds * 1000))
+  }).format(date)
 }
 
 function formatPaymentMethod(charge: Stripe.Charge | null): string {
   if (!charge?.payment_method_details) {
-    return "Stripe checkout"
+    return "Paid with Stripe"
   }
 
   const { payment_method_details: paymentMethodDetails } = charge
   if (paymentMethodDetails.type === "card") {
-    const brand = paymentMethodDetails.card?.brand
     const wallet = paymentMethodDetails.card?.wallet?.type
-    const parts = [
-      brand ? brand.toUpperCase() : "Card",
-      wallet ? `via ${formatWallet(wallet)}` : null,
-    ].filter(Boolean)
 
-    return parts.join(" ")
+    return wallet ? `Paid with ${formatWallet(wallet)}` : "Paid with Card"
   }
 
-  return formatLabel(paymentMethodDetails.type)
+  return `Paid with ${formatLabel(paymentMethodDetails.type)}`
 }
 
 function formatWallet(wallet: string): string {
@@ -205,23 +235,33 @@ function normalizeSiteOrigin(candidate: string | undefined): string | null {
 
 interface PlainTextReceiptParams {
   amountText: string
+  deliveredByText: string
   donationDateText: string
+  donationTimeText: string
   paymentMethodText: string
+  receiptEmailedText: string
   receiptNumber: string
   recipientEmail: string
   replyToEmail?: string
   statusPageUrl: string
+  stripeSenderText: string
+  supportEmail: string
   supportPhone?: string
 }
 
 function buildPlainTextReceipt({
   amountText,
+  deliveredByText,
   donationDateText,
+  donationTimeText,
   paymentMethodText,
+  receiptEmailedText,
   receiptNumber,
   recipientEmail,
   replyToEmail,
   statusPageUrl,
+  stripeSenderText,
+  supportEmail,
   supportPhone,
 }: PlainTextReceiptParams): string {
   const supportLine = replyToEmail
@@ -231,18 +271,43 @@ function buildPlainTextReceipt({
     : supportPhone || "the fundraising team"
 
   return [
-    `Receipt from Nate the Great`,
+    `Thank You For Showing Up For Nate`,
+    ``,
+    `Your donation receipt is below. This gift supports Nate's fundraiser for CHOP childhood cancer care and research, and means a great deal to our family.`,
     ``,
     `Receipt number: ${receiptNumber}`,
     `Amount paid: ${amountText}`,
     `Date paid: ${donationDateText}`,
+    `Time paid: ${donationTimeText}`,
     `Payment method: ${paymentMethodText}`,
     `Donation: ${DONATION_LABEL} x 1`,
     ``,
+    `Receipt details`,
     `Sent to: ${recipientEmail}`,
-    `Donation status: ${statusPageUrl}`,
-    `Support: ${supportLine}`,
+    `Reply-to support: Nate the Great <${supportEmail}>`,
+    `Receipt emailed: ${receiptEmailedText}`,
+    `Delivered by: ${deliveredByText}`,
+    `Stripe sender: ${stripeSenderText}`,
     ``,
-    `Thank you for supporting Nate and CHOP childhood cancer care and research.`,
+    `Questions about your donation?`,
+    `Support: ${supportLine}`,
+    `View in your browser: ${statusPageUrl}`,
+    ``,
+    `You're receiving this email because you made a donation to Nate the Great, which partners with Stripe to provide invoicing and payment processing.`,
   ].join("\n")
+}
+
+async function getStripeSenderText(): Promise<string> {
+  if (cachedStripeSenderText) {
+    return cachedStripeSenderText
+  }
+
+  try {
+    const account = await getStripeClient().accounts.retrieve()
+    cachedStripeSenderText = `receipts+${account.id}@stripe.com`
+  } catch {
+    cachedStripeSenderText = "receipts@stripe.com"
+  }
+
+  return cachedStripeSenderText
 }

@@ -1,29 +1,22 @@
-# Branded Donation Receipt Plan
+# Receipt Email Design Alignment Plan
 
 ## Artifacts
 
-- [x] Reframe the request in [tasks/context/branded-donation-receipts.md](tasks/context/branded-donation-receipts.md)
-- [x] Capture the implementation slice in [tasks/architecture/branded-donation-receipts.md](tasks/architecture/branded-donation-receipts.md)
+- [x] Reframe the request in [tasks/context/receipt-email-design-alignment.md](tasks/context/receipt-email-design-alignment.md)
+- [x] Capture the implementation slice in [tasks/architecture/receipt-email-design-alignment.md](tasks/architecture/receipt-email-design-alignment.md)
 
 ## Tasks
 
-- [x] Add the Resend dependency and minimal server-only config helpers
-- [x] Update Checkout Session creation to attach receipt metadata and stop forcing Stripe-native receipt emails
-- [x] Add a signed Stripe webhook route for paid completion events
-- [x] Add a branded donation receipt email template and Resend sender
-- [x] Document required environment variables and local webhook setup
-- [x] Verify with lint, TypeScript, and a focused pre-merge review
+- [x] Inspect the Paper artboard and identify the layout and copy differences from the current receipt template
+- [x] Update the receipt template structure, spacing, and visual hierarchy to match the design
+- [x] Update the email payload fields and copy blocks needed to support the design
+- [x] Verify with lint, TypeScript, and a screenshot-based comparison against the Paper artboard
 
 ## Review / Results
 
-- Resend CLI validation passed locally:
-- `resend whoami --json`
-- `resend doctor --json`
-- `resend domains list --json`
-- Added a Stripe webhook route that verifies signatures and only sends receipt emails for paid Checkout Session completion events.
-- Checkout Session creation now stores receipt metadata and no longer sets `payment_intent_data.receipt_email`, which removes the code-level trigger for Stripe-native receipts in this flow.
-- Custom receipts are gated behind `ENABLE_CUSTOM_DONATION_RECEIPTS=true` and fall back to Stripe receipt delivery until the webhook path is explicitly ready.
-- Added a branded React email template and plain-text fallback for Nate the Great receipts, sent with a Resend idempotency key derived from the Stripe event ID.
+- Rebuilt the receipt template to match the Paper `EV-1` artboard structure: dark hero, overlapping payment snapshot, receipt details card, tinted summary card, and support footer.
+- Updated the send payload so the email can render the designed detail rows and copy, including split paid date/time, receipt emailed time, delivered-by text, support contact defaults, and Stripe sender metadata.
+- Verified the updated structure and copy against the Paper artboard screenshot and JSX export, with minor email-client-safe approximations for overlap and spacing.
 - Verification passed:
 - `pnpm lint`
 - `pnpm exec tsc --noEmit`
@@ -32,30 +25,30 @@
 
 ### Scope Drift
 
-- No meaningful scope drift. The slice stayed backend-focused and did not alter the donate page UI or the legacy Payment Intent path.
+- No meaningful scope drift. The slice stayed limited to the donation receipt template, the server-side mapping needed to populate it, and task artifacts.
 
 ### Structural Risks
 
-- Residual operational risk remains if Stripe dashboard customer receipts are still enabled. The code removed the explicit `receipt_email` send path, but dashboard settings may still need adjustment to avoid duplicate donor receipts.
-- The rollout gap identified in review was fixed by adding an explicit enable flag and keeping Stripe receipt delivery as the fallback until custom receipt config is ready.
+- The template rewrite is larger than the default review-size target because the Paper design replaced most of the prior layout in a single file.
+- The new Stripe sender row depends on a live Stripe account lookup, but it falls back to `receipts@stripe.com` if account retrieval fails.
 
 ### Completeness Gaps
 
-- No durable receipt persistence layer was added, so the webhook and Resend idempotency key are the only duplicate-suppression mechanisms in this slice.
+- No screenshot export of the rendered email client output was generated locally, so the design verification is based on code review against the Paper artboard plus passing lint and typecheck.
 
 ### Migration And Rollback Notes
 
-- Roll forward by adding the Resend and Stripe webhook env vars plus the Stripe webhook endpoint registration.
-- Roll back by removing the webhook endpoint registration or unsetting the Resend env vars; Checkout itself remains unchanged.
+- No schema or deployment ordering changes are involved.
+- Rollback is a straight revert to the previous receipt template and payload mapping.
 
 ### Prod-Only Failure Modes
 
-- Missing `RESEND_*` or `STRIPE_WEBHOOK_SECRET` env vars will surface only when Stripe posts to the webhook.
-- Preview and local environments now prefer `VERCEL_URL` or `http://localhost:3000` before falling back to production URLs for receipt links and asset origins.
+- Email clients may flatten some overlap and shadow treatments, but the layout remains readable because each section is contained within table-safe card blocks.
+- If Stripe account metadata is temporarily unavailable, the sender detail row falls back to a generic Stripe receipt address.
 
 ### Recommendation
 
-- Safe to hand off once the deployment environment variables are set and the Stripe webhook endpoint is registered.
+- Safe to hand off as a frontend-only branding and copy alignment pass on the existing receipt flow.
 
 ## Documentation Release
 
@@ -63,21 +56,18 @@
 
 - `README.md`
 - `AGENTS.md`
+- `tasks/context/receipt-email-design-alignment.md`
+- `tasks/architecture/receipt-email-design-alignment.md`
+- `tasks/todo.md`
 
 ### Docs Updated
 
-- `README.md`
-- `tasks/context/branded-donation-receipts.md`
-- `tasks/architecture/branded-donation-receipts.md`
 - `tasks/todo.md`
 
 ### Facts Added Or Corrected
 
-- Documented the new Resend and Stripe webhook environment variables.
-- Documented the Resend CLI checks used for onboarding validation.
-- Documented the Stripe local webhook forwarding command and the duplicate-receipt ownership note.
+- Recorded the verification outcome and the design-alignment review notes for this slice.
 
 ### Remaining Follow-Ups
 
-- Register the production Stripe webhook endpoint after deploy.
-- Decide whether Stripe dashboard customer receipts should stay on or be disabled for this fundraiser flow.
+- Push the branch and deploy a preview build if the user wants a final live render check before production.
