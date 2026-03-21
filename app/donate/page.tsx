@@ -27,6 +27,7 @@ interface CheckoutSessionResponse {
 
 interface CheckoutFormProps {
   amountLabel: string
+  onIntentionalNavigationChange: (isNavigating: boolean) => void
 }
 
 type PaymentElementLoadErrorEvent = Parameters<
@@ -156,7 +157,7 @@ const revealChildVariants: Variants = {
   },
 }
 
-function CheckoutForm({ amountLabel }: CheckoutFormProps) {
+function CheckoutForm({ amountLabel, onIntentionalNavigationChange }: CheckoutFormProps) {
   const checkoutState = useCheckout()
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
   const [errorMessage, setErrorMessage] = useState<string>("")
@@ -177,6 +178,7 @@ function CheckoutForm({ amountLabel }: CheckoutFormProps) {
 
     setIsSubmitting(true)
     setErrorMessage("")
+    onIntentionalNavigationChange(true)
 
     try {
       const confirmResult = await checkoutState.checkout.confirm({
@@ -189,13 +191,15 @@ function CheckoutForm({ amountLabel }: CheckoutFormProps) {
           confirmResult.error.message ?? "Unable to complete donation. Check payment details and try again.",
         )
         setIsSubmitting(false)
+        onIntentionalNavigationChange(false)
         return
       }
 
-      window.location.assign(`/donate/return?session_id=${confirmResult.session.id}`)
+      window.location.replace(`/donate/return?session_id=${confirmResult.session.id}`)
     } catch {
       setErrorMessage("Unable to complete donation. Please refresh and try again.")
       setIsSubmitting(false)
+      onIntentionalNavigationChange(false)
     }
   }
 
@@ -229,7 +233,9 @@ function CheckoutForm({ amountLabel }: CheckoutFormProps) {
   const combinedErrorMessage = errorMessage || checkoutError
   const helperMessage = combinedErrorMessage
     ? ""
-    : checkoutState.type === "loading" || isCheckoutUiLoading
+    : isSubmitting
+      ? "Finalizing your donation. This can take a few seconds."
+      : checkoutState.type === "loading" || isCheckoutUiLoading
       ? "Secure checkout is loading below."
       : !hasCheckoutUiReady
         ? "Secure checkout is preparing your payment options."
@@ -284,7 +290,7 @@ function CheckoutForm({ amountLabel }: CheckoutFormProps) {
       ) : null}
 
       <Button type="submit" size="lg" className={donationCtaClassName} disabled={!canSubmit}>
-        {isSubmitting ? "Processing Donation…" : `Donate ${amountLabel}`}
+        {isSubmitting ? "Finalizing Donation…" : `Donate ${amountLabel}`}
       </Button>
     </form>
   )
@@ -297,6 +303,7 @@ export default function DonatePage() {
   const [donorEmail, setDonorEmail] = useState<string>("")
   const [checkoutClientSecret, setCheckoutClientSecret] = useState<string>("")
   const [isCreatingSession, setIsCreatingSession] = useState<boolean>(false)
+  const [isIntentionalNavigationPending, setIsIntentionalNavigationPending] = useState<boolean>(false)
   const [errorMessage, setErrorMessage] = useState<string>("")
   const customAmountInputRef = useRef<HTMLInputElement>(null)
   const donorEmailInputRef = useRef<HTMLInputElement>(null)
@@ -376,9 +383,14 @@ export default function DonatePage() {
   function resetCheckoutState(): void {
     setCheckoutClientSecret("")
     setErrorMessage("")
+    setIsIntentionalNavigationPending(false)
   }
 
   useEffect(() => {
+    if (isIntentionalNavigationPending) {
+      return
+    }
+
     const hasUnsavedDonationState = Boolean(checkoutClientSecret || customAmountInput.trim() || donorEmail.trim())
     if (!hasUnsavedDonationState) {
       return
@@ -393,7 +405,7 @@ export default function DonatePage() {
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload)
     }
-  }, [checkoutClientSecret, customAmountInput, donorEmail])
+  }, [checkoutClientSecret, customAmountInput, donorEmail, isIntentionalNavigationPending])
 
   useEffect(() => {
     if (!checkoutClientSecret) {
@@ -744,7 +756,10 @@ export default function DonatePage() {
                       Secure checkout is ready below. Choose a wallet or enter card details to continue.
                     </div>
                     <CheckoutProvider stripe={stripePromise} options={checkoutOptions}>
-                      <CheckoutForm amountLabel={amountLabel} />
+                      <CheckoutForm
+                        amountLabel={amountLabel}
+                        onIntentionalNavigationChange={setIsIntentionalNavigationPending}
+                      />
                     </CheckoutProvider>
                     <button
                       type="button"
