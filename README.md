@@ -46,7 +46,7 @@ Add these to `.env.local` and your Vercel project settings:
 ```bash
 ENABLE_CUSTOM_DONATION_RECEIPTS=true
 RESEND_API_KEY=
-RESEND_FROM_EMAIL="Nate the Great <donations@nicolematt.com>"
+RESEND_FROM_EMAIL="Nate the Great <donations@gonatego.com>"
 STRIPE_WEBHOOK_SECRET=
 ```
 
@@ -67,6 +67,8 @@ resend whoami --json
 resend doctor --json
 resend domains list --json
 ```
+
+`RESEND_FROM_EMAIL` must use a sender on a verified Resend domain. The currently verified sending domain is `gonatego.com`, so a `nicolematt.com` sender will be rejected by Resend.
 
 ### Local webhook testing
 
