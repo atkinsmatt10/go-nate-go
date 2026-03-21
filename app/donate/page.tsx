@@ -2,7 +2,7 @@
 
 import Image from "next/image"
 import Link from "next/link"
-import { FormEvent, useEffect, useMemo, useRef, useState } from "react"
+import { type ComponentProps, FormEvent, useEffect, useMemo, useRef, useState } from "react"
 import {
   CheckoutProvider,
   ExpressCheckoutElement,
@@ -28,6 +28,14 @@ interface CheckoutSessionResponse {
 interface CheckoutFormProps {
   amountLabel: string
 }
+
+type PaymentElementLoadErrorEvent = Parameters<
+  NonNullable<ComponentProps<typeof PaymentElement>["onLoadError"]>
+>[0]
+type ExpressCheckoutLoadErrorEvent = Parameters<
+  NonNullable<ComponentProps<typeof ExpressCheckoutElement>["onLoadError"]>
+>[0]
+type StripeCheckoutLoadErrorEvent = PaymentElementLoadErrorEvent | ExpressCheckoutLoadErrorEvent
 
 const PRESET_AMOUNTS: readonly number[] = [25, 50, 100, 250]
 const publishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
@@ -70,8 +78,8 @@ const expressCheckoutOptions: StripeCheckoutExpressCheckoutElementOptions = {
   paymentMethodOrder: ["apple_pay", "google_pay", "link"],
   paymentMethods: {
     amazonPay: "never",
-    applePay: "always",
-    googlePay: "always",
+    applePay: "auto",
+    googlePay: "auto",
     klarna: "never",
     link: "auto",
     paypal: "never",
@@ -91,6 +99,13 @@ function getAmountOptionClassName(isSelected: boolean): string {
 
 function isValidEmail(email: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+}
+
+function getStripeElementLoadErrorMessage(event: StripeCheckoutLoadErrorEvent): string {
+  return (
+    event.error.message ??
+    "Secure checkout could not load. Refresh and try again, or use a different payment method."
+  )
 }
 
 const impactHighlights = [
@@ -145,6 +160,8 @@ function CheckoutForm({ amountLabel }: CheckoutFormProps) {
   const checkoutState = useCheckout()
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
   const [errorMessage, setErrorMessage] = useState<string>("")
+  const [isCheckoutUiLoading, setIsCheckoutUiLoading] = useState<boolean>(true)
+  const [hasCheckoutUiReady, setHasCheckoutUiReady] = useState<boolean>(false)
 
   async function confirmDonationPayment(
     expressCheckoutConfirmEvent?: StripeExpressCheckoutElementConfirmEvent,
@@ -161,21 +178,25 @@ function CheckoutForm({ amountLabel }: CheckoutFormProps) {
     setIsSubmitting(true)
     setErrorMessage("")
 
-    const confirmResult = await checkoutState.checkout.confirm({
-      expressCheckoutConfirmEvent,
-      redirect: "if_required",
-      returnUrl: `${window.location.origin}/donate/return?session_id={CHECKOUT_SESSION_ID}`,
-    })
+    try {
+      const confirmResult = await checkoutState.checkout.confirm({
+        expressCheckoutConfirmEvent,
+        redirect: "if_required",
+      })
 
-    if (confirmResult.type === "error") {
-      setErrorMessage(
-        confirmResult.error.message ?? "Unable to complete donation. Check payment details and try again.",
-      )
+      if (confirmResult.type === "error") {
+        setErrorMessage(
+          confirmResult.error.message ?? "Unable to complete donation. Check payment details and try again.",
+        )
+        setIsSubmitting(false)
+        return
+      }
+
+      window.location.assign(`/donate/return?session_id=${confirmResult.session.id}`)
+    } catch {
+      setErrorMessage("Unable to complete donation. Please refresh and try again.")
       setIsSubmitting(false)
-      return
     }
-
-    window.location.assign(`/donate/return?session_id=${confirmResult.session.id}`)
   }
 
   function handleSubmit(event: FormEvent<HTMLFormElement>): void {
@@ -187,6 +208,16 @@ function CheckoutForm({ amountLabel }: CheckoutFormProps) {
     void confirmDonationPayment(event)
   }
 
+  function handleCheckoutUiReady(): void {
+    setHasCheckoutUiReady(true)
+    setIsCheckoutUiLoading(false)
+  }
+
+  function handleStripeElementLoadError(event: StripeCheckoutLoadErrorEvent): void {
+    setErrorMessage(getStripeElementLoadErrorMessage(event))
+    setIsCheckoutUiLoading(false)
+  }
+
   const canSubmit =
     checkoutState.type === "success" &&
     checkoutState.checkout.canConfirm &&
@@ -196,6 +227,15 @@ function CheckoutForm({ amountLabel }: CheckoutFormProps) {
     checkoutState.type === "success" ? checkoutState.checkout.lastPaymentError?.message ?? "" : ""
 
   const combinedErrorMessage = errorMessage || checkoutError
+  const helperMessage = combinedErrorMessage
+    ? ""
+    : checkoutState.type === "loading" || isCheckoutUiLoading
+      ? "Secure checkout is loading below."
+      : !hasCheckoutUiReady
+        ? "Secure checkout is preparing your payment options."
+        : canSubmit
+          ? "Secure checkout is ready. Review your details and donate when you're ready."
+          : "Choose Apple Pay, Google Pay, Link, or enter card details above to enable the donation button."
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
@@ -203,6 +243,8 @@ function CheckoutForm({ amountLabel }: CheckoutFormProps) {
         <ExpressCheckoutElement
           options={expressCheckoutOptions}
           onConfirm={handleExpressCheckoutConfirm}
+          onLoadError={handleStripeElementLoadError}
+          onReady={handleCheckoutUiReady}
         />
 
         <div className="flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.14em] text-[#6a8396]">
@@ -211,8 +253,25 @@ function CheckoutForm({ amountLabel }: CheckoutFormProps) {
           <span className="h-px flex-1 bg-[#c8dae6]" />
         </div>
 
-        <PaymentElement options={paymentElementOptions} />
+        <PaymentElement
+          options={paymentElementOptions}
+          onLoadError={handleStripeElementLoadError}
+          onLoaderStart={() => {
+            setIsCheckoutUiLoading(true)
+          }}
+          onReady={handleCheckoutUiReady}
+        />
       </div>
+
+      {helperMessage ? (
+        <div
+          className="rounded-xl border border-[#c8dae6] bg-[#f5fbff] px-3 py-2 text-sm font-medium text-[#46627a]"
+          role="status"
+          aria-live="polite"
+        >
+          {helperMessage}
+        </div>
+      ) : null}
 
       {combinedErrorMessage ? (
         <div
@@ -241,6 +300,7 @@ export default function DonatePage() {
   const [errorMessage, setErrorMessage] = useState<string>("")
   const customAmountInputRef = useRef<HTMLInputElement>(null)
   const donorEmailInputRef = useRef<HTMLInputElement>(null)
+  const checkoutContainerRef = useRef<HTMLDivElement>(null)
   const prefersReducedMotion = useReducedMotion()
 
   const donationAmountInDollars = useMemo(() => {
@@ -280,6 +340,7 @@ export default function DonatePage() {
     () => ({
       clientSecret: checkoutClientSecret,
       elementsOptions: {
+        loader: "auto" as const,
         appearance: {
           theme: "stripe" as const,
           variables: {
@@ -333,6 +394,17 @@ export default function DonatePage() {
       window.removeEventListener("beforeunload", handleBeforeUnload)
     }
   }, [checkoutClientSecret, customAmountInput, donorEmail])
+
+  useEffect(() => {
+    if (!checkoutClientSecret) {
+      return
+    }
+
+    checkoutContainerRef.current?.scrollIntoView({
+      behavior: prefersReducedMotion ? "auto" : "smooth",
+      block: "start",
+    })
+  }, [checkoutClientSecret, prefersReducedMotion])
 
   async function initializeCheckoutSession(): Promise<void> {
     if (donationAmountInCents === null || donationAmountInCents < 100) {
@@ -667,7 +739,10 @@ export default function DonatePage() {
                     {isCreatingSession ? "Preparing Checkout…" : "Continue to Secure Checkout"}
                   </Button>
                 ) : (
-                  <div className="space-y-4">
+                  <div ref={checkoutContainerRef} className="space-y-4">
+                    <div className="rounded-2xl border border-[#c8dae6] bg-[#f5fbff] px-4 py-3 text-sm font-medium text-[#36546c]">
+                      Secure checkout is ready below. Choose a wallet or enter card details to continue.
+                    </div>
                     <CheckoutProvider stripe={stripePromise} options={checkoutOptions}>
                       <CheckoutForm amountLabel={amountLabel} />
                     </CheckoutProvider>
