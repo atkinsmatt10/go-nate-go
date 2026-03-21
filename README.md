@@ -35,6 +35,55 @@ While Nate still has a long road ahead, he is doing well, and we're so proud of 
 
 This is an open source fundraising website built to support Team Nate the Great and the Children's Hospital of Philadelphia. The site is built with modern web technologies and deployed on Vercel.
 
+## Donation Receipt Emails
+
+The donation flow can now send a branded Nate the Great receipt email through Resend after Stripe confirms payment via webhook.
+
+### Required environment variables
+
+Add these to `.env.local` and your Vercel project settings:
+
+```bash
+ENABLE_CUSTOM_DONATION_RECEIPTS=true
+RESEND_API_KEY=
+RESEND_FROM_EMAIL="Nate the Great <donations@nicolematt.com>"
+STRIPE_WEBHOOK_SECRET=
+```
+
+Optional variables:
+
+```bash
+RESEND_REPLY_TO_EMAIL=
+DONATION_RECEIPT_SUPPORT_PHONE=
+NEXT_PUBLIC_SITE_URL=https://gonatego.com
+```
+
+### Resend CLI checks
+
+Use the installed Homebrew CLI to confirm auth and sender setup:
+
+```bash
+resend whoami --json
+resend doctor --json
+resend domains list --json
+```
+
+### Local webhook testing
+
+Forward Stripe events to the Next.js route while running `pnpm dev`:
+
+```bash
+stripe listen --forward-to http://localhost:3000/api/stripe/webhook
+```
+
+Then use the displayed signing secret as `STRIPE_WEBHOOK_SECRET`.
+
+### Receipt ownership note
+
+Custom receipts are opt-in behind `ENABLE_CUSTOM_DONATION_RECEIPTS=true`. Until that flag is enabled with the required Resend and Stripe webhook env vars in place, Checkout falls back to Stripe receipt delivery.
+
+If you want donors to receive only the custom receipt after enabling the flag, make sure Stripe-native customer receipts are not also enabled for the same payment flow.
+
 ## Meet Nate the Great 🦈
 
 ![Nate the Great](public/Nate-image.png)

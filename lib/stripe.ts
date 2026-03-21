@@ -19,3 +19,13 @@ export function getStripeClient(): Stripe {
 
   return stripeClient
 }
+
+export function constructStripeEvent(payload: string, signature: string): Stripe.Event {
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET
+
+  if (!webhookSecret) {
+    throw new Error("Missing STRIPE_WEBHOOK_SECRET environment variable")
+  }
+
+  return getStripeClient().webhooks.constructEvent(payload, signature, webhookSecret)
+}

@@ -1,7 +1,12 @@
 import { NextResponse } from "next/server"
+import { getCustomDonationReceiptConfigStatus } from "@/lib/donation-receipts"
 import { getStripeClient } from "@/lib/stripe"
 
 export const runtime = "nodejs"
+
+const DONATION_DESCRIPTION =
+  "Supports Team Nate the Great and CHOP childhood cancer care and research."
+const RECEIPT_TEMPLATE_VERSION = "2026-03-21"
 
 interface CheckoutSessionRequestBody {
   amountInCents?: unknown
@@ -66,6 +71,26 @@ export async function POST(request: Request) {
   try {
     const stripe = getStripeClient()
     const requestOrigin = new URL(request.url).origin
+    const customDonationReceiptConfig = getCustomDonationReceiptConfigStatus()
+    const donationMetadata = {
+      campaign: "nate-the-great",
+      donation_amount_in_cents: String(amountInCents),
+      donation_currency: "usd",
+      donor_email: donorEmail,
+      receipt_template_version: RECEIPT_TEMPLATE_VERSION,
+      receipt_delivery: customDonationReceiptConfig.ready ? "resend" : "stripe",
+      type: "donation",
+    }
+
+    if (customDonationReceiptConfig.enabled && !customDonationReceiptConfig.ready) {
+      console.warn(
+        "ENABLE_CUSTOM_DONATION_RECEIPTS is true, but required config is missing. Falling back to Stripe receipts.",
+        {
+          missingEnvKeys: customDonationReceiptConfig.missingEnvKeys,
+        },
+      )
+    }
+
     const checkoutSession = await stripe.checkout.sessions.create({
       ui_mode: "custom",
       mode: "payment",
@@ -73,6 +98,7 @@ export async function POST(request: Request) {
       currency: "usd",
       customer_creation: "always",
       customer_email: donorEmail,
+      metadata: donationMetadata,
       line_items: [
         {
           quantity: 1,
@@ -80,7 +106,7 @@ export async function POST(request: Request) {
             currency: "usd",
             product_data: {
               name: "Donation to Team Nate the Great",
-              description: "Supports Team Nate the Great and CHOP childhood cancer care and research.",
+              description: DONATION_DESCRIPTION,
             },
             unit_amount: amountInCents,
           },
@@ -88,12 +114,8 @@ export async function POST(request: Request) {
       ],
       payment_intent_data: {
         description: "Donation to Team Nate the Great",
-        metadata: {
-          campaign: "nate-the-great",
-          donor_email: donorEmail,
-          type: "donation",
-        },
-        receipt_email: donorEmail,
+        metadata: donationMetadata,
+        receipt_email: customDonationReceiptConfig.ready ? undefined : donorEmail,
       },
       return_url: `${requestOrigin}/donate/return?session_id={CHECKOUT_SESSION_ID}`,
     })
