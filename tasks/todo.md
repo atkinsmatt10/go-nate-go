@@ -16,7 +16,8 @@
 
 - Rebuilt the receipt template to match the Paper `EV-1` artboard structure: dark hero, overlapping payment snapshot, receipt details card, tinted summary card, and support footer.
 - Updated the send payload so the email can render the designed detail rows and copy, including split paid date/time, receipt emailed time, delivered-by text, support contact defaults, and Stripe sender metadata.
-- Verified the updated structure and copy against the Paper artboard screenshot and JSX export, with minor email-client-safe approximations for overlap and spacing.
+- Added explicit `Lilita One` and `Work Sans` font loading in the email head so supported clients can pick up the campaign typography instead of falling straight to system fallbacks.
+- Verified the updated structure and copy against the Paper artboard screenshot and JSX export, plus a locally rendered browser preview screenshot, with minor email-client-safe approximations for overlap and spacing.
 - Verification passed:
 - `pnpm lint`
 - `pnpm exec tsc --noEmit`
@@ -34,7 +35,7 @@
 
 ### Completeness Gaps
 
-- No screenshot export of the rendered email client output was generated locally, so the design verification is based on code review against the Paper artboard plus passing lint and typecheck.
+- Web-font support still depends on the recipient client. The template now requests the design-system fonts, but clients that strip remote fonts will still fall back to the declared rounded/sans-serif backups.
 
 ### Migration And Rollback Notes
 
@@ -68,6 +69,7 @@
 
 - Recorded the verification outcome and the design-alignment review notes for this slice.
 - Recorded that the branch was pushed and a Vercel preview deployment was created for the updated receipt email.
+- Recorded the follow-up typography pass and local rendered preview verification.
 
 ### Remaining Follow-Ups
 

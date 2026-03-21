@@ -1,4 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
+/* eslint-disable @next/next/no-head-element */
+/* eslint-disable @next/next/no-page-custom-font */
 
 interface DonationReceiptEmailProps {
   amountText: string
@@ -57,7 +59,18 @@ export function DonationReceiptEmail({
   const footerMetaText = `Go Nate Go donation receipt\nReceipt #${receiptNumber}`
 
   return (
-    <html>
+    <html lang="en">
+      <head>
+        <meta charSet="utf-8" />
+        <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+        <title>Your Nate the Great receipt</title>
+        <link href="https://fonts.googleapis.com" rel="preconnect" />
+        <link crossOrigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Work+Sans:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet"
+        />
+      </head>
       <body
         style={{
           margin: 0,
