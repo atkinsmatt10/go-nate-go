@@ -152,11 +152,16 @@ function formatDateAndTime(date: Date): { dateText: string; timeText: string } {
 }
 
 function formatReceiptEmailedAt(date: Date): string {
-  return new Intl.DateTimeFormat("en-US", {
+  const dateText = new Intl.DateTimeFormat("en-US", {
     dateStyle: "medium",
+    timeZone: "America/New_York",
+  }).format(date)
+  const timeText = new Intl.DateTimeFormat("en-US", {
     timeStyle: "short",
     timeZone: "America/New_York",
   }).format(date)
+
+  return `${dateText} at ${timeText}`
 }
 
 function formatPaymentMethod(charge: Stripe.Charge | null): string {
@@ -264,11 +269,7 @@ function buildPlainTextReceipt({
   supportEmail,
   supportPhone,
 }: PlainTextReceiptParams): string {
-  const supportLine = replyToEmail
-    ? supportPhone
-      ? `${replyToEmail} or ${supportPhone}`
-      : replyToEmail
-    : supportPhone || "the fundraising team"
+  const supportLine = supportPhone ? `${supportEmail} or ${supportPhone}` : supportEmail
 
   return [
     `Thank You For Showing Up For Nate`,
@@ -284,7 +285,7 @@ function buildPlainTextReceipt({
     ``,
     `Receipt details`,
     `Sent to: ${recipientEmail}`,
-    `Reply-to support: Nate the Great <${supportEmail}>`,
+    `Reply-to support: Nate the Great <${replyToEmail ?? supportEmail}>`,
     `Receipt emailed: ${receiptEmailedText}`,
     `Delivered by: ${deliveredByText}`,
     `Stripe sender: ${stripeSenderText}`,
