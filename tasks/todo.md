@@ -67,7 +67,8 @@
 ### Facts Added Or Corrected
 
 - Recorded the verification outcome and the design-alignment review notes for this slice.
+- Recorded that the branch was pushed and a Vercel preview deployment was created for the updated receipt email.
 
 ### Remaining Follow-Ups
 
-- Push the branch and deploy a preview build if the user wants a final live render check before production.
+- Send a real or test donation through the preview or production flow if a final inbox rendering check is needed before promoting the updated email to production again.
