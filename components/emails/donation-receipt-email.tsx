@@ -4,20 +4,14 @@
 
 interface DonationReceiptEmailProps {
   amountText: string
-  deliveredByText: string
   donationDateText: string
   donationLabel: string
   donationTimeText: string
   paymentMethodText: string
-  receiptEmailedText: string
-  receiptNumber: string
   recipientEmail: string
-  replyToSupportText: string
   siteOrigin: string
   statusPageUrl: string
-  stripeSenderText: string
   supportEmail: string
-  supportPhone: string
 }
 
 const colors = {
@@ -40,30 +34,24 @@ const headingFontFamily = '"Lilita One", "Trebuchet MS", "Arial Rounded MT Bold"
 
 export function DonationReceiptEmail({
   amountText,
-  deliveredByText,
   donationDateText,
   donationLabel,
   donationTimeText,
   paymentMethodText,
-  receiptEmailedText,
-  receiptNumber,
   recipientEmail,
-  replyToSupportText,
   siteOrigin,
   statusPageUrl,
-  stripeSenderText,
   supportEmail,
-  supportPhone,
 }: DonationReceiptEmailProps) {
   const sharkUrl = `${siteOrigin}/nate%20shark.png`
-  const footerMetaText = `Go Nate Go donation receipt\nReceipt #${receiptNumber}`
+  const footerMetaText = `Go Nate Go donation receipt\nSent to ${recipientEmail}`
 
   return (
     <html lang="en">
       <head>
         <meta charSet="utf-8" />
         <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-        <title>Your Nate the Great receipt</title>
+        <title>Your Go Nate Go donation receipt</title>
         <link href="https://fonts.googleapis.com" rel="preconnect" />
         <link crossOrigin="" href="https://fonts.gstatic.com" rel="preconnect" />
         <link
@@ -312,17 +300,6 @@ export function DonationReceiptEmail({
                                           </div>
                                         </td>
                                         <td style={{ textAlign: "right", verticalAlign: "bottom" }}>
-                                          <div
-                                            style={{
-                                              color: "#6A839B",
-                                              fontSize: "12px",
-                                              letterSpacing: "1.2px",
-                                              lineHeight: "1.2",
-                                              textTransform: "uppercase",
-                                            }}
-                                          >
-                                            Receipt #{receiptNumber}
-                                          </div>
                                           <div style={{ marginTop: "10px" }}>
                                             <span
                                               style={{
@@ -381,92 +358,6 @@ export function DonationReceiptEmail({
                       </td>
                     </tr>
                     <tr>
-                      <td style={{ padding: "20px 20px 0" }}>
-                        <Card>
-                          <SectionEyebrow>Receipt Details</SectionEyebrow>
-                          <BodyCopy>
-                            Your Stripe receipt details, preserved in the Go Nate Go brand.
-                          </BodyCopy>
-                          <StripedDetailRows
-                            rows={[
-                              { label: "Sent to", value: recipientEmail },
-                              { label: "Reply-to support", value: replyToSupportText },
-                              { label: "Receipt emailed", value: receiptEmailedText },
-                              { label: "Delivered by", value: deliveredByText },
-                              { label: "Stripe sender", value: stripeSenderText },
-                            ]}
-                          />
-                        </Card>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td style={{ padding: "20px 20px 0" }}>
-                        <Card tint>
-                          <table
-                            role="presentation"
-                            width="100%"
-                            cellPadding="0"
-                            cellSpacing="0"
-                            style={{ width: "100%", borderCollapse: "collapse" }}
-                          >
-                            <tbody>
-                              <tr>
-                                <td style={{ verticalAlign: "top", paddingBottom: "16px" }}>
-                                  <SectionEyebrow>Summary</SectionEyebrow>
-                                  <div
-                                    style={{
-                                      marginTop: "6px",
-                                      color: colors.ink,
-                                      fontFamily: headingFontFamily,
-                                      fontSize: "34px",
-                                      lineHeight: "1.05",
-                                    }}
-                                  >
-                                    Donation To Team Nate the Great
-                                  </div>
-                                </td>
-                                <td style={{ textAlign: "right", verticalAlign: "top" }}>
-                                  <span
-                                    style={{
-                                      display: "inline-block",
-                                      padding: "8px 12px",
-                                      borderRadius: "999px",
-                                      backgroundColor: colors.white,
-                                      border: "1px solid #CFE0EC",
-                                      color: "#4F667D",
-                                      fontSize: "13px",
-                                      lineHeight: "1.2",
-                                    }}
-                                  >
-                                    Qty 1
-                                  </span>
-                                </td>
-                              </tr>
-                              <tr>
-                                <td colSpan={2}>
-                                  <div
-                                    style={{
-                                      backgroundColor: colors.white,
-                                      border: "1px solid #DBE8F2",
-                                      borderRadius: "22px",
-                                      overflow: "hidden",
-                                    }}
-                                  >
-                                    <SummaryRow
-                                      label="Donation to Team Nate the Great"
-                                      detail={`${donationLabel} × 1`}
-                                      value={amountText}
-                                    />
-                                    <SummaryTotalRow label="Amount paid" value={amountText} />
-                                  </div>
-                                </td>
-                              </tr>
-                            </tbody>
-                          </table>
-                        </Card>
-                      </td>
-                    </tr>
-                    <tr>
                       <td style={{ padding: "20px 20px 24px" }}>
                         <Card>
                           <div
@@ -480,15 +371,14 @@ export function DonationReceiptEmail({
                             Questions About Your Donation?
                           </div>
                           <BodyCopy>
-                            Contact Nate the Great at{" "}
+                            Questions about donations? Email{" "}
                             <a
                               href={`mailto:${supportEmail}`}
                               style={{ color: colors.ink, fontWeight: 700, textDecoration: "none" }}
                             >
                               {supportEmail}
-                            </a>{" "}
-                            or call{" "}
-                            <span style={{ color: colors.ink, fontWeight: 700 }}>{supportPhone}</span>.
+                            </a>
+                            .
                           </BodyCopy>
                           <div
                             style={{
@@ -516,9 +406,8 @@ export function DonationReceiptEmail({
                                 color: "#4F667D",
                               }}
                             >
-                              You&apos;re receiving this email because you made a donation to Nate the
-                              Great, which partners with Stripe to provide invoicing and payment
-                              processing.
+                              You&apos;re receiving this email because you made a donation to Go Nate
+                              Go in support of Nate&apos;s fundraiser for CHOP.
                             </div>
                           </div>
                           <table
@@ -627,22 +516,6 @@ function Card({ children, tint = false }: CardProps) {
   )
 }
 
-function SectionEyebrow({ children }: { children: React.ReactNode }) {
-  return (
-    <div
-      style={{
-        color: colors.teal,
-        fontSize: "12px",
-        letterSpacing: "1.2px",
-        lineHeight: "1.2",
-        textTransform: "uppercase",
-      }}
-    >
-      {children}
-    </div>
-  )
-}
-
 function BodyCopy({ children }: { children: React.ReactNode }) {
   return (
     <div
@@ -698,129 +571,5 @@ function InfoCard({ label, primaryText, secondaryText }: InfoCardProps) {
       </div>
       <div style={{ color: "#5D7389", fontSize: "15px", lineHeight: "1.45" }}>{secondaryText}</div>
     </div>
-  )
-}
-
-interface StripedDetailRowsProps {
-  rows: ReadonlyArray<{ label: string; value: string }>
-}
-
-function StripedDetailRows({ rows }: StripedDetailRowsProps) {
-  return (
-    <div
-      style={{
-        marginTop: "16px",
-        border: "1px solid #E5EEF5",
-        borderRadius: "22px",
-        overflow: "hidden",
-      }}
-    >
-      {rows.map((row, index) => (
-        <div
-          key={row.label}
-          style={{
-            display: "flex",
-            gap: "20px",
-            justifyContent: "space-between",
-            padding: "16px 18px",
-            backgroundColor: index % 2 === 0 ? "#F9FCFF" : colors.white,
-          }}
-        >
-          <div style={{ color: "#6F859A", fontSize: "14px", lineHeight: "1.45" }}>{row.label}</div>
-          <div
-            style={{
-              color: colors.ink,
-              fontSize: "15px",
-              fontWeight: 700,
-              lineHeight: "1.45",
-              textAlign: "right",
-            }}
-          >
-            {row.value}
-          </div>
-        </div>
-      ))}
-    </div>
-  )
-}
-
-interface SummaryRowProps {
-  detail: string
-  label: string
-  value: string
-}
-
-function SummaryRow({ detail, label, value }: SummaryRowProps) {
-  return (
-    <table
-      role="presentation"
-      width="100%"
-      cellPadding="0"
-      cellSpacing="0"
-      style={{ width: "100%", borderCollapse: "collapse" }}
-    >
-      <tbody>
-        <tr>
-          <td style={{ padding: "18px", verticalAlign: "top" }}>
-            <div style={{ color: colors.ink, fontSize: "17px", fontWeight: 700, lineHeight: "1.45" }}>
-              {label}
-            </div>
-            <div style={{ color: "#6E859A", fontSize: "14px", lineHeight: "1.45" }}>{detail}</div>
-          </td>
-          <td
-            style={{
-              padding: "18px",
-              verticalAlign: "top",
-              textAlign: "right",
-              color: colors.ink,
-              fontSize: "18px",
-              fontWeight: 700,
-              lineHeight: "1.45",
-              whiteSpace: "nowrap",
-            }}
-          >
-            {value}
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  )
-}
-
-function SummaryTotalRow({ label, value }: { label: string; value: string }) {
-  return (
-    <table
-      role="presentation"
-      width="100%"
-      cellPadding="0"
-      cellSpacing="0"
-      style={{
-        width: "100%",
-        borderCollapse: "collapse",
-        borderTop: "1px solid #E5EEF5",
-        backgroundColor: "#F8FBFE",
-      }}
-    >
-      <tbody>
-        <tr>
-          <td style={{ padding: "18px", color: "#4F667D", fontSize: "15px", lineHeight: "1.45" }}>
-            {label}
-          </td>
-          <td
-            style={{
-              padding: "18px",
-              textAlign: "right",
-              color: colors.ink,
-              fontSize: "22px",
-              fontWeight: 800,
-              lineHeight: "1.2",
-              whiteSpace: "nowrap",
-            }}
-          >
-            {value}
-          </td>
-        </tr>
-      </tbody>
-    </table>
   )
 }
