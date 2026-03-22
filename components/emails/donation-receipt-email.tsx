@@ -31,6 +31,23 @@ const colors = {
 
 const bodyFontFamily = '"Work Sans", Arial, Helvetica, sans-serif'
 const headingFontFamily = '"Lilita One", "Trebuchet MS", "Arial Rounded MT Bold", Arial, sans-serif'
+const shopItems = [
+  {
+    href: "https://shop.gonatego.com/products/unisex-garment-dyed-heavyweight-t-shirt",
+    label: "Heavyweight Tee",
+    price: "$35",
+  },
+  {
+    href: "https://shop.gonatego.com/products/unisex-premium-sweatshirt",
+    label: "Premium Crew",
+    price: "$55",
+  },
+  {
+    href: "https://shop.gonatego.com/products/waffle-beanie",
+    label: "Thermal Waffle Beanie",
+    price: "$25",
+  },
+] as const
 
 export function DonationReceiptEmail({
   amountText,
@@ -144,6 +161,8 @@ export function DonationReceiptEmail({
                                                   style={{
                                                     width: "56px",
                                                     height: "56px",
+                                                    padding: "8px",
+                                                    boxSizing: "border-box",
                                                     borderRadius: "999px",
                                                     backgroundColor: "rgba(239,245,251,0.16)",
                                                     border: "1px solid rgba(216,239,245,0.3)",
@@ -158,7 +177,8 @@ export function DonationReceiptEmail({
                                                       display: "block",
                                                       width: "40px",
                                                       height: "40px",
-                                                      margin: "8px auto 0",
+                                                      margin: "0 auto",
+                                                      objectFit: "contain",
                                                     }}
                                                   />
                                                 </div>
@@ -358,6 +378,111 @@ export function DonationReceiptEmail({
                       </td>
                     </tr>
                     <tr>
+                      <td style={{ padding: "20px 20px 0" }}>
+                        <Card tint>
+                          <div
+                            style={{
+                              color: colors.ink,
+                              fontFamily: headingFontFamily,
+                              fontSize: "26px",
+                              lineHeight: "1.05",
+                            }}
+                          >
+                            Shop Natey Shark Gear
+                          </div>
+                          <BodyCopy>
+                            If you want to wear your support, the shop has everyday merch that helps
+                            fund childhood cancer research at CHOP.
+                          </BodyCopy>
+                          <div
+                            style={{
+                              marginTop: "18px",
+                              backgroundColor: colors.white,
+                              border: "1px solid #DBE8F2",
+                              borderRadius: "22px",
+                              overflow: "hidden",
+                            }}
+                          >
+                            {shopItems.map((item, index) => (
+                              <table
+                                key={item.href}
+                                role="presentation"
+                                width="100%"
+                                cellPadding="0"
+                                cellSpacing="0"
+                                style={{
+                                  width: "100%",
+                                  borderCollapse: "collapse",
+                                  borderTop: index === 0 ? "none" : "1px solid #E5EEF5",
+                                }}
+                              >
+                                <tbody>
+                                  <tr>
+                                    <td style={{ padding: "16px 18px", verticalAlign: "middle" }}>
+                                      <div
+                                        style={{
+                                          color: colors.ink,
+                                          fontSize: "16px",
+                                          fontWeight: 700,
+                                          lineHeight: "1.35",
+                                        }}
+                                      >
+                                        {item.label}
+                                      </div>
+                                      <div
+                                        style={{
+                                          color: "#6E859A",
+                                          fontSize: "14px",
+                                          lineHeight: "1.45",
+                                        }}
+                                      >
+                                        {item.price}
+                                      </div>
+                                    </td>
+                                    <td
+                                      style={{
+                                        padding: "16px 18px",
+                                        textAlign: "right",
+                                        verticalAlign: "middle",
+                                      }}
+                                    >
+                                      <a
+                                        href={item.href}
+                                        style={{
+                                          display: "inline-block",
+                                          padding: "10px 14px",
+                                          borderRadius: "999px",
+                                          backgroundColor: "#D8EFF5",
+                                          border: "1px solid #9FC5D8",
+                                          color: colors.ink,
+                                          fontSize: "14px",
+                                          fontWeight: 700,
+                                          lineHeight: "1.2",
+                                          textDecoration: "none",
+                                        }}
+                                      >
+                                        Shop now
+                                      </a>
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            ))}
+                          </div>
+                          <div style={{ marginTop: "16px", fontSize: "14px", lineHeight: "1.55", color: "#4F667D" }}>
+                            Browse the full collection at{" "}
+                            <a
+                              href="https://shop.gonatego.com"
+                              style={{ color: colors.ink, fontWeight: 700, textDecoration: "none" }}
+                            >
+                              shop.gonatego.com
+                            </a>
+                            .
+                          </div>
+                        </Card>
+                      </td>
+                    </tr>
+                    <tr>
                       <td style={{ padding: "20px 20px 24px" }}>
                         <Card>
                           <div
@@ -433,6 +558,8 @@ export function DonationReceiptEmail({
                                             style={{
                                               width: "42px",
                                               height: "42px",
+                                              padding: "6px",
+                                              boxSizing: "border-box",
                                               borderRadius: "999px",
                                               backgroundColor: "#D8EFF5",
                                               textAlign: "center",
@@ -446,7 +573,8 @@ export function DonationReceiptEmail({
                                                 display: "block",
                                                 width: "30px",
                                                 height: "30px",
-                                                margin: "6px auto 0",
+                                                margin: "0 auto",
+                                                objectFit: "contain",
                                               }}
                                             />
                                           </div>
@@ -545,6 +673,8 @@ function InfoCard({ label, primaryText, secondaryText }: InfoCardProps) {
         border: "1px solid #E0EAF2",
         borderRadius: "22px",
         padding: "16px 18px",
+        height: "108px",
+        boxSizing: "border-box",
       }}
     >
       <div
@@ -569,7 +699,16 @@ function InfoCard({ label, primaryText, secondaryText }: InfoCardProps) {
       >
         {primaryText}
       </div>
-      <div style={{ color: "#5D7389", fontSize: "15px", lineHeight: "1.45" }}>{secondaryText}</div>
+      <div
+        style={{
+          color: "#5D7389",
+          fontSize: "15px",
+          lineHeight: "1.45",
+          minHeight: "42px",
+        }}
+      >
+        {secondaryText}
+      </div>
     </div>
   )
 }
