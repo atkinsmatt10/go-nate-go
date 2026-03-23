@@ -2,6 +2,7 @@
 /* eslint-disable @next/next/no-head-element */
 /* eslint-disable @next/next/no-page-custom-font */
 
+import { Button, Preview } from "@react-email/components"
 import type { ReactNode } from "react"
 
 interface DonationReceiptEmailProps {
@@ -16,13 +17,17 @@ interface DonationReceiptEmailProps {
 }
 
 const colors = {
+  body: "#3D5D81",
   blue: "#2A3F54",
   border: "#D8EFF5",
+  heroLabel: "#7FAFC4",
+  heroSub: "#D8EFF5",
   ink: "#223B54",
   mist: "#EEF5FB",
-  muted: "#5D7389",
+  muted: "#4A6F84",
   snow: "#F7FBFF",
   teal: "#42A8A9",
+  tealDark: "#1E7A7B",
   white: "#FFFFFF",
 }
 
@@ -80,14 +85,12 @@ export function DonationReceiptEmail({
         style={{
           margin: 0,
           backgroundColor: colors.mist,
-          color: colors.ink,
+          color: colors.body,
           fontFamily: bodyFontFamily,
           WebkitFontSmoothing: "antialiased",
         }}
       >
-        <div style={{ display: "none", maxHeight: 0, overflow: "hidden", opacity: 0 }}>
-          Thank you for showing up for Nate. Your donation receipt is below.
-        </div>
+        <Preview>Thank you for showing up for Nate. Your donation receipt is below.</Preview>
         <table
           role="presentation"
           width="100%"
@@ -97,19 +100,19 @@ export function DonationReceiptEmail({
         >
           <tbody>
             <tr>
-              <td align="center" style={{ padding: "24px 0 36px" }}>
+              <td align="center" style={{ padding: "24px 16px 36px" }}>
                 <table
                   role="presentation"
                   width="100%"
                   cellPadding="0"
                   cellSpacing="0"
-                  style={{ width: "100%", maxWidth: "390px", borderCollapse: "collapse" }}
+                  style={{ width: "100%", maxWidth: "600px", borderCollapse: "collapse" }}
                 >
                   <tbody>
                     <tr>
                       <td
                         style={{
-                          padding: "48px 32px 40px",
+                          padding: "36px 32px 32px",
                           backgroundColor: colors.blue,
                           borderBottomLeftRadius: "32px",
                           borderBottomRightRadius: "32px",
@@ -168,7 +171,7 @@ export function DonationReceiptEmail({
                                 align="center"
                                 style={{
                                   paddingBottom: "24px",
-                                  color: "#B9D9E6",
+                                  color: colors.heroLabel,
                                   fontSize: "14px",
                                   letterSpacing: "2px",
                                   lineHeight: "1.15",
@@ -184,7 +187,7 @@ export function DonationReceiptEmail({
                                 style={{
                                   color: colors.white,
                                   fontFamily: headingFontFamily,
-                                  fontSize: "34px",
+                                  fontSize: "32px",
                                   lineHeight: "1.08",
                                   paddingBottom: "18px",
                                 }}
@@ -198,9 +201,9 @@ export function DonationReceiptEmail({
                               <td
                                 align="center"
                                 style={{
-                                  color: "#E2EDF5",
-                                  fontSize: "18px",
-                                  lineHeight: "1.55",
+                                  color: colors.heroSub,
+                                  fontSize: "15px",
+                                  lineHeight: "1.6",
                                 }}
                               >
                                 Your gift supports Nate&apos;s fundraiser for CHOP childhood cancer
@@ -220,8 +223,8 @@ export function DonationReceiptEmail({
                         <div
                           style={{
                             marginTop: "-20px",
-                            color: colors.teal,
-                            fontSize: "14px",
+                            color: colors.tealDark,
+                            fontSize: "13px",
                             fontWeight: 500,
                             letterSpacing: "2px",
                             lineHeight: "1.15",
@@ -234,7 +237,7 @@ export function DonationReceiptEmail({
                           style={{
                             color: colors.ink,
                             fontFamily: headingFontFamily,
-                            fontSize: "62px",
+                            fontSize: "48px",
                             lineHeight: "1",
                             marginTop: "10px",
                           }}
@@ -246,12 +249,12 @@ export function DonationReceiptEmail({
                             style={{
                               display: "inline-block",
                               padding: "8px 14px",
-                              borderRadius: "999px",
-                              backgroundColor: "#D8EFF5",
-                              border: "1px solid #C7E3EB",
+                              borderRadius: "20px",
+                              backgroundColor: colors.mist,
+                              border: `1px solid ${colors.border}`,
                               color: colors.ink,
-                              fontSize: "16px",
-                              fontWeight: 700,
+                              fontSize: "13px",
+                              fontWeight: 600,
                               lineHeight: "1.2",
                             }}
                           >
@@ -316,7 +319,17 @@ export function DonationReceiptEmail({
                       <td style={{ padding: "12px 24px 0" }}>
                         <CenteredCard>
                           <IconCircle backgroundColor={colors.teal}>
-                            <HeartIcon />
+                            <div
+                              style={{
+                                color: colors.white,
+                                fontSize: "22px",
+                                fontWeight: 700,
+                                lineHeight: "24px",
+                                textAlign: "center",
+                              }}
+                            >
+                              {"\u2665"}
+                            </div>
                           </IconCircle>
                           <CardHeading>Every Dollar Counts</CardHeading>
                           <CardBody>
@@ -331,7 +344,19 @@ export function DonationReceiptEmail({
                       <td style={{ padding: "12px 24px 0" }}>
                         <CenteredCard>
                           <IconCircle backgroundColor={colors.blue}>
-                            <BagIcon />
+                            <img
+                              src={sharkUrl}
+                              alt=""
+                              width="24"
+                              height="24"
+                              style={{
+                                display: "block",
+                                width: "24px",
+                                height: "24px",
+                                margin: "0 auto",
+                                objectFit: "contain",
+                              }}
+                            />
                           </IconCircle>
                           <CardHeading>Rep Team Nate!</CardHeading>
                           <CardBody>
@@ -361,14 +386,14 @@ export function DonationReceiptEmail({
                                         style={{
                                           backgroundColor: "#F1F7FB",
                                           borderRadius: "18px",
-                                          padding: "12px 10px 14px",
+                                          padding: "12px 6px 14px",
                                           textAlign: "center",
                                         }}
                                       >
                                         <div
                                           style={{
-                                            width: "68px",
-                                            height: "70px",
+                                            width: "80px",
+                                            height: "80px",
                                             margin: "0 auto 10px",
                                             borderRadius: "12px",
                                             backgroundColor: colors.blue,
@@ -378,12 +403,12 @@ export function DonationReceiptEmail({
                                           <img
                                             src={`${siteOrigin}${item.imagePath}`}
                                             alt={item.label}
-                                            width="68"
-                                            height="70"
+                                            width="80"
+                                            height="80"
                                             style={{
                                               display: "block",
-                                              width: "68px",
-                                              height: "70px",
+                                              width: "80px",
+                                              height: "80px",
                                               objectFit: "cover",
                                             }}
                                           />
@@ -415,7 +440,7 @@ export function DonationReceiptEmail({
                             </tbody>
                           </table>
                           <div style={{ marginTop: "4px" }}>
-                            <ButtonLink href="https://shop.gonatego.com">Shop Now</ButtonLink>
+                            <BulletproofButton href="https://shop.gonatego.com">Shop</BulletproofButton>
                           </div>
                         </CenteredCard>
                       </td>
@@ -425,8 +450,8 @@ export function DonationReceiptEmail({
                       <td align="center" style={{ padding: "28px 32px 40px" }}>
                         <div
                           style={{
-                            color: colors.ink,
-                            fontSize: "16px",
+                            color: colors.body,
+                            fontSize: "14px",
                             lineHeight: "1.5",
                             textAlign: "center",
                           }}
@@ -434,7 +459,9 @@ export function DonationReceiptEmail({
                           Questions about your donation?
                         </div>
                         <div style={{ marginTop: "16px" }}>
-                          <ButtonLink href={`mailto:${supportEmail}`}>Contact Nate the Great</ButtonLink>
+                          <BulletproofButton href={`mailto:${supportEmail}`}>
+                            Contact Nate the Great
+                          </BulletproofButton>
                         </div>
                         <div
                           style={{
@@ -464,7 +491,7 @@ export function DonationReceiptEmail({
                           style={{
                             marginTop: "18px",
                             color: colors.muted,
-                            fontSize: "15px",
+                            fontSize: "13px",
                             lineHeight: "1.55",
                             textAlign: "center",
                           }}
@@ -491,27 +518,28 @@ interface ButtonLinkProps {
   href: string
 }
 
-function ButtonLink({ children, href }: ButtonLinkProps) {
+function BulletproofButton({ children, href }: ButtonLinkProps) {
   return (
-    <a
+    <Button
       href={href}
       style={{
-        display: "inline-block",
-        minWidth: "217px",
-        padding: "14px 28px",
-        borderRadius: "24px",
         backgroundColor: colors.teal,
+        borderRadius: "24px",
+        boxSizing: "border-box",
         color: colors.white,
-        fontSize: "17px",
-        fontWeight: 700,
-        lineHeight: "1.2",
+        display: "inline-block",
+        fontFamily: bodyFontFamily,
+        fontSize: "14px",
+        fontWeight: 600,
+        lineHeight: "14px",
+        minWidth: "217px",
+        padding: "16px 32px",
         textAlign: "center",
         textDecoration: "none",
-        boxSizing: "border-box",
       }}
     >
       {children}
-    </a>
+    </Button>
   )
 }
 
@@ -523,10 +551,9 @@ function Card({ children }: CardProps) {
   return (
     <div
       style={{
-        backgroundColor: colors.snow,
+        backgroundColor: colors.white,
         border: `1px solid ${colors.border}`,
         borderRadius: "24px",
-        boxShadow: "0 2px 8px rgba(42,63,84,0.06)",
         padding: "24px",
       }}
     >
@@ -542,7 +569,6 @@ function CenteredCard({ children }: CardProps) {
         backgroundColor: colors.snow,
         border: `1px solid ${colors.border}`,
         borderRadius: "24px",
-        boxShadow: "0 2px 8px rgba(42,63,84,0.06)",
         padding: "28px 24px",
         textAlign: "center",
       }}
@@ -572,8 +598,8 @@ function CardBody({ children }: { children: ReactNode }) {
   return (
     <div
       style={{
-        color: colors.muted,
-        fontSize: "16px",
+        color: colors.body,
+        fontSize: "14px",
         lineHeight: "1.6",
         marginTop: "12px",
       }}
@@ -593,16 +619,16 @@ function IconCircle({
   return (
     <div
       style={{
-        width: "48px",
-        height: "48px",
+        width: "44px",
+        height: "44px",
         margin: "0 auto",
-        borderRadius: "16px",
+        borderRadius: "22px",
         backgroundColor,
         textAlign: "center",
         lineHeight: 0,
       }}
     >
-      <div style={{ paddingTop: "12px" }}>{children}</div>
+      <div style={{ paddingTop: "10px" }}>{children}</div>
     </div>
   )
 }
@@ -634,7 +660,7 @@ function DetailRow({
             style={{
               borderTop: `1px solid ${colors.border}`,
               color: colors.muted,
-              fontSize: "15px",
+              fontSize: "14px",
               lineHeight: "1.5",
               padding: "14px 0",
             }}
@@ -646,7 +672,7 @@ function DetailRow({
             style={{
               borderTop: `1px solid ${colors.border}`,
               color: valueColor,
-              fontSize: "15px",
+              fontSize: "14px",
               fontWeight: valueWeight,
               lineHeight: "1.5",
               padding: "14px 0",
@@ -657,52 +683,6 @@ function DetailRow({
         </tr>
       </tbody>
     </table>
-  )
-}
-
-function HeartIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M12 20.4 4.8 13.6a4.95 4.95 0 0 1 0-7.1 4.78 4.78 0 0 1 6.9 0L12 6.8l.3-.3a4.78 4.78 0 0 1 6.9 0 4.95 4.95 0 0 1 0 7.1L12 20.4Z"
-        fill="#FFFFFF"
-      />
-    </svg>
-  )
-}
-
-function BagIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M8 9V7a4 4 0 1 1 8 0v2"
-        fill="none"
-        stroke="#42A8A9"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="2"
-      />
-      <path
-        d="M5 9h14v10a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V9Z"
-        fill="none"
-        stroke="#42A8A9"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="2"
-      />
-    </svg>
   )
 }
 
