@@ -2,28 +2,25 @@
 /* eslint-disable @next/next/no-head-element */
 /* eslint-disable @next/next/no-page-custom-font */
 
+import type { ReactNode } from "react"
+
 interface DonationReceiptEmailProps {
   amountText: string
   donationDateText: string
   donationLabel: string
-  donationTimeText: string
   paymentMethodText: string
+  receiptNumberText?: string
   recipientEmail: string
   siteOrigin: string
-  statusPageUrl: string
   supportEmail: string
 }
 
 const colors = {
-  border: "#D8E8F2",
-  dark: "#304964",
+  blue: "#2A3F54",
+  border: "#D8EFF5",
   ink: "#223B54",
-  lightBlue: "#EAF3FB",
-  muted: "#6D8398",
-  pale: "#EEF5FB",
-  paleBorder: "#DCEAF4",
-  pill: "#42A8A924",
-  shell: "#F7FBFF",
+  mist: "#EEF5FB",
+  muted: "#5D7389",
   snow: "#F7FBFF",
   teal: "#42A8A9",
   white: "#FFFFFF",
@@ -31,20 +28,24 @@ const colors = {
 
 const bodyFontFamily = '"Work Sans", Arial, Helvetica, sans-serif'
 const headingFontFamily = '"Lilita One", "Trebuchet MS", "Arial Rounded MT Bold", Arial, sans-serif'
-const shopItems = [
+
+const merchItems = [
   {
     href: "https://shop.gonatego.com/products/unisex-garment-dyed-heavyweight-t-shirt",
-    label: "Heavyweight Tee",
+    imagePath: "/unisex-garment-dyed-heavyweight-t-shirt-navy-front-68a5f15854564.jpg",
+    label: "Tee",
     price: "$35",
   },
   {
     href: "https://shop.gonatego.com/products/unisex-premium-sweatshirt",
-    label: "Premium Crew",
+    imagePath: "/unisex-premium-sweatshirt-navy-blazer-front-68a5f05c76dd3.jpg",
+    label: "Crew",
     price: "$55",
   },
   {
     href: "https://shop.gonatego.com/products/waffle-beanie",
-    label: "Thermal Waffle Beanie",
+    imagePath: "/waffle-beanie-navy-front-68a5f0a9e7b3c.jpg",
+    label: "Hat",
     price: "$25",
   },
 ] as const
@@ -53,15 +54,14 @@ export function DonationReceiptEmail({
   amountText,
   donationDateText,
   donationLabel,
-  donationTimeText,
   paymentMethodText,
+  receiptNumberText,
   recipientEmail,
   siteOrigin,
-  statusPageUrl,
   supportEmail,
 }: DonationReceiptEmailProps) {
   const sharkUrl = `${siteOrigin}/nate%20shark.png`
-  const footerMetaText = `Go Nate Go donation receipt\nSent to ${recipientEmail}`
+  const donationForText = formatDonationForLabel(donationLabel)
 
   return (
     <html lang="en">
@@ -79,7 +79,7 @@ export function DonationReceiptEmail({
       <body
         style={{
           margin: 0,
-          backgroundColor: colors.lightBlue,
+          backgroundColor: colors.mist,
           color: colors.ink,
           fontFamily: bodyFontFamily,
           WebkitFontSmoothing: "antialiased",
@@ -93,33 +93,26 @@ export function DonationReceiptEmail({
           width="100%"
           cellPadding="0"
           cellSpacing="0"
-          style={{ width: "100%", borderCollapse: "collapse", backgroundColor: colors.lightBlue }}
+          style={{ width: "100%", borderCollapse: "collapse", backgroundColor: colors.mist }}
         >
           <tbody>
             <tr>
-              <td align="center" style={{ padding: "44px 16px 72px" }}>
+              <td align="center" style={{ padding: "24px 0 36px" }}>
                 <table
                   role="presentation"
                   width="100%"
                   cellPadding="0"
                   cellSpacing="0"
-                  style={{
-                    width: "100%",
-                    maxWidth: "640px",
-                    borderCollapse: "collapse",
-                    backgroundColor: colors.shell,
-                    border: `1px solid ${colors.border}`,
-                    borderRadius: "36px",
-                    overflow: "hidden",
-                    boxShadow: "0 28px 60px rgba(42,63,84,0.12)",
-                  }}
+                  style={{ width: "100%", maxWidth: "390px", borderCollapse: "collapse" }}
                 >
                   <tbody>
                     <tr>
                       <td
                         style={{
-                          padding: "28px 28px 32px",
-                          background: "linear-gradient(180deg, #304964 0%, #36506a 100%)",
+                          padding: "48px 32px 40px",
+                          backgroundColor: colors.blue,
+                          borderBottomLeftRadius: "32px",
+                          borderBottomRightRadius: "32px",
                         }}
                       >
                         <table
@@ -131,103 +124,39 @@ export function DonationReceiptEmail({
                         >
                           <tbody>
                             <tr>
-                              <td style={{ paddingBottom: "18px" }}>
+                              <td align="center" style={{ paddingBottom: "12px" }}>
                                 <table
                                   role="presentation"
-                                  width="100%"
                                   cellPadding="0"
                                   cellSpacing="0"
-                                  style={{ width: "100%", borderCollapse: "collapse" }}
+                                  style={{ borderCollapse: "collapse" }}
                                 >
                                   <tbody>
                                     <tr>
-                                      <td style={{ verticalAlign: "top" }}>
-                                        <table
-                                          role="presentation"
-                                          cellPadding="0"
-                                          cellSpacing="0"
-                                          style={{ borderCollapse: "collapse" }}
-                                        >
-                                          <tbody>
-                                            <tr>
-                                              <td
-                                                style={{
-                                                  width: "56px",
-                                                  paddingRight: "14px",
-                                                  verticalAlign: "top",
-                                                }}
-                                              >
-                                                <div
-                                                  style={{
-                                                    width: "56px",
-                                                    height: "56px",
-                                                    padding: "8px",
-                                                    boxSizing: "border-box",
-                                                    borderRadius: "999px",
-                                                    backgroundColor: "rgba(239,245,251,0.16)",
-                                                    border: "1px solid rgba(216,239,245,0.3)",
-                                                    textAlign: "center",
-                                                  }}
-                                                >
-                                                  <img
-                                                    src={sharkUrl}
-                                                    alt="Go Nate Go"
-                                                    width="40"
-                                                    style={{
-                                                      display: "block",
-                                                      width: "40px",
-                                                      height: "40px",
-                                                      margin: "0 auto",
-                                                      objectFit: "contain",
-                                                    }}
-                                                  />
-                                                </div>
-                                              </td>
-                                              <td style={{ verticalAlign: "middle" }}>
-                                                <div
-                                                  style={{
-                                                    color: colors.snow,
-                                                    fontFamily: headingFontFamily,
-                                                    fontSize: "26px",
-                                                    lineHeight: "1.05",
-                                                  }}
-                                                >
-                                                  Go Nate Go
-                                                </div>
-                                                <div
-                                                  style={{
-                                                    marginTop: "4px",
-                                                    color: "#BFECEF",
-                                                    fontSize: "12px",
-                                                    letterSpacing: "1.1px",
-                                                    lineHeight: "1.3",
-                                                    textTransform: "uppercase",
-                                                  }}
-                                                >
-                                                  Donation receipt for Nate&apos;s fundraiser
-                                                </div>
-                                              </td>
-                                            </tr>
-                                          </tbody>
-                                        </table>
-                                      </td>
-                                      <td style={{ textAlign: "right", verticalAlign: "top" }}>
-                                        <span
+                                      <td style={{ width: "36px", paddingRight: "10px" }}>
+                                        <img
+                                          src={sharkUrl}
+                                          alt="Go Nate Go"
+                                          width="36"
                                           style={{
-                                            display: "inline-block",
-                                            padding: "10px 14px",
-                                            borderRadius: "999px",
-                                            backgroundColor: colors.pill,
-                                            border: "1px solid rgba(159,197,216,0.35)",
-                                            color: "#BFECEF",
-                                            fontSize: "11px",
-                                            letterSpacing: "1.2px",
-                                            lineHeight: "1.2",
-                                            textTransform: "uppercase",
+                                            display: "block",
+                                            width: "36px",
+                                            height: "36px",
+                                            objectFit: "contain",
                                           }}
-                                        >
-                                          Donation Receipt
-                                        </span>
+                                        />
+                                      </td>
+                                      <td
+                                        style={{
+                                          color: colors.teal,
+                                          fontFamily: bodyFontFamily,
+                                          fontSize: "18px",
+                                          fontWeight: 800,
+                                          letterSpacing: "-0.02em",
+                                          lineHeight: "1.2",
+                                        }}
+                                      >
+                                        Go Nate Go
                                       </td>
                                     </tr>
                                   </tbody>
@@ -235,47 +164,106 @@ export function DonationReceiptEmail({
                               </td>
                             </tr>
                             <tr>
-                              <td>
-                                <div
-                                  style={{
-                                    color: colors.snow,
-                                    fontFamily: headingFontFamily,
-                                    fontSize: "42px",
-                                    lineHeight: "1.02",
-                                  }}
-                                >
-                                  Thank You For Showing Up For Nate
-                                </div>
-                                <div
-                                  style={{
-                                    marginTop: "10px",
-                                    color: "rgba(247,251,255,0.9)",
-                                    fontSize: "18px",
-                                    lineHeight: "1.6",
-                                  }}
-                                >
-                                  Your donation receipt is below. This gift supports Nate&apos;s
-                                  fundraiser for CHOP childhood cancer care and research, and means a
-                                  great deal to our family.
-                                </div>
+                              <td
+                                align="center"
+                                style={{
+                                  paddingBottom: "24px",
+                                  color: "#B9D9E6",
+                                  fontSize: "14px",
+                                  letterSpacing: "2px",
+                                  lineHeight: "1.15",
+                                  textTransform: "uppercase",
+                                }}
+                              >
+                                Donation Receipt
+                              </td>
+                            </tr>
+                            <tr>
+                              <td
+                                align="center"
+                                style={{
+                                  color: colors.white,
+                                  fontFamily: headingFontFamily,
+                                  fontSize: "34px",
+                                  lineHeight: "1.08",
+                                  paddingBottom: "18px",
+                                }}
+                              >
+                                Thank You For
+                                <br />
+                                Showing Up For Nate
+                              </td>
+                            </tr>
+                            <tr>
+                              <td
+                                align="center"
+                                style={{
+                                  color: "#E2EDF5",
+                                  fontSize: "18px",
+                                  lineHeight: "1.55",
+                                }}
+                              >
+                                Your gift supports Nate&apos;s fundraiser for CHOP childhood cancer
+                                care and research.
                               </td>
                             </tr>
                           </tbody>
                         </table>
                       </td>
                     </tr>
+
                     <tr>
-                      <td style={{ padding: "0 20px" }}>
+                      <td
+                        align="center"
+                        style={{ padding: "12px 32px 0", textAlign: "center", marginTop: "-20px" }}
+                      >
                         <div
                           style={{
-                            marginTop: "-18px",
-                            background:
-                              "linear-gradient(180deg, rgba(248,252,255,1) 0%, rgba(244,249,253,1) 100%)",
-                            border: "1px solid #D8EFF5",
-                            borderRadius: "30px",
-                            padding: "22px",
+                            marginTop: "-20px",
+                            color: colors.teal,
+                            fontSize: "14px",
+                            fontWeight: 500,
+                            letterSpacing: "2px",
+                            lineHeight: "1.15",
+                            textTransform: "uppercase",
                           }}
                         >
+                          Amount Paid
+                        </div>
+                        <div
+                          style={{
+                            color: colors.ink,
+                            fontFamily: headingFontFamily,
+                            fontSize: "62px",
+                            lineHeight: "1",
+                            marginTop: "10px",
+                          }}
+                        >
+                          {amountText}
+                        </div>
+                        <div style={{ marginTop: "12px" }}>
+                          <span
+                            style={{
+                              display: "inline-block",
+                              padding: "8px 14px",
+                              borderRadius: "999px",
+                              backgroundColor: "#D8EFF5",
+                              border: "1px solid #C7E3EB",
+                              color: colors.ink,
+                              fontSize: "16px",
+                              fontWeight: 700,
+                              lineHeight: "1.2",
+                            }}
+                          >
+                            {paymentMethodText}
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td style={{ padding: "20px 24px 0" }}>
+                        <Card>
                           <table
                             role="presentation"
                             width="100%"
@@ -285,331 +273,206 @@ export function DonationReceiptEmail({
                           >
                             <tbody>
                               <tr>
-                                <td style={{ verticalAlign: "bottom", paddingBottom: "18px" }}>
-                                  <table
-                                    role="presentation"
-                                    width="100%"
-                                    cellPadding="0"
-                                    cellSpacing="0"
-                                    style={{ width: "100%", borderCollapse: "collapse" }}
-                                  >
-                                    <tbody>
-                                      <tr>
-                                        <td style={{ verticalAlign: "bottom" }}>
-                                          <div
-                                            style={{
-                                              color: colors.teal,
-                                              fontSize: "12px",
-                                              letterSpacing: "1.2px",
-                                              lineHeight: "1.2",
-                                              textTransform: "uppercase",
-                                            }}
-                                          >
-                                            Amount Paid
-                                          </div>
-                                          <div
-                                            style={{
-                                              marginTop: "6px",
-                                              color: colors.ink,
-                                              fontFamily: headingFontFamily,
-                                              fontSize: "52px",
-                                              lineHeight: "1",
-                                            }}
-                                          >
-                                            {amountText}
-                                          </div>
-                                        </td>
-                                        <td style={{ textAlign: "right", verticalAlign: "bottom" }}>
-                                          <div style={{ marginTop: "10px" }}>
-                                            <span
-                                              style={{
-                                                display: "inline-block",
-                                                padding: "10px 14px",
-                                                borderRadius: "999px",
-                                                backgroundColor: "#D8EFF5",
-                                                border: "1px solid #9FC5D8",
-                                                color: colors.ink,
-                                                fontSize: "14px",
-                                                lineHeight: "1.2",
-                                              }}
-                                            >
-                                              {paymentMethodText}
-                                            </span>
-                                          </div>
-                                        </td>
-                                      </tr>
-                                    </tbody>
-                                  </table>
+                                <td
+                                  style={{
+                                    color: colors.ink,
+                                    fontFamily: headingFontFamily,
+                                    fontSize: "18px",
+                                    lineHeight: "1.2",
+                                    paddingBottom: "18px",
+                                  }}
+                                >
+                                  Receipt Details
                                 </td>
-                              </tr>
-                              <tr>
-                                <td>
-                                  <table
-                                    role="presentation"
-                                    width="100%"
-                                    cellPadding="0"
-                                    cellSpacing="0"
-                                    style={{ width: "100%", borderCollapse: "collapse" }}
-                                  >
-                                    <tbody>
-                                      <tr>
-                                        <td style={{ width: "50%", paddingRight: "7px" }}>
-                                          <InfoCard
-                                            label="Date Paid"
-                                            primaryText={donationDateText}
-                                            secondaryText={donationTimeText}
-                                          />
-                                        </td>
-                                        <td style={{ width: "50%", paddingLeft: "7px" }}>
-                                          <InfoCard
-                                            label="Donation For"
-                                            primaryText="Team Nate the Great"
-                                            secondaryText={`${donationLabel} × 1`}
-                                          />
-                                        </td>
-                                      </tr>
-                                    </tbody>
-                                  </table>
+                                <td
+                                  align="right"
+                                  style={{
+                                    paddingBottom: "18px",
+                                    color: colors.muted,
+                                    fontSize: "14px",
+                                    fontWeight: 600,
+                                    lineHeight: "1.2",
+                                  }}
+                                >
+                                  {receiptNumberText || ""}
                                 </td>
                               </tr>
                             </tbody>
                           </table>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td style={{ padding: "20px 20px 0" }}>
-                        <Card tint>
-                          <div
-                            style={{
-                              color: colors.ink,
-                              fontFamily: headingFontFamily,
-                              fontSize: "26px",
-                              lineHeight: "1.05",
-                            }}
-                          >
-                            Shop Natey Shark Gear
-                          </div>
-                          <BodyCopy>
-                            If you want to wear your support, the shop has everyday merch that helps
-                            fund childhood cancer research at CHOP.
-                          </BodyCopy>
-                          <div
-                            style={{
-                              marginTop: "18px",
-                              backgroundColor: colors.white,
-                              border: "1px solid #DBE8F2",
-                              borderRadius: "22px",
-                              overflow: "hidden",
-                            }}
-                          >
-                            {shopItems.map((item, index) => (
-                              <table
-                                key={item.href}
-                                role="presentation"
-                                width="100%"
-                                cellPadding="0"
-                                cellSpacing="0"
-                                style={{
-                                  width: "100%",
-                                  borderCollapse: "collapse",
-                                  borderTop: index === 0 ? "none" : "1px solid #E5EEF5",
-                                }}
-                              >
-                                <tbody>
-                                  <tr>
-                                    <td style={{ padding: "16px 18px", verticalAlign: "middle" }}>
-                                      <div
-                                        style={{
-                                          color: colors.ink,
-                                          fontSize: "16px",
-                                          fontWeight: 700,
-                                          lineHeight: "1.35",
-                                        }}
-                                      >
-                                        {item.label}
-                                      </div>
-                                      <div
-                                        style={{
-                                          color: "#6E859A",
-                                          fontSize: "14px",
-                                          lineHeight: "1.45",
-                                        }}
-                                      >
-                                        {item.price}
-                                      </div>
-                                    </td>
-                                    <td
-                                      style={{
-                                        padding: "16px 18px",
-                                        textAlign: "right",
-                                        verticalAlign: "middle",
-                                      }}
-                                    >
-                                      <a
-                                        href={item.href}
-                                        style={{
-                                          display: "inline-block",
-                                          padding: "10px 14px",
-                                          borderRadius: "999px",
-                                          backgroundColor: "#D8EFF5",
-                                          border: "1px solid #9FC5D8",
-                                          color: colors.ink,
-                                          fontSize: "14px",
-                                          fontWeight: 700,
-                                          lineHeight: "1.2",
-                                          textDecoration: "none",
-                                        }}
-                                      >
-                                        Shop now
-                                      </a>
-                                    </td>
-                                  </tr>
-                                </tbody>
-                              </table>
-                            ))}
-                          </div>
-                          <div style={{ marginTop: "16px", fontSize: "14px", lineHeight: "1.55", color: "#4F667D" }}>
-                            Browse the full collection at{" "}
-                            <a
-                              href="https://shop.gonatego.com"
-                              style={{ color: colors.ink, fontWeight: 700, textDecoration: "none" }}
-                            >
-                              shop.gonatego.com
-                            </a>
-                            .
-                          </div>
+                          <DetailRow label="Date" value={donationDateText} />
+                          <DetailRow label="Donation for" value={donationForText} />
+                          <DetailRow label="Sent to" value={recipientEmail} />
+                          <DetailRow
+                            label="Total"
+                            value={amountText}
+                            valueColor={colors.teal}
+                            valueWeight={800}
+                          />
                         </Card>
                       </td>
                     </tr>
+
                     <tr>
-                      <td style={{ padding: "20px 20px 24px" }}>
-                        <Card>
-                          <div
-                            style={{
-                              color: colors.ink,
-                              fontFamily: headingFontFamily,
-                              fontSize: "28px",
-                              lineHeight: "1.05",
-                            }}
-                          >
-                            Questions About Your Donation?
-                          </div>
-                          <BodyCopy>
-                            Questions about donations? Email{" "}
-                            <a
-                              href={`mailto:${supportEmail}`}
-                              style={{ color: colors.ink, fontWeight: 700, textDecoration: "none" }}
-                            >
-                              {supportEmail}
-                            </a>
-                            .
-                          </BodyCopy>
-                          <div
-                            style={{
-                              marginTop: "4px",
-                              backgroundColor: colors.pale,
-                              border: `1px solid ${colors.paleBorder}`,
-                              borderRadius: "22px",
-                              padding: "16px 18px",
-                            }}
-                          >
-                            <div style={{ fontSize: "14px", lineHeight: "1.55", color: "#4F667D" }}>
-                              Something wrong with the email?{" "}
-                              <a
-                                href={statusPageUrl}
-                                style={{ color: colors.ink, fontWeight: 700, textDecoration: "none" }}
-                              >
-                                View it in your browser.
-                              </a>
-                            </div>
-                            <div
-                              style={{
-                                marginTop: "12px",
-                                fontSize: "14px",
-                                lineHeight: "1.55",
-                                color: "#4F667D",
-                              }}
-                            >
-                              You&apos;re receiving this email because you made a donation to Go Nate
-                              Go in support of Nate&apos;s fundraiser for CHOP.
-                            </div>
-                          </div>
+                      <td style={{ padding: "12px 24px 0" }}>
+                        <CenteredCard>
+                          <IconCircle backgroundColor={colors.teal}>
+                            <HeartIcon />
+                          </IconCircle>
+                          <CardHeading>Every Dollar Counts</CardHeading>
+                          <CardBody>
+                            100% of your donation goes directly to CHOP&apos;s childhood cancer care
+                            and research programs. Thank you for being part of Team Nate.
+                          </CardBody>
+                        </CenteredCard>
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td style={{ padding: "12px 24px 0" }}>
+                        <CenteredCard>
+                          <IconCircle backgroundColor={colors.blue}>
+                            <BagIcon />
+                          </IconCircle>
+                          <CardHeading>Rep Team Nate!</CardHeading>
+                          <CardBody>
+                            Show your support with exclusive Nate the Great merch. Every purchase
+                            helps fund childhood cancer research.
+                          </CardBody>
                           <table
                             role="presentation"
                             width="100%"
                             cellPadding="0"
                             cellSpacing="0"
-                            style={{ width: "100%", borderCollapse: "collapse", marginTop: "18px" }}
+                            style={{ width: "100%", borderCollapse: "collapse", marginTop: "4px" }}
                           >
                             <tbody>
                               <tr>
-                                <td style={{ verticalAlign: "middle" }}>
-                                  <table
-                                    role="presentation"
-                                    cellPadding="0"
-                                    cellSpacing="0"
-                                    style={{ borderCollapse: "collapse" }}
+                                {merchItems.map((item) => (
+                                  <td
+                                    key={item.href}
+                                    width="33.33%"
+                                    style={{ padding: "0 4px", verticalAlign: "top" }}
                                   >
-                                    <tbody>
-                                      <tr>
-                                        <td style={{ width: "42px", paddingRight: "10px" }}>
-                                          <div
-                                            style={{
-                                              width: "42px",
-                                              height: "42px",
-                                              padding: "6px",
-                                              boxSizing: "border-box",
-                                              borderRadius: "999px",
-                                              backgroundColor: "#D8EFF5",
-                                              textAlign: "center",
-                                            }}
-                                          >
-                                            <img
-                                              src={sharkUrl}
-                                              alt="Go Nate Go"
-                                              width="30"
-                                              style={{
-                                                display: "block",
-                                                width: "30px",
-                                                height: "30px",
-                                                margin: "0 auto",
-                                                objectFit: "contain",
-                                              }}
-                                            />
-                                          </div>
-                                        </td>
-                                        <td
+                                    <a
+                                      href={item.href}
+                                      style={{ textDecoration: "none", color: colors.ink }}
+                                    >
+                                      <div
+                                        style={{
+                                          backgroundColor: "#F1F7FB",
+                                          borderRadius: "18px",
+                                          padding: "12px 10px 14px",
+                                          textAlign: "center",
+                                        }}
+                                      >
+                                        <div
                                           style={{
-                                            color: colors.muted,
-                                            fontSize: "13px",
-                                            lineHeight: "1.5",
-                                            whiteSpace: "pre-line",
+                                            width: "68px",
+                                            height: "70px",
+                                            margin: "0 auto 10px",
+                                            borderRadius: "12px",
+                                            backgroundColor: colors.blue,
+                                            overflow: "hidden",
                                           }}
                                         >
-                                          {footerMetaText}
-                                        </td>
-                                      </tr>
-                                    </tbody>
-                                  </table>
-                                </td>
-                                <td
-                                  style={{
-                                    textAlign: "right",
-                                    verticalAlign: "middle",
-                                    color: colors.muted,
-                                    fontSize: "13px",
-                                    lineHeight: "1.5",
-                                  }}
-                                >
-                                  Nate the Great
-                                  <br />
-                                  {donationDateText}
-                                </td>
+                                          <img
+                                            src={`${siteOrigin}${item.imagePath}`}
+                                            alt={item.label}
+                                            width="68"
+                                            height="70"
+                                            style={{
+                                              display: "block",
+                                              width: "68px",
+                                              height: "70px",
+                                              objectFit: "cover",
+                                            }}
+                                          />
+                                        </div>
+                                        <div
+                                          style={{
+                                            fontSize: "15px",
+                                            fontWeight: 700,
+                                            lineHeight: "1.25",
+                                          }}
+                                        >
+                                          {item.label}
+                                        </div>
+                                        <div
+                                          style={{
+                                            color: colors.teal,
+                                            fontSize: "14px",
+                                            lineHeight: "1.25",
+                                            marginTop: "6px",
+                                          }}
+                                        >
+                                          {item.price}
+                                        </div>
+                                      </div>
+                                    </a>
+                                  </td>
+                                ))}
                               </tr>
                             </tbody>
                           </table>
-                        </Card>
+                          <div style={{ marginTop: "4px" }}>
+                            <ButtonLink href="https://shop.gonatego.com">Shop Now</ButtonLink>
+                          </div>
+                        </CenteredCard>
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td align="center" style={{ padding: "28px 32px 40px" }}>
+                        <div
+                          style={{
+                            color: colors.ink,
+                            fontSize: "16px",
+                            lineHeight: "1.5",
+                            textAlign: "center",
+                          }}
+                        >
+                          Questions about your donation?
+                        </div>
+                        <div style={{ marginTop: "16px" }}>
+                          <ButtonLink href={`mailto:${supportEmail}`}>Contact Nate the Great</ButtonLink>
+                        </div>
+                        <div
+                          style={{
+                            marginTop: "14px",
+                            color: colors.muted,
+                            fontSize: "16px",
+                            lineHeight: "1.4",
+                            textAlign: "center",
+                          }}
+                        >
+                          <a
+                            href={`mailto:${supportEmail}`}
+                            style={{ color: colors.muted, textDecoration: "none" }}
+                          >
+                            {supportEmail}
+                          </a>
+                        </div>
+                        <div
+                          style={{
+                            width: "40px",
+                            height: "1px",
+                            backgroundColor: "#D6E3EC",
+                            margin: "18px auto 0",
+                          }}
+                        />
+                        <div
+                          style={{
+                            marginTop: "18px",
+                            color: colors.muted,
+                            fontSize: "15px",
+                            lineHeight: "1.55",
+                            textAlign: "center",
+                          }}
+                        >
+                          You&apos;re receiving this email because you made a donation to Nate the
+                          Great, which partners with Stripe to provide invoicing and payment
+                          processing.
+                        </div>
                       </td>
                     </tr>
                   </tbody>
@@ -623,19 +486,47 @@ export function DonationReceiptEmail({
   )
 }
 
-interface CardProps {
-  children: React.ReactNode
-  tint?: boolean
+interface ButtonLinkProps {
+  children: ReactNode
+  href: string
 }
 
-function Card({ children, tint = false }: CardProps) {
+function ButtonLink({ children, href }: ButtonLinkProps) {
+  return (
+    <a
+      href={href}
+      style={{
+        display: "inline-block",
+        minWidth: "217px",
+        padding: "14px 28px",
+        borderRadius: "24px",
+        backgroundColor: colors.teal,
+        color: colors.white,
+        fontSize: "17px",
+        fontWeight: 700,
+        lineHeight: "1.2",
+        textAlign: "center",
+        textDecoration: "none",
+        boxSizing: "border-box",
+      }}
+    >
+      {children}
+    </a>
+  )
+}
+
+interface CardProps {
+  children: ReactNode
+}
+
+function Card({ children }: CardProps) {
   return (
     <div
       style={{
-        backgroundColor: tint ? colors.pale : colors.white,
-        border: `1px solid ${tint ? colors.paleBorder : "#E1EAF2"}`,
-        borderRadius: "28px",
-        boxShadow: tint ? "none" : "0 10px 26px rgba(42,63,84,0.06)",
+        backgroundColor: colors.snow,
+        border: `1px solid ${colors.border}`,
+        borderRadius: "24px",
+        boxShadow: "0 2px 8px rgba(42,63,84,0.06)",
         padding: "24px",
       }}
     >
@@ -644,14 +535,16 @@ function Card({ children, tint = false }: CardProps) {
   )
 }
 
-function BodyCopy({ children }: { children: React.ReactNode }) {
+function CenteredCard({ children }: CardProps) {
   return (
     <div
       style={{
-        marginTop: "6px",
-        color: "#4F667D",
-        fontSize: "18px",
-        lineHeight: "1.55",
+        backgroundColor: colors.snow,
+        border: `1px solid ${colors.border}`,
+        borderRadius: "24px",
+        boxShadow: "0 2px 8px rgba(42,63,84,0.06)",
+        padding: "28px 24px",
+        textAlign: "center",
       }}
     >
       {children}
@@ -659,56 +552,160 @@ function BodyCopy({ children }: { children: React.ReactNode }) {
   )
 }
 
-interface InfoCardProps {
-  label: string
-  primaryText: string
-  secondaryText: string
-}
-
-function InfoCard({ label, primaryText, secondaryText }: InfoCardProps) {
+function CardHeading({ children }: { children: ReactNode }) {
   return (
     <div
       style={{
-        backgroundColor: colors.white,
-        border: "1px solid #E0EAF2",
-        borderRadius: "22px",
-        padding: "16px 18px",
-        height: "108px",
-        boxSizing: "border-box",
+        color: colors.ink,
+        fontFamily: headingFontFamily,
+        fontSize: "18px",
+        lineHeight: "1.2",
+        marginTop: "16px",
       }}
     >
-      <div
-        style={{
-          color: "#7A90A6",
-          fontSize: "11px",
-          letterSpacing: "1px",
-          lineHeight: "1.2",
-          textTransform: "uppercase",
-        }}
-      >
-        {label}
-      </div>
-      <div
-        style={{
-          marginTop: "6px",
-          color: colors.ink,
-          fontSize: "18px",
-          fontWeight: 700,
-          lineHeight: "1.45",
-        }}
-      >
-        {primaryText}
-      </div>
-      <div
-        style={{
-          color: "#5D7389",
-          fontSize: "15px",
-          lineHeight: "1.45",
-          minHeight: "42px",
-        }}
-      >
-        {secondaryText}
-      </div>
+      {children}
     </div>
   )
+}
+
+function CardBody({ children }: { children: ReactNode }) {
+  return (
+    <div
+      style={{
+        color: colors.muted,
+        fontSize: "16px",
+        lineHeight: "1.6",
+        marginTop: "12px",
+      }}
+    >
+      {children}
+    </div>
+  )
+}
+
+function IconCircle({
+  backgroundColor,
+  children,
+}: {
+  backgroundColor: string
+  children: ReactNode
+}) {
+  return (
+    <div
+      style={{
+        width: "48px",
+        height: "48px",
+        margin: "0 auto",
+        borderRadius: "16px",
+        backgroundColor,
+        textAlign: "center",
+        lineHeight: 0,
+      }}
+    >
+      <div style={{ paddingTop: "12px" }}>{children}</div>
+    </div>
+  )
+}
+
+interface DetailRowProps {
+  label: string
+  value: string
+  valueColor?: string
+  valueWeight?: number
+}
+
+function DetailRow({
+  label,
+  value,
+  valueColor = colors.ink,
+  valueWeight = 700,
+}: DetailRowProps) {
+  return (
+    <table
+      role="presentation"
+      width="100%"
+      cellPadding="0"
+      cellSpacing="0"
+      style={{ width: "100%", borderCollapse: "collapse" }}
+    >
+      <tbody>
+        <tr>
+          <td
+            style={{
+              borderTop: `1px solid ${colors.border}`,
+              color: colors.muted,
+              fontSize: "15px",
+              lineHeight: "1.5",
+              padding: "14px 0",
+            }}
+          >
+            {label}
+          </td>
+          <td
+            align="right"
+            style={{
+              borderTop: `1px solid ${colors.border}`,
+              color: valueColor,
+              fontSize: "15px",
+              fontWeight: valueWeight,
+              lineHeight: "1.5",
+              padding: "14px 0",
+            }}
+          >
+            {value}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  )
+}
+
+function HeartIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M12 20.4 4.8 13.6a4.95 4.95 0 0 1 0-7.1 4.78 4.78 0 0 1 6.9 0L12 6.8l.3-.3a4.78 4.78 0 0 1 6.9 0 4.95 4.95 0 0 1 0 7.1L12 20.4Z"
+        fill="#FFFFFF"
+      />
+    </svg>
+  )
+}
+
+function BagIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M8 9V7a4 4 0 1 1 8 0v2"
+        fill="none"
+        stroke="#42A8A9"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="2"
+      />
+      <path
+        d="M5 9h14v10a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V9Z"
+        fill="none"
+        stroke="#42A8A9"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="2"
+      />
+    </svg>
+  )
+}
+
+function formatDonationForLabel(donationLabel: string): string {
+  return donationLabel.replace(/^Donation to /, "").trim() || donationLabel
 }

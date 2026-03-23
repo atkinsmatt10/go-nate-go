@@ -4,7 +4,7 @@ import { DonationReceiptEmail } from "@/components/emails/donation-receipt-email
 import { getResendClient, getResendFromEmail, getResendReplyToEmail } from "@/lib/resend"
 
 const DONATION_LABEL = "Donation to Team Nate the Great"
-const DEFAULT_SUPPORT_EMAIL = "help@gonatego.com"
+const DONOR_SUPPORT_EMAIL = "donations@gonatego.com"
 
 interface SendDonationReceiptParams {
   eventId: string
@@ -35,12 +35,13 @@ export async function sendDonationReceiptEmail({
       : paymentIntent.latest_charge
 
   const amountText = formatAmount(session.amount_total, session.currency)
+  const receiptNumberText = formatReceiptNumber(latestCharge?.receipt_number)
   const paidAt = new Date((latestCharge?.created ?? session.created) * 1000)
   const { dateText: donationDateText, timeText: donationTimeText } = formatDateAndTime(paidAt)
   const paymentMethodText = formatPaymentMethod(latestCharge)
   const siteOrigin = getSiteOrigin()
   const statusPageUrl = `${siteOrigin}/donate/return?session_id=${encodeURIComponent(session.id)}`
-  const replyToEmail = getSupportEmail()
+  const replyToEmail = getReplyToEmail()
   const resend = getResendClient()
   const subjectPrefix = session.livemode ? "" : "[Test] "
 
@@ -55,22 +56,23 @@ export async function sendDonationReceiptEmail({
           amountText={amountText}
           donationDateText={donationDateText}
           donationLabel={DONATION_LABEL}
-          donationTimeText={donationTimeText}
           paymentMethodText={paymentMethodText}
+          receiptNumberText={receiptNumberText}
           recipientEmail={recipientEmail}
           siteOrigin={siteOrigin}
-          statusPageUrl={statusPageUrl}
-          supportEmail={DEFAULT_SUPPORT_EMAIL}
+          supportEmail={DONOR_SUPPORT_EMAIL}
         />
       ),
       text: buildPlainTextReceipt({
         amountText,
         donationDateText,
         donationTimeText,
+        donationLabel: DONATION_LABEL,
         paymentMethodText,
+        receiptNumberText,
         recipientEmail,
         statusPageUrl,
-        supportEmail: DEFAULT_SUPPORT_EMAIL,
+        supportEmail: DONOR_SUPPORT_EMAIL,
       }),
       tags: [
         { name: "category", value: "donation_receipt" },
@@ -87,8 +89,8 @@ export async function sendDonationReceiptEmail({
   }
 }
 
-function getSupportEmail(): string {
-  return getResendReplyToEmail() || DEFAULT_SUPPORT_EMAIL
+function getReplyToEmail(): string {
+  return getResendReplyToEmail() || DONOR_SUPPORT_EMAIL
 }
 
 function getRecipientEmail(session: Stripe.Checkout.Session): string | null {
@@ -166,6 +168,14 @@ function formatLabel(value: string): string {
     .join(" ")
 }
 
+function formatReceiptNumber(receiptNumber: string | null | undefined): string | undefined {
+  if (!receiptNumber?.trim()) {
+    return undefined
+  }
+
+  return receiptNumber.startsWith("#") ? receiptNumber : `#${receiptNumber}`
+}
+
 function getSiteOrigin(): string {
   const explicitSiteUrl = normalizeSiteOrigin(process.env.NEXT_PUBLIC_SITE_URL)
 
@@ -208,8 +218,10 @@ function normalizeSiteOrigin(candidate: string | undefined): string | null {
 interface PlainTextReceiptParams {
   amountText: string
   donationDateText: string
+  donationLabel: string
   donationTimeText: string
   paymentMethodText: string
+  receiptNumberText?: string
   recipientEmail: string
   statusPageUrl: string
   supportEmail: string
@@ -218,30 +230,43 @@ interface PlainTextReceiptParams {
 function buildPlainTextReceipt({
   amountText,
   donationDateText,
+  donationLabel,
   donationTimeText,
   paymentMethodText,
+  receiptNumberText,
   recipientEmail,
   statusPageUrl,
   supportEmail,
 }: PlainTextReceiptParams): string {
+  const donationForText = donationLabel.replace(/^Donation to /, "").trim() || donationLabel
+
   return [
     `Thank You For Showing Up For Nate`,
     ``,
-    `Your donation receipt is below. This gift supports Nate's fundraiser for CHOP childhood cancer care and research, and means a great deal to our family.`,
+    `Your gift supports Nate's fundraiser for CHOP childhood cancer care and research.`,
     ``,
     `Amount paid: ${amountText}`,
-    `Date paid: ${donationDateText}`,
-    `Time paid: ${donationTimeText}`,
     `Payment method: ${paymentMethodText}`,
-    `Donation: ${DONATION_LABEL} x 1`,
+    receiptNumberText ? `Receipt number: ${receiptNumberText}` : null,
     ``,
+    `Receipt details`,
+    `Date: ${donationDateText}`,
+    `Time: ${donationTimeText}`,
+    `Donation for: ${donationForText}`,
     `Sent to: ${recipientEmail}`,
+    `Total: ${amountText}`,
     ``,
-    `Shop Natey Shark gear: https://shop.gonatego.com`,
-    `Featured merch: Heavyweight Tee ($35), Premium Crew ($55), Thermal Waffle Beanie ($25)`,
+    `Every Dollar Counts`,
+    `100% of your donation goes directly to CHOP's childhood cancer care and research programs. Thank you for being part of Team Nate.`,
     ``,
-    `Questions about donations?`,
-    `Email: ${supportEmail}`,
+    `Rep Team Nate!`,
+    `Shop Nate the Great merch: https://shop.gonatego.com`,
+    `Featured merch: Tee ($35), Crew ($55), Hat ($25)`,
+    ``,
+    `Questions about your donation?`,
+    `Contact Nate the Great: ${supportEmail}`,
     `View in your browser: ${statusPageUrl}`,
-  ].join("\n")
+    ``,
+    `You're receiving this email because you made a donation to Nate the Great, which partners with Stripe to provide invoicing and payment processing.`,
+  ].filter((line): line is string => Boolean(line)).join("\n")
 }
