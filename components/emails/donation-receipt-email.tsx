@@ -438,7 +438,7 @@ export function DonationReceiptEmail({
                               </tr>
                             </tbody>
                           </table>
-                          <div style={{ marginTop: "4px" }}>
+                          <div style={{ marginTop: "20px" }}>
                             <BulletproofButton href="https://shop.gonatego.com">Shop</BulletproofButton>
                           </div>
                         </CenteredCard>
