@@ -218,11 +218,10 @@ export function DonationReceiptEmail({
                     <tr>
                       <td
                         align="center"
-                        style={{ padding: "12px 32px 0", textAlign: "center", marginTop: "-20px" }}
+                        style={{ padding: "28px 32px 0", textAlign: "center" }}
                       >
                         <div
                           style={{
-                            marginTop: "-20px",
                             color: colors.tealDark,
                             fontSize: "13px",
                             fontWeight: 500,
