@@ -30,10 +30,6 @@ function parseDonationAmount(amountInCents: unknown): number | null {
 }
 
 function parseDonorEmail(email: unknown): string | null {
-  if (email === undefined || email === null || email === "") {
-    return null
-  }
-
   if (typeof email !== "string") {
     return null
   }
@@ -65,6 +61,12 @@ export async function POST(request: Request) {
   }
 
   const donorEmail = parseDonorEmail(body.email)
+  if (donorEmail === null) {
+    return NextResponse.json(
+      { error: "Enter a valid email address to continue to checkout" },
+      { status: 400 },
+    )
+  }
 
   try {
     const stripe = getStripeClient()
@@ -74,10 +76,10 @@ export async function POST(request: Request) {
       campaign: "nate-the-great",
       donation_amount_in_cents: String(amountInCents),
       donation_currency: "usd",
+      donor_email: donorEmail,
       receipt_template_version: RECEIPT_TEMPLATE_VERSION,
       receipt_delivery: customDonationReceiptConfig.ready ? "resend" : "stripe",
       type: "donation",
-      ...(donorEmail ? { donor_email: donorEmail } : {}),
     }
 
     if (customDonationReceiptConfig.enabled && !customDonationReceiptConfig.ready) {
@@ -95,7 +97,7 @@ export async function POST(request: Request) {
       billing_address_collection: "auto",
       currency: "usd",
       customer_creation: "always",
-      customer_email: donorEmail ?? undefined,
+      customer_email: donorEmail,
       metadata: donationMetadata,
       line_items: [
         {
@@ -113,7 +115,7 @@ export async function POST(request: Request) {
       payment_intent_data: {
         description: "Donation to Team Nate the Great",
         metadata: donationMetadata,
-        receipt_email: customDonationReceiptConfig.ready ? undefined : donorEmail ?? undefined,
+        receipt_email: customDonationReceiptConfig.ready ? undefined : donorEmail,
       },
       return_url: `${requestOrigin}/donate/return?session_id={CHECKOUT_SESSION_ID}`,
     })
