@@ -2,7 +2,7 @@
 
 import Image from "next/image"
 import Link from "next/link"
-import { type ComponentProps, FormEvent, useEffect, useMemo, useRef, useState } from "react"
+import { type ComponentProps, FormEvent, useCallback, useEffect, useMemo, useRef, useState } from "react"
 import {
   CheckoutProvider,
   ExpressCheckoutElement,
@@ -16,7 +16,7 @@ import {
   type StripeExpressCheckoutElementConfirmEvent,
 } from "@stripe/stripe-js"
 import { motion, useReducedMotion, type Variants } from "framer-motion"
-import { ArrowLeft, Gift, Heart, ShieldCheck, Sparkles, Stethoscope } from "lucide-react"
+import { ArrowLeft, Gift, Heart, Mail, Sparkles, Stethoscope } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { MOTION_EASE_OUT } from "@/lib/motion"
 import { cn } from "@/lib/utils"
@@ -166,41 +166,27 @@ function getDonationAmountValidationMessage(
   return null
 }
 
-function getEmailValidationMessage(email: string): string | null {
-  if (!email) {
-    return "Add an email address so Stripe can attach it to your donation."
-  }
-
-  if (!isValidEmail(email)) {
-    return "Enter a valid email address to continue to checkout."
-  }
-
-  return null
-}
-
 function getPreCheckoutHelperMessage(params: {
   amountValidationMessage: string | null
-  emailValidationMessage: string | null
+  checkoutReady: boolean
   isCreatingSession: boolean
   isStripeConfigured: boolean
 }): string {
   if (!params.isStripeConfigured) {
-    return "Stripe checkout is not configured. Set NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY."
+    return "Secure checkout is not available right now. Please try again later."
   }
 
   if (params.amountValidationMessage) {
     return params.amountValidationMessage
   }
 
-  if (params.emailValidationMessage) {
-    return params.emailValidationMessage
-  }
-
   if (params.isCreatingSession) {
-    return "Preparing your secure Stripe checkout."
+    return "Preparing secure checkout for this amount."
   }
 
-  return "Step 1: confirm the amount and email. Step 2: review payment details in secure checkout."
+  return params.checkoutReady
+    ? "Secure checkout is ready below."
+    : "Choose an amount above and secure checkout will load automatically."
 }
 
 function getStripeElementLoadErrorMessage(event: StripeCheckoutLoadErrorEvent): string {
@@ -264,6 +250,42 @@ function CheckoutForm({ amountLabel, onIntentionalNavigationChange }: CheckoutFo
   const [errorMessage, setErrorMessage] = useState<string>("")
   const [isCheckoutUiLoading, setIsCheckoutUiLoading] = useState<boolean>(true)
   const [hasCheckoutUiReady, setHasCheckoutUiReady] = useState<boolean>(false)
+  const [receiptEmail, setReceiptEmail] = useState<string>("")
+  const receiptEmailInputRef = useRef<HTMLInputElement>(null)
+  const normalizedReceiptEmail = normalizeDonorEmail(receiptEmail).toLowerCase()
+  const emailValidationMessage =
+    !normalizedReceiptEmail || isValidEmail(normalizedReceiptEmail)
+      ? ""
+      : "Enter a valid email address to finish the donation."
+
+  useEffect(() => {
+    if (checkoutState.type !== "success") {
+      return
+    }
+
+    const checkout = checkoutState.checkout
+    let isMounted = true
+
+    async function syncCheckoutEmail(): Promise<void> {
+      const updateResult = await checkout.updateEmail(
+        normalizedReceiptEmail && !emailValidationMessage ? normalizedReceiptEmail : null,
+      )
+
+      if (!isMounted || updateResult.type !== "error") {
+        return
+      }
+
+      if (updateResult.error.code !== "incompleteEmail") {
+        setErrorMessage(updateResult.error.message)
+      }
+    }
+
+    void syncCheckoutEmail()
+
+    return () => {
+      isMounted = false
+    }
+  }, [checkoutState, emailValidationMessage, normalizedReceiptEmail])
 
   async function confirmDonationPayment(
     expressCheckoutConfirmEvent?: StripeExpressCheckoutElementConfirmEvent,
@@ -273,7 +295,19 @@ function CheckoutForm({ amountLabel, onIntentionalNavigationChange }: CheckoutFo
     }
 
     if (checkoutState.type === "error") {
-      setErrorMessage(checkoutState.error.message || "Unable to load Stripe checkout.")
+      setErrorMessage(checkoutState.error.message || "Unable to load secure checkout.")
+      return
+    }
+
+    if (!normalizedReceiptEmail) {
+      setErrorMessage("Add an email to complete your donation and receive your confirmation.")
+      receiptEmailInputRef.current?.focus()
+      return
+    }
+
+    if (emailValidationMessage) {
+      setErrorMessage(emailValidationMessage)
+      receiptEmailInputRef.current?.focus()
       return
     }
 
@@ -283,6 +317,7 @@ function CheckoutForm({ amountLabel, onIntentionalNavigationChange }: CheckoutFo
 
     try {
       const confirmResult = await checkoutState.checkout.confirm({
+        email: normalizedReceiptEmail,
         expressCheckoutConfirmEvent,
         redirect: "if_required",
       })
@@ -342,10 +377,39 @@ function CheckoutForm({ amountLabel, onIntentionalNavigationChange }: CheckoutFo
         ? "Secure checkout is preparing your payment options."
         : canSubmit
           ? "Secure checkout is ready. Review your details and donate when you're ready."
-          : "Choose Apple Pay, Google Pay, Link, or enter card details above to enable the donation button."
+          : "Add your email, then choose a wallet or card to finish your donation."
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
+      <div className="space-y-2 text-left">
+        <label
+          htmlFor="checkout-email"
+          className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.14em] text-[#2b617a]"
+        >
+          <Mail className="h-3.5 w-3.5" aria-hidden="true" />
+          Email for your receipt
+        </label>
+        <input
+          ref={receiptEmailInputRef}
+          id="checkout-email"
+          name="checkoutEmail"
+          type="email"
+          inputMode="email"
+          autoComplete="email"
+          placeholder="you@example.com"
+          aria-invalid={emailValidationMessage ? "true" : "false"}
+          value={receiptEmail}
+          onChange={(event) => {
+            setReceiptEmail(event.target.value)
+            if (errorMessage) {
+              setErrorMessage("")
+            }
+          }}
+          className="h-12 w-full rounded-2xl border border-[#a9c3d5] bg-white px-4 text-base text-[#223b54] shadow-sm outline-none transition-[border-color,box-shadow] duration-200 focus:border-[#42a8a9] focus:ring-4 focus:ring-[#d6ecec]"
+        />
+        <p className="text-sm text-[#526a7f]">Needed only when you finish the donation.</p>
+      </div>
+
       <div className="space-y-4 rounded-[1.25rem] border border-[#9fc5d8] bg-white/92 p-4 shadow-[0_14px_30px_rgba(34,59,84,0.16)] sm:p-5">
         <ExpressCheckoutElement
           options={expressCheckoutOptions}
@@ -393,6 +457,8 @@ function CheckoutForm({ amountLabel, onIntentionalNavigationChange }: CheckoutFo
       <Button type="submit" size="lg" className={donationCtaClassName} disabled={!canSubmit}>
         {isSubmitting ? "Finalizing Donation…" : `Donate ${amountLabel}`}
       </Button>
+
+      <p className="text-center text-xs font-medium text-[#5d7387]">Secure checkout powered by Stripe.</p>
     </form>
   )
 }
@@ -401,14 +467,13 @@ export default function DonatePage() {
   const [amountSelectionMode, setAmountSelectionMode] = useState<"preset" | "custom">("preset")
   const [selectedPreset, setSelectedPreset] = useState<number>(50)
   const [customAmountInput, setCustomAmountInput] = useState<string>("")
-  const [donorEmail, setDonorEmail] = useState<string>("")
   const [checkoutClientSecret, setCheckoutClientSecret] = useState<string>("")
   const [isCreatingSession, setIsCreatingSession] = useState<boolean>(false)
   const [isIntentionalNavigationPending, setIsIntentionalNavigationPending] = useState<boolean>(false)
   const [errorMessage, setErrorMessage] = useState<string>("")
   const customAmountInputRef = useRef<HTMLInputElement>(null)
-  const donorEmailInputRef = useRef<HTMLInputElement>(null)
   const checkoutContainerRef = useRef<HTMLDivElement>(null)
+  const sessionRequestAmountRef = useRef<number | null>(null)
   const prefersReducedMotion = useReducedMotion()
 
   const donationAmountInDollars = getDonationAmountInDollars(
@@ -417,19 +482,13 @@ export default function DonatePage() {
     customAmountInput,
   )
   const donationAmountInCents = getDonationAmountInCents(donationAmountInDollars)
-  const normalizedDonorEmail = normalizeDonorEmail(donorEmail)
   const amountValidationMessage = getDonationAmountValidationMessage(
     amountSelectionMode,
     customAmountInput,
     donationAmountInCents,
   )
-  const emailValidationMessage = getEmailValidationMessage(normalizedDonorEmail)
   const isCheckoutActive = checkoutClientSecret.length > 0
-  const canPrepareCheckout =
-    amountValidationMessage === null &&
-    emailValidationMessage === null &&
-    stripePromise !== null &&
-    !isCheckoutActive
+  const canPrepareCheckout = amountValidationMessage === null && stripePromise !== null && !isCheckoutActive
   const amountLabel =
     donationAmountInDollars === null ? "Amount" : formatUsd(donationAmountInDollars)
   const checkoutOptions = useMemo(
@@ -470,7 +529,7 @@ export default function DonatePage() {
   )
   const preCheckoutHelperMessage = getPreCheckoutHelperMessage({
     amountValidationMessage,
-    emailValidationMessage,
+    checkoutReady: isCheckoutActive,
     isCreatingSession,
     isStripeConfigured: stripePromise !== null,
   })
@@ -479,6 +538,7 @@ export default function DonatePage() {
     setCheckoutClientSecret("")
     setErrorMessage("")
     setIsIntentionalNavigationPending(false)
+    sessionRequestAmountRef.current = null
   }
 
   useEffect(() => {
@@ -486,7 +546,7 @@ export default function DonatePage() {
       return
     }
 
-    const hasUnsavedDonationState = Boolean(checkoutClientSecret || customAmountInput.trim() || donorEmail.trim())
+    const hasUnsavedDonationState = Boolean(checkoutClientSecret || customAmountInput.trim())
     if (!hasUnsavedDonationState) {
       return
     }
@@ -500,7 +560,7 @@ export default function DonatePage() {
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload)
     }
-  }, [checkoutClientSecret, customAmountInput, donorEmail, isIntentionalNavigationPending])
+  }, [checkoutClientSecret, customAmountInput, isIntentionalNavigationPending])
 
   useEffect(() => {
     if (!checkoutClientSecret) {
@@ -513,8 +573,8 @@ export default function DonatePage() {
     })
   }, [checkoutClientSecret, prefersReducedMotion])
 
-  async function initializeCheckoutSession(): Promise<void> {
-    if (isCheckoutActive || isCreatingSession) {
+  const initializeCheckoutSession = useCallback(async (amountInCents: number): Promise<void> => {
+    if (isCheckoutActive || isCreatingSession || sessionRequestAmountRef.current === amountInCents) {
       return
     }
 
@@ -524,17 +584,12 @@ export default function DonatePage() {
       return
     }
 
-    if (emailValidationMessage) {
-      setErrorMessage(emailValidationMessage)
-      donorEmailInputRef.current?.focus()
-      return
-    }
-
     if (!stripePromise) {
-      setErrorMessage("Stripe is not configured. Set NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY.")
+      setErrorMessage("Secure checkout is not available right now. Please try again later.")
       return
     }
 
+    sessionRequestAmountRef.current = amountInCents
     setIsCreatingSession(true)
     setErrorMessage("")
 
@@ -545,8 +600,7 @@ export default function DonatePage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          amountInCents: donationAmountInCents,
-          email: normalizedDonorEmail,
+          amountInCents,
         }),
       })
 
@@ -554,6 +608,7 @@ export default function DonatePage() {
 
       if (!response.ok || !payload.clientSecret) {
         setErrorMessage(payload.error ?? "Unable to initialize checkout. Please try again.")
+        sessionRequestAmountRef.current = null
         setIsCreatingSession(false)
         return
       }
@@ -562,9 +617,28 @@ export default function DonatePage() {
       setIsCreatingSession(false)
     } catch {
       setErrorMessage("Unable to initialize checkout. Please try again.")
+      sessionRequestAmountRef.current = null
       setIsCreatingSession(false)
     }
-  }
+  }, [amountValidationMessage, isCheckoutActive, isCreatingSession])
+
+  useEffect(() => {
+    if (!canPrepareCheckout || donationAmountInCents === null || isCreatingSession) {
+      return
+    }
+
+    if (sessionRequestAmountRef.current === donationAmountInCents) {
+      return
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      void initializeCheckoutSession(donationAmountInCents)
+    }, 250)
+
+    return () => {
+      window.clearTimeout(timeoutId)
+    }
+  }, [canPrepareCheckout, donationAmountInCents, initializeCheckoutSession, isCreatingSession])
 
   return (
     <main className="relative min-h-dvh overflow-hidden bg-[#f4fbff] text-[#1f3147]">
@@ -709,7 +783,7 @@ export default function DonatePage() {
             <div className="relative">
               <h2 className="text-balance text-3xl leading-tight text-[#1d344d] sm:text-4xl">Make a Donation</h2>
               <p className="mt-2 text-sm text-[#526a7f] sm:text-base">
-                Choose an amount, add your email, then checkout with Apple Pay, Google Pay, Link, or card.
+                Choose an amount and finish with the payment option that works best for you.
               </p>
 
               <fieldset className="mt-5 space-y-4" disabled={isCheckoutActive}>
@@ -792,31 +866,6 @@ export default function DonatePage() {
                   </div>
                 ) : null}
 
-                <div className="space-y-2 text-left">
-                  <label
-                    htmlFor="donor-email"
-                    className="text-xs font-bold uppercase tracking-[0.14em] text-[#2b617a]"
-                  >
-                    Email for donation confirmation
-                  </label>
-                  <input
-                    ref={donorEmailInputRef}
-                    id="donor-email"
-                    name="email"
-                    type="email"
-                    inputMode="email"
-                    autoComplete="email"
-                    placeholder="you@example.com"
-                    aria-describedby="donation-form-feedback"
-                    aria-invalid={emailValidationMessage ? "true" : "false"}
-                    value={donorEmail}
-                    onChange={(event) => {
-                      setDonorEmail(event.target.value)
-                      resetCheckoutState()
-                    }}
-                    className="h-12 w-full rounded-2xl border border-[#a9c3d5] bg-white px-4 text-base text-[#223b54] shadow-sm outline-none transition-[border-color,box-shadow,opacity] duration-200 focus:border-[#42a8a9] focus:ring-4 focus:ring-[#d6ecec] disabled:cursor-not-allowed disabled:opacity-60"
-                  />
-                </div>
               </fieldset>
 
               <div className="mt-5 rounded-2xl border border-[#b8cfde] bg-[#eef6fb] px-4 py-3 text-[#1f344a]">
@@ -826,12 +875,12 @@ export default function DonatePage() {
                 </div>
                 <ul className="mt-3 space-y-2 border-t border-[#c7d8e4] pt-3 text-left text-sm text-[#4f667b]">
                   <li className="flex items-start gap-2">
-                    <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-[#2f5c7b]" aria-hidden="true" />
-                    Secure checkout powered by Stripe Checkout components.
+                    <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-[#42a8a9]" aria-hidden="true" />
+                    Mobile wallets and cards appear automatically when they&apos;re available.
                   </li>
                   <li className="flex items-start gap-2">
-                    <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-[#42a8a9]" aria-hidden="true" />
-                    Wallet buttons show automatically when your device and browser support them.
+                    <Mail className="mt-0.5 h-4 w-4 shrink-0 text-[#2f5c7b]" aria-hidden="true" />
+                    You can add your email later in checkout for a receipt.
                   </li>
                 </ul>
               </div>
@@ -851,23 +900,10 @@ export default function DonatePage() {
               </div>
 
               <div className="mt-4">
-                {!checkoutClientSecret ? (
-                  <Button
-                    type="button"
-                    size="lg"
-                    className={donationCtaClassName}
-                    onClick={() => {
-                      void initializeCheckoutSession()
-                    }}
-                    disabled={!canPrepareCheckout || isCreatingSession}
-                  >
-                    {isCreatingSession ? "Preparing Checkout…" : "Continue to Secure Checkout"}
-                  </Button>
-                ) : (
+                {checkoutClientSecret ? (
                   <div ref={checkoutContainerRef} className="space-y-4">
                     <div className="rounded-2xl border border-[#c8dae6] bg-[#f5fbff] px-4 py-3 text-sm font-medium text-[#36546c]">
-                      Step 2: secure checkout is ready below. To change the amount or email, go back to donation
-                      details first.
+                      Secure checkout is ready below. To change the amount, go back to donation details first.
                     </div>
                     <CheckoutProvider stripe={stripePromise} options={checkoutOptions}>
                       <CheckoutForm
@@ -880,8 +916,16 @@ export default function DonatePage() {
                       onClick={resetCheckoutState}
                       className="w-full text-center text-sm font-semibold text-[#4f667b] underline-offset-4 transition-colors duration-200 hover:text-[#223b54] hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2f6272] focus-visible:ring-offset-2"
                     >
-                      Change Donation Details
+                      Change Donation Amount
                     </button>
+                  </div>
+                ) : canPrepareCheckout ? (
+                  <div className="rounded-2xl border border-[#c8dae6] bg-[#f5fbff] px-4 py-6 text-center text-sm font-medium text-[#36546c]">
+                    {isCreatingSession ? "Preparing secure checkout…" : "Loading secure checkout…"}
+                  </div>
+                ) : (
+                  <div className="rounded-2xl border border-dashed border-[#c8dae6] bg-white/75 px-4 py-6 text-center text-sm font-medium text-[#5f7689]">
+                    Choose a valid amount to load secure checkout.
                   </div>
                 )}
               </div>
