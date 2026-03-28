@@ -63,7 +63,7 @@ export async function POST(request: Request) {
   const donorEmail = parseDonorEmail(body.email)
   if (donorEmail === null) {
     return NextResponse.json(
-      { error: "Enter a valid email address to continue to checkout" },
+      { error: "Enter a valid email address to continue to secure checkout" },
       { status: 400 },
     )
   }
@@ -96,7 +96,7 @@ export async function POST(request: Request) {
       mode: "payment",
       billing_address_collection: "auto",
       currency: "usd",
-      customer_creation: "always",
+      customer_creation: "if_required",
       customer_email: donorEmail,
       metadata: donationMetadata,
       line_items: [
