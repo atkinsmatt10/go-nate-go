@@ -411,6 +411,7 @@ export default function DonatePage() {
   const [checkoutClientSecret, setCheckoutClientSecret] = useState<string>("")
   const [isCreatingSession, setIsCreatingSession] = useState<boolean>(false)
   const [isIntentionalNavigationPending, setIsIntentionalNavigationPending] = useState<boolean>(false)
+  const [failedCheckoutRequestKey, setFailedCheckoutRequestKey] = useState<string | null>(null)
   const [errorMessage, setErrorMessage] = useState<string>("")
   const customAmountInputRef = useRef<HTMLInputElement>(null)
   const receiptEmailInputRef = useRef<HTMLInputElement>(null)
@@ -433,6 +434,14 @@ export default function DonatePage() {
     donationAmountInCents,
   )
   const isCheckoutActive = checkoutClientSecret.length > 0
+  const currentCheckoutRequestKey =
+    donationAmountInCents === null || !hasReceiptEmail
+      ? null
+      : `${donationAmountInCents}:${normalizedReceiptEmail}`
+  const hasRetryableCheckoutError =
+    currentCheckoutRequestKey !== null &&
+    failedCheckoutRequestKey === currentCheckoutRequestKey &&
+    !isCreatingSession
   const canPrepareCheckout =
     amountValidationMessage === null &&
     emailValidationMessage === null &&
@@ -488,7 +497,9 @@ export default function DonatePage() {
 
   function resetCheckoutState(): void {
     setCheckoutClientSecret("")
+    setIsCreatingSession(false)
     setErrorMessage("")
+    setFailedCheckoutRequestKey(null)
     setIsIntentionalNavigationPending(false)
     sessionRequestKeyRef.current = null
   }
@@ -559,6 +570,7 @@ export default function DonatePage() {
       sessionRequestKeyRef.current = requestKey
       setIsCreatingSession(true)
       setErrorMessage("")
+      setFailedCheckoutRequestKey(null)
 
       try {
         const response = await fetch("/api/stripe/checkout-session", {
@@ -580,12 +592,14 @@ export default function DonatePage() {
 
         if (!response.ok || !payload.clientSecret) {
           setErrorMessage(payload.error ?? "Unable to initialize checkout. Please try again.")
+          setFailedCheckoutRequestKey(requestKey)
           sessionRequestKeyRef.current = null
           setIsCreatingSession(false)
           return
         }
 
         setCheckoutClientSecret(payload.clientSecret)
+        setFailedCheckoutRequestKey(null)
         setIsCreatingSession(false)
       } catch {
         if (sessionRequestKeyRef.current !== requestKey) {
@@ -593,6 +607,7 @@ export default function DonatePage() {
         }
 
         setErrorMessage("Unable to initialize checkout. Please try again.")
+        setFailedCheckoutRequestKey(requestKey)
         sessionRequestKeyRef.current = null
         setIsCreatingSession(false)
       }
@@ -606,6 +621,10 @@ export default function DonatePage() {
     }
 
     const requestKey = `${donationAmountInCents}:${normalizedReceiptEmail}`
+    if (failedCheckoutRequestKey === requestKey) {
+      return
+    }
+
     if (sessionRequestKeyRef.current === requestKey) {
       return
     }
@@ -620,6 +639,7 @@ export default function DonatePage() {
   }, [
     canPrepareCheckout,
     donationAmountInCents,
+    failedCheckoutRequestKey,
     initializeCheckoutSession,
     isCreatingSession,
     normalizedReceiptEmail,
@@ -933,6 +953,22 @@ export default function DonatePage() {
                     >
                       Change Donation Amount
                     </button>
+                  </div>
+                ) : hasRetryableCheckoutError && donationAmountInCents !== null ? (
+                  <div className="space-y-3">
+                    <div className="rounded-2xl border border-[#c8dae6] bg-[#f5fbff] px-4 py-6 text-center text-sm font-medium text-[#36546c]">
+                      Secure checkout could not be prepared. Review your details and try again.
+                    </div>
+                    <Button
+                      type="button"
+                      size="lg"
+                      className={donationCtaClassName}
+                      onClick={() => {
+                        void initializeCheckoutSession(donationAmountInCents, normalizedReceiptEmail)
+                      }}
+                    >
+                      Try Secure Checkout Again
+                    </Button>
                   </div>
                 ) : canPrepareCheckout ? (
                   <div className="rounded-2xl border border-[#c8dae6] bg-[#f5fbff] px-4 py-6 text-center text-sm font-medium text-[#36546c]">
