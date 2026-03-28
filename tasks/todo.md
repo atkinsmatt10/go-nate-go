@@ -1,31 +1,29 @@
-# Receipt Email Debug Plan
+# Donate Flow Checkout Clarity Plan
 
 ## Artifacts
 
-- [x] Reframe the request in [tasks/context/receipt-email-debug.md](tasks/context/receipt-email-debug.md)
-- [x] Capture the implementation slice in [tasks/architecture/receipt-email-debug.md](tasks/architecture/receipt-email-debug.md)
+- [x] Reframe the request in [tasks/context/donate-flow-checkout-clarity.md](tasks/context/donate-flow-checkout-clarity.md)
+- [x] Capture the implementation slice in [tasks/architecture/donate-flow-checkout-clarity.md](tasks/architecture/donate-flow-checkout-clarity.md)
 
 ## Tasks
 
-- [x] Inspect the current receipt code path and hosted env status
-- [x] Reproduce the failure with Resend CLI and a local webhook test
-- [x] Add the missing runtime dependency for React email rendering
-- [x] Correct the documented sender domain to match the verified Resend domain
-- [x] Re-run lint and TypeScript checks
-- [ ] Re-run a fully green end-to-end local webhook test
+- [x] Inspect the donate flow, Stripe wiring, and current validation behavior
+- [x] Define a single slice focused on donate-page checkout clarity instead of site-wide redesign
+- [x] Refactor the donate page to derive validation state without unnecessary memoization
+- [x] Gate secure checkout behind valid donation details and lock inputs while checkout is active
+- [x] Re-run lint and TypeScript checks after the patch
+- [x] Create a preview deployment for review
+- [x] Summarize follow-up UI work that should stay in separate slices
 
-## Investigation Notes
+## Notes
 
-- Local `.env.local` does not enable custom donation receipts, so local checkout normally falls back to Stripe-native receipts.
-- Production Vercel env does enable custom donation receipts and includes a webhook secret.
-- Production `RESEND_FROM_EMAIL` currently uses the `nicolematt.com` domain.
-- Resend CLI reports `gonatego.com` as the only verified sending domain.
-- Direct Resend CLI send with `donations@nicolematt.com` fails with `The nicolematt.com domain is not verified`.
-- Direct Resend CLI send with `donations@gonatego.com` succeeds.
-- Local webhook testing with a corrected `gonatego.com` sender initially failed before send time because `@react-email/render` was not installed and the Resend SDK could not render the React template payload.
-- After installing `@react-email/render`, the webhook progressed past template rendering and failed at Resend authentication/config instead of render time.
-- The local `.env.local` `RESEND_API_KEY` cannot send from `gonatego.com`.
-- The production Stripe event logs provided by the user match the investigated failure shape: valid `checkout.session.completed` event, webhook 500, and receipt delivery owned by `resend`.
-- Verification passed:
-- `pnpm lint`
-- `pnpm exec tsc --noEmit`
+- Scope is limited to the donation flow because that is the app's highest-risk conversion path.
+- No database changes are planned in this slice because the current app does not use one for checkout.
+- Verification:
+- `pnpm lint` passed after the patch.
+- `pnpm exec tsc --noEmit` passed after the patch.
+- Preview deploy is ready at `https://nate-the-great-1zmtqz3hx-atkinsmatt10s-projects.vercel.app`.
+- The preview donate page currently shows Stripe as unconfigured, so preview environment variables still need `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` and likely `STRIPE_SECRET_KEY` before payment checkout can be exercised there.
+- Follow-up slices:
+- Homepage visual cleanup should stay separate from donate-flow work.
+- Any Stripe environment or receipt-email rollout work should be handled as a deployment/config slice, not mixed back into the donate-page UI patch.
