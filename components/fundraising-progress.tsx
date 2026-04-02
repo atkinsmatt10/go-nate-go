@@ -134,6 +134,7 @@ export function FundraisingProgress() {
             >
               <Link
                 href="/donate"
+                transitionTypes={["nav-forward"]}
               >
                 Donate Directly
               </Link>

@@ -4,7 +4,7 @@ import { motion, useReducedMotion } from "framer-motion"
 import Image from "next/image"
 import { Tweet } from "react-tweet"
 import { InstagramEmbed } from "react-social-media-embed"
-import { Suspense } from "react"
+import { Suspense, ViewTransition } from "react"
 import Script from "next/script"
 import { getRevealProps } from "@/lib/motion"
 
@@ -319,8 +319,16 @@ export function SharingNatesStory() {
                   {...getRevealProps(prefersReducedMotion, { delay: 0.1 + index * 0.04 })}
                 >
                   <div className="w-full">
-                    <Suspense fallback={<PostSkeleton />}>
-                      <Tweet id={tweetId} />
+                    <Suspense
+                      fallback={
+                        <ViewTransition exit="slide-down">
+                          <PostSkeleton />
+                        </ViewTransition>
+                      }
+                    >
+                      <ViewTransition enter="slide-up" default="none">
+                        <Tweet id={tweetId} />
+                      </ViewTransition>
                     </Suspense>
                   </div>
                 </motion.div>
@@ -334,13 +342,21 @@ export function SharingNatesStory() {
                   {...getRevealProps(prefersReducedMotion, { delay: 0.16 + index * 0.04 })}
                 >
                   <div className="w-full">
-                    <Suspense fallback={<PostSkeleton />}>
-                      <div className="rounded-xl overflow-hidden">
-                        <InstagramEmbed 
-                          url={url} 
-                          width="100%"
-                        />
-                      </div>
+                    <Suspense
+                      fallback={
+                        <ViewTransition exit="slide-down">
+                          <PostSkeleton />
+                        </ViewTransition>
+                      }
+                    >
+                      <ViewTransition enter="slide-up" default="none">
+                        <div className="rounded-xl overflow-hidden">
+                          <InstagramEmbed
+                            url={url}
+                            width="100%"
+                          />
+                        </div>
+                      </ViewTransition>
                     </Suspense>
                   </div>
                 </motion.div>

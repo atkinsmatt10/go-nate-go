@@ -3,7 +3,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import { motion, AnimatePresence, useReducedMotion, useScroll, useTransform } from "framer-motion"
-import { useState, useEffect, useRef, useCallback } from "react"
+import { ViewTransition, useState, useEffect, useRef, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { useHapticFeedback } from "@/hooks/use-haptic-feedback"
 import {
@@ -134,14 +134,16 @@ export function HeroSection() {
         >
           {/* Logo */}
           <motion.div {...getScaleInProps(prefersReducedMotion, { duration: 0.26, scale: 0.96 })}>
-            <Image
-              src="/Nate-the-great-logo.png"
-              width="600"
-              height="400"
-              alt="Nate the Great Title Logo"
-              className="mx-auto max-w-full h-auto object-contain"
-              priority
-            />
+            <ViewTransition name="campaign-logo" share="morph" default="none">
+              <Image
+                src="/Nate-the-great-logo.png"
+                width="600"
+                height="400"
+                alt="Nate the Great Title Logo"
+                className="mx-auto max-w-full h-auto object-contain"
+                priority
+              />
+            </ViewTransition>
           </motion.div>
 
           {/* Enhanced Photo Carousel with Smooth Animations - MOVED UP */}
@@ -258,6 +260,7 @@ export function HeroSection() {
             >
               <Link
                 href="/donate"
+                transitionTypes={["nav-forward"]}
               >
                 Donate Now
               </Link>

@@ -1,3 +1,4 @@
+import { ViewTransition } from "react"
 import { HeroSection } from "@/components/hero-section"
 import { NatesStory } from "@/components/nates-story"
 import { FundraisingProgress } from "@/components/fundraising-progress"
@@ -7,15 +8,29 @@ import { Footer } from "@/components/footer"
 
 export default function Component() {
   return (
-    <div className="flex flex-col min-h-dvh bg-background text-foreground">
-      <main className="flex-1">
-        <HeroSection />
-        <NatesStory />
-        <FundraisingProgress />
-        <ShirtSection />
-        <SharingNatesStory />
-      </main>
-      <Footer />
-    </div>
+    <ViewTransition
+      enter={{
+        "nav-forward": "nav-forward",
+        "nav-back": "nav-back",
+        default: "none",
+      }}
+      exit={{
+        "nav-forward": "nav-forward",
+        "nav-back": "nav-back",
+        default: "none",
+      }}
+      default="none"
+    >
+      <div className="flex flex-col min-h-dvh bg-background text-foreground">
+        <main className="flex-1">
+          <HeroSection />
+          <NatesStory />
+          <FundraisingProgress />
+          <ShirtSection />
+          <SharingNatesStory />
+        </main>
+        <Footer />
+      </div>
+    </ViewTransition>
   )
 }

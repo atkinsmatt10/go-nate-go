@@ -2,7 +2,17 @@
 
 import Image from "next/image"
 import Link from "next/link"
-import { type ComponentProps, FormEvent, useCallback, useEffect, useMemo, useRef, useState } from "react"
+import {
+  startTransition,
+  type ComponentProps,
+  FormEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  ViewTransition,
+} from "react"
 import {
   CheckoutProvider,
   ExpressCheckoutElement,
@@ -487,9 +497,11 @@ export default function DonatePage() {
   })
 
   function resetCheckoutState(): void {
-    setCheckoutClientSecret("")
-    setErrorMessage("")
-    setIsIntentionalNavigationPending(false)
+    startTransition(() => {
+      setCheckoutClientSecret("")
+      setErrorMessage("")
+      setIsIntentionalNavigationPending(false)
+    })
     sessionRequestKeyRef.current = null
   }
 
@@ -557,8 +569,10 @@ export default function DonatePage() {
       }
 
       sessionRequestKeyRef.current = requestKey
-      setIsCreatingSession(true)
-      setErrorMessage("")
+      startTransition(() => {
+        setIsCreatingSession(true)
+        setErrorMessage("")
+      })
 
       try {
         const response = await fetch("/api/stripe/checkout-session", {
@@ -579,22 +593,30 @@ export default function DonatePage() {
         }
 
         if (!response.ok || !payload.clientSecret) {
-          setErrorMessage(payload.error ?? "Unable to initialize checkout. Please try again.")
+          startTransition(() => {
+            setErrorMessage(payload.error ?? "Unable to initialize checkout. Please try again.")
+            setIsCreatingSession(false)
+          })
           sessionRequestKeyRef.current = null
-          setIsCreatingSession(false)
           return
         }
 
-        setCheckoutClientSecret(payload.clientSecret)
-        setIsCreatingSession(false)
+        const clientSecret = payload.clientSecret
+
+        startTransition(() => {
+          setCheckoutClientSecret(clientSecret)
+          setIsCreatingSession(false)
+        })
       } catch {
         if (sessionRequestKeyRef.current !== requestKey) {
           return
         }
 
-        setErrorMessage("Unable to initialize checkout. Please try again.")
+        startTransition(() => {
+          setErrorMessage("Unable to initialize checkout. Please try again.")
+          setIsCreatingSession(false)
+        })
         sessionRequestKeyRef.current = null
-        setIsCreatingSession(false)
       }
     },
     [amountValidationMessage, emailValidationMessage, isCheckoutActive, isCreatingSession],
@@ -626,58 +648,74 @@ export default function DonatePage() {
   ])
 
   return (
-    <main className="relative min-h-dvh overflow-hidden bg-[#f4fbff] text-[#1f3147]">
-      <a
-        href="#donation-form"
-        className="sr-only absolute left-3 top-3 z-30 rounded-md bg-white px-3 py-2 text-sm font-semibold text-[#1d344d] focus:not-sr-only focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2f6272] focus-visible:ring-offset-2"
-      >
-        Skip to Donation Form
-      </a>
-      <div className="pointer-events-none absolute inset-0">
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              "linear-gradient(160deg, #f8fcff 0%, #e7f1f8 46%, #d3e3ef 100%), linear-gradient(120deg, rgba(66,168,169,0.16) 0%, rgba(34,59,84,0.14) 52%, rgba(66,168,169,0.08) 100%)",
-          }}
-        />
-        <div
-          className="absolute inset-0 opacity-35 mix-blend-soft-light"
-          style={{
-            backgroundImage:
-              "repeating-linear-gradient(0deg, rgba(255,255,255,0.32) 0px, rgba(255,255,255,0.32) 1px, transparent 1px, transparent 3px), repeating-linear-gradient(90deg, rgba(34,59,84,0.08) 0px, rgba(34,59,84,0.08) 1px, transparent 1px, transparent 4px), repeating-linear-gradient(135deg, rgba(255,255,255,0.12) 0px, rgba(255,255,255,0.12) 1px, transparent 1px, transparent 6px)",
-            backgroundSize: "4px 4px, 5px 5px, 7px 7px",
-          }}
-        />
-      </div>
-
-      <motion.div
-        className="relative mx-auto w-full max-w-6xl px-4 pb-10 pt-4 sm:px-6 sm:pt-6 lg:pb-16 lg:pt-8"
-        variants={prefersReducedMotion ? undefined : staggerParentVariants}
-        initial={prefersReducedMotion ? undefined : "hidden"}
-        animate={prefersReducedMotion ? undefined : "show"}
-      >
-        <motion.header
-          className="mb-6 flex items-center justify-between lg:mb-8"
-          variants={prefersReducedMotion ? undefined : revealChildVariants}
+    <ViewTransition
+      enter={{
+        "nav-forward": "nav-forward",
+        "nav-back": "nav-back",
+        default: "none",
+      }}
+      exit={{
+        "nav-forward": "nav-forward",
+        "nav-back": "nav-back",
+        default: "none",
+      }}
+      default="none"
+    >
+      <main className="relative min-h-dvh overflow-hidden bg-[#f4fbff] text-[#1f3147]">
+        <a
+          href="#donation-form"
+          className="sr-only absolute left-3 top-3 z-30 rounded-md bg-white px-3 py-2 text-sm font-semibold text-[#1d344d] focus:not-sr-only focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2f6272] focus-visible:ring-offset-2"
         >
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 rounded-full border border-[#a6c0d4] bg-white/85 px-4 py-2 text-sm font-semibold text-[#223b54] shadow-sm transition-[background-color,border-color,color,transform,box-shadow] duration-150 ease-snappy-out active:scale-[0.98] hover:-translate-y-0.5 hover:border-[#42a8a9] hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2f6272] focus-visible:ring-offset-2"
-          >
-            <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-            Back Home
-          </Link>
-
-          <Image
-            src="/Nate-the-great-logo.png"
-            alt="Nate the Great"
-            width={170}
-            height={90}
-            className="h-auto w-[126px] sm:w-[164px]"
-            priority
+          Skip to Donation Form
+        </a>
+        <div className="pointer-events-none absolute inset-0">
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(160deg, #f8fcff 0%, #e7f1f8 46%, #d3e3ef 100%), linear-gradient(120deg, rgba(66,168,169,0.16) 0%, rgba(34,59,84,0.14) 52%, rgba(66,168,169,0.08) 100%)",
+            }}
           />
-        </motion.header>
+          <div
+            className="absolute inset-0 opacity-35 mix-blend-soft-light"
+            style={{
+              backgroundImage:
+                "repeating-linear-gradient(0deg, rgba(255,255,255,0.32) 0px, rgba(255,255,255,0.32) 1px, transparent 1px, transparent 3px), repeating-linear-gradient(90deg, rgba(34,59,84,0.08) 0px, rgba(34,59,84,0.08) 1px, transparent 1px, transparent 4px), repeating-linear-gradient(135deg, rgba(255,255,255,0.12) 0px, rgba(255,255,255,0.12) 1px, transparent 1px, transparent 6px)",
+              backgroundSize: "4px 4px, 5px 5px, 7px 7px",
+            }}
+          />
+        </div>
+
+        <motion.div
+          className="relative mx-auto w-full max-w-6xl px-4 pb-10 pt-4 sm:px-6 sm:pt-6 lg:pb-16 lg:pt-8"
+          variants={prefersReducedMotion ? undefined : staggerParentVariants}
+          initial={prefersReducedMotion ? undefined : "hidden"}
+          animate={prefersReducedMotion ? undefined : "show"}
+        >
+          <motion.header
+            className="mb-6 flex items-center justify-between lg:mb-8"
+            variants={prefersReducedMotion ? undefined : revealChildVariants}
+          >
+            <Link
+              href="/"
+              transitionTypes={["nav-back"]}
+              className="inline-flex items-center gap-2 rounded-full border border-[#a6c0d4] bg-white/85 px-4 py-2 text-sm font-semibold text-[#223b54] shadow-sm transition-[background-color,border-color,color,transform,box-shadow] duration-150 ease-snappy-out active:scale-[0.98] hover:-translate-y-0.5 hover:border-[#42a8a9] hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2f6272] focus-visible:ring-offset-2"
+            >
+              <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+              Back Home
+            </Link>
+
+            <ViewTransition name="campaign-logo" share="morph" default="none">
+              <Image
+                src="/Nate-the-great-logo.png"
+                alt="Nate the Great"
+                width={170}
+                height={90}
+                className="h-auto w-[126px] sm:w-[164px]"
+                priority
+              />
+            </ViewTransition>
+          </motion.header>
 
         <div className="grid items-start gap-6 lg:grid-cols-[1.1fr_0.95fr] lg:gap-8">
           <motion.section
@@ -916,32 +954,53 @@ export default function DonatePage() {
 
               <div className="mt-4">
                 {checkoutClientSecret ? (
-                  <div ref={checkoutContainerRef} className="space-y-4">
-                    <div className="rounded-2xl border border-[#c8dae6] bg-[#f5fbff] px-4 py-3 text-sm font-medium text-[#36546c]">
-                      Secure checkout is ready below. To change the amount, go back to donation details first.
+                  <ViewTransition
+                    key="checkout-ready"
+                    enter="donate-panel-in"
+                    exit="donate-panel-out"
+                    default="none"
+                  >
+                    <div ref={checkoutContainerRef} className="space-y-4">
+                      <div className="rounded-2xl border border-[#c8dae6] bg-[#f5fbff] px-4 py-3 text-sm font-medium text-[#36546c]">
+                        Secure checkout is ready below. To change the amount, go back to donation details first.
+                      </div>
+                      <CheckoutProvider stripe={stripePromise} options={checkoutOptions}>
+                        <CheckoutForm
+                          amountLabel={amountLabel}
+                          onIntentionalNavigationChange={setIsIntentionalNavigationPending}
+                        />
+                      </CheckoutProvider>
+                      <button
+                        type="button"
+                        onClick={resetCheckoutState}
+                        className="w-full text-center text-sm font-semibold text-[#4f667b] underline-offset-4 transition-colors duration-200 hover:text-[#223b54] hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2f6272] focus-visible:ring-offset-2"
+                      >
+                        Change Donation Amount
+                      </button>
                     </div>
-                    <CheckoutProvider stripe={stripePromise} options={checkoutOptions}>
-                      <CheckoutForm
-                        amountLabel={amountLabel}
-                        onIntentionalNavigationChange={setIsIntentionalNavigationPending}
-                      />
-                    </CheckoutProvider>
-                    <button
-                      type="button"
-                      onClick={resetCheckoutState}
-                      className="w-full text-center text-sm font-semibold text-[#4f667b] underline-offset-4 transition-colors duration-200 hover:text-[#223b54] hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2f6272] focus-visible:ring-offset-2"
-                    >
-                      Change Donation Amount
-                    </button>
-                  </div>
+                  </ViewTransition>
                 ) : canPrepareCheckout ? (
-                  <div className="rounded-2xl border border-[#c8dae6] bg-[#f5fbff] px-4 py-6 text-center text-sm font-medium text-[#36546c]">
-                    {isCreatingSession ? "Preparing secure checkout…" : "Loading secure checkout…"}
-                  </div>
+                  <ViewTransition
+                    key="checkout-loading"
+                    enter="donate-panel-in"
+                    exit="donate-panel-out"
+                    default="none"
+                  >
+                    <div className="rounded-2xl border border-[#c8dae6] bg-[#f5fbff] px-4 py-6 text-center text-sm font-medium text-[#36546c]">
+                      {isCreatingSession ? "Preparing secure checkout…" : "Loading secure checkout…"}
+                    </div>
+                  </ViewTransition>
                 ) : (
-                  <div className="rounded-2xl border border-dashed border-[#c8dae6] bg-white/75 px-4 py-6 text-center text-sm font-medium text-[#5f7689]">
-                    Enter your amount and email to load secure checkout.
-                  </div>
+                  <ViewTransition
+                    key="checkout-placeholder"
+                    enter="donate-panel-in"
+                    exit="donate-panel-out"
+                    default="none"
+                  >
+                    <div className="rounded-2xl border border-dashed border-[#c8dae6] bg-white/75 px-4 py-6 text-center text-sm font-medium text-[#5f7689]">
+                      Enter your amount and email to load secure checkout.
+                    </div>
+                  </ViewTransition>
                 )}
               </div>
             </div>
@@ -949,5 +1008,6 @@ export default function DonatePage() {
         </div>
       </motion.div>
     </main>
+    </ViewTransition>
   )
 }

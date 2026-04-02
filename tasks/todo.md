@@ -1,29 +1,32 @@
-# Donate Flow Checkout Clarity Plan
+# View Transition Animation Slice Plan
 
 ## Artifacts
 
-- [x] Reframe the request in [tasks/context/donate-flow-checkout-clarity.md](tasks/context/donate-flow-checkout-clarity.md)
-- [x] Capture the implementation slice in [tasks/architecture/donate-flow-checkout-clarity.md](tasks/architecture/donate-flow-checkout-clarity.md)
+- [x] Reframe the request in [tasks/context/view-transition-animation-slice.md](tasks/context/view-transition-animation-slice.md)
+- [x] Capture the implementation slice in [tasks/architecture/view-transition-animation-slice.md](tasks/architecture/view-transition-animation-slice.md)
+- [x] Record the UI review in [tasks/design/view-transition-animation-slice.md](tasks/design/view-transition-animation-slice.md)
 
 ## Tasks
 
-- [x] Inspect the donate flow, Stripe wiring, and current validation behavior
-- [x] Define a single slice focused on donate-page checkout clarity instead of site-wide redesign
-- [x] Refactor the donate page to derive validation state without unnecessary memoization
-- [x] Gate secure checkout behind valid donation details and lock inputs while checkout is active
-- [x] Re-run lint and TypeScript checks after the patch
-- [x] Create a preview deployment for review
-- [x] Summarize follow-up UI work that should stay in separate slices
+- [x] Audit current animation patterns across home, donate, and Suspense-driven social embeds
+- [x] Enable Next.js view transitions and add the shared CSS primitives in the global stylesheet
+- [x] Add route continuity between home and donate, including a shared logo element
+- [x] Add explicit donation form state transitions for placeholder, loading, and ready checkout states
+- [x] Add Suspense reveal transitions for social embeds
+- [x] Verify with `pnpm lint`
+- [x] Verify with `pnpm exec tsc --noEmit`
+- [x] Run a post-build visual review and record any remaining polish gaps
 
 ## Notes
 
-- Scope is limited to the donation flow because that is the app's highest-risk conversion path.
-- No database changes are planned in this slice because the current app does not use one for checkout.
+- Scope stays frontend-only and reviewable.
+- Stripe APIs and donation data fetching stay unchanged in this slice.
+- The goal is continuity and trust, not adding more decorative motion.
 - Verification:
-- `pnpm lint` passed after the patch.
-- `pnpm exec tsc --noEmit` passed after the patch.
-- Preview deploy is ready at `https://nate-the-great-1zmtqz3hx-atkinsmatt10s-projects.vercel.app`.
-- The preview donate page currently shows Stripe as unconfigured, so preview environment variables still need `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` and likely `STRIPE_SECRET_KEY` before payment checkout can be exercised there.
-- Follow-up slices:
-- Homepage visual cleanup should stay separate from donate-flow work.
-- Any Stripe environment or receipt-email rollout work should be handled as a deployment/config slice, not mixed back into the donate-page UI patch.
+- `pnpm lint` passed.
+- `pnpm exec tsc --noEmit` passed.
+- Browser review passed on local home and donate pages using a temporary Playwright install with the system Chrome binary.
+- Screenshots captured at `/tmp/gonatego-home.png`, `/tmp/gonatego-donate.png`, `/tmp/gonatego-social.png`, and `/tmp/gonatego-donate-ready-settled.png`.
+- Residual issues observed during browser review:
+- Existing Instagram embed hydration mismatches still log in the console.
+- Existing 404/500 console noise appears during homepage load and was not introduced or changed by this slice.
