@@ -316,6 +316,19 @@ export function BirthdayRsvpPage() {
                     </div>
                   ) : null}
 
+                  <div className="rounded-[22px] border border-[#d8eff5] bg-[#f7fbff] px-4 py-4 text-center">
+                    <p className="text-xs font-extrabold uppercase tracking-[0.22em] text-[#42a8a9]">
+                      Your presence is enough
+                    </p>
+                    <p className="mt-2 text-sm leading-6 text-[#3f5d81]">
+                      If you&apos;d like to celebrate with a gift, please consider a{" "}
+                      <Link href="/donate" className="font-bold text-[#2f6272] underline decoration-[#42a8a9]/50 underline-offset-4">
+                        donation to CHOP Neurosurgery & Neuro-Oncology
+                      </Link>
+                      .
+                    </p>
+                  </div>
+
                   <Button
                     type="submit"
                     size="lg"
