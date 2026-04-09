@@ -20,11 +20,10 @@ interface SubmissionState {
   message: string
 }
 
-const coverImage = "/nate shark.png"
+const coverImage = "/01KK50NH25Q9J200T43XRW1K6V.png"
 const googleMapsUrl = "https://maps.google.com/?q=Craft+Hall+901+N+Delaware+Ave+Philadelphia+PA+19123"
 const googleMapsEmbedUrl =
   "https://www.google.com/maps?q=Craft+Hall+901+N+Delaware+Ave+Philadelphia+PA+19123&z=15&output=embed"
-const donationUrl = "/donate"
 const attendanceOptions = [
   { value: "yes", label: "We’ll be there", description: "Save seats and cookies for us." },
   { value: "no", label: "Can’t make it", description: "Let the family know we’re cheering Nate on from afar." },
@@ -148,18 +147,14 @@ export function BirthdayRsvpPage() {
               {...getPageRevealProps(prefersReducedMotion, { distance: 0, duration: 0.24 })}
             >
               <motion.div
-                className="overflow-hidden rounded-[32px] border border-white/14 bg-[rgba(247,251,255,0.08)] shadow-[0_24px_54px_rgba(16,31,44,0.24)]"
+                className="relative"
                 {...getRevealProps(prefersReducedMotion, { delay: 0.04, distance: 18 })}
                 onMouseMove={handleCoverPointerMove}
                 onMouseLeave={handleCoverPointerLeave}
               >
-                <div className="relative aspect-[6/5] overflow-hidden bg-[linear-gradient(135deg,#4d7093_0%,#2a3f54_46%,#25485d_100%)] sm:aspect-[16/10] lg:aspect-[16/8]">
+                <div className="relative aspect-[6/5] overflow-hidden sm:aspect-[16/10] lg:aspect-[16/8]">
                   <motion.div className="absolute inset-0" style={{ backgroundImage: coverGlow }} />
-                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_18%,rgba(216,239,245,0.24),transparent_24%),radial-gradient(circle_at_84%_18%,rgba(66,168,169,0.24),transparent_26%),radial-gradient(circle_at_52%_82%,rgba(247,251,255,0.08),transparent_32%)]" />
-
-                  <div className="absolute left-4 top-4 z-10 rounded-full border border-white/20 bg-[rgba(247,251,255,0.12)] px-3 py-1.5 text-[11px] font-extrabold uppercase tracking-[0.22em] text-[#f7fbff] backdrop-blur-sm">
-                    Nate&apos;s birthday shark
-                  </div>
+                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_18%,rgba(216,239,245,0.18),transparent_22%),radial-gradient(circle_at_84%_18%,rgba(66,168,169,0.2),transparent_24%),radial-gradient(circle_at_52%_82%,rgba(247,251,255,0.08),transparent_30%)]" />
 
                   <motion.div
                     className="absolute inset-0 [transform-style:preserve-3d]"
@@ -171,19 +166,19 @@ export function BirthdayRsvpPage() {
                       transformPerspective: 1400,
                     }}
                   >
-                    <div className="absolute inset-x-[6%] bottom-[-4%] top-[8%]">
-                      <div className="absolute inset-0 rounded-[32px] bg-[radial-gradient(circle_at_center,rgba(66,168,169,0.34),transparent_58%)] blur-3xl" />
+                    <div className="absolute inset-x-[2%] bottom-[-10%] top-[0%] sm:inset-x-[6%] sm:bottom-[-6%] sm:top-[4%]">
+                      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(66,168,169,0.34),transparent_56%)] blur-3xl" />
                       <Image
                         src={coverImage}
                         alt="Nate the Great shark eating a cookie"
                         fill
-                        className="object-contain drop-shadow-[0_32px_54px_rgba(15,34,47,0.36)]"
+                        className="object-contain drop-shadow-[0_36px_60px_rgba(15,34,47,0.38)]"
                         priority
                       />
                     </div>
                   </motion.div>
 
-                  <div className="absolute inset-x-0 bottom-0 h-24 bg-[linear-gradient(180deg,rgba(20,35,47,0)_0%,rgba(20,35,47,0.24)_100%)]" />
+                  <div className="absolute inset-x-0 bottom-0 h-24 bg-[linear-gradient(180deg,rgba(20,35,47,0)_0%,rgba(20,35,47,0.18)_100%)]" />
                 </div>
               </motion.div>
 
@@ -203,14 +198,14 @@ export function BirthdayRsvpPage() {
                   </div>
                 </div>
 
-                <div className="grid gap-3 grid-cols-2">
-                  <EventMetaCard
+                <div className="grid gap-5 border-y border-white/10 py-5 md:grid-cols-2 md:gap-8 md:py-6">
+                  <EventMetaRow
                     icon={CalendarDays}
                     label="Date & time"
                     title="Saturday, May 9, 2026"
                     description="12 PM to 3 PM"
                   />
-                  <EventMetaCard
+                  <EventMetaRow
                     icon={MapPin}
                     label="Location"
                     title="Craft Hall"
@@ -218,43 +213,6 @@ export function BirthdayRsvpPage() {
                   />
                 </div>
 
-                <div className="rounded-[24px] border border-white/14 bg-[rgba(247,251,255,0.08)] px-5 py-4 text-[#eef5fb] shadow-[0_18px_34px_rgba(16,31,44,0.14)]">
-                  <p className="text-xs font-extrabold uppercase tracking-[0.22em] text-[#9fc5d8]">
-                    Your presence is enough
-                  </p>
-                  <p className="mt-2 text-sm leading-6 text-[#d8eff5]">
-                    If you&apos;d like to celebrate with a gift, please consider a donation to CHOP Neurosurgery &
-                    Neuro-Oncology.
-                  </p>
-                  <div className="mt-4">
-                    <Button
-                      asChild
-                      className="h-11 rounded-[18px] bg-[#42a8a9] px-5 font-extrabold text-white hover:bg-[#369799]"
-                    >
-                      <Link href={donationUrl}>Donate to CHOP</Link>
-                    </Button>
-                  </div>
-                </div>
-
-                <div className="flex flex-col gap-3 sm:flex-row">
-                  <Button
-                    asChild
-                    size="lg"
-                    className="h-14 rounded-[20px] bg-[#42a8a9] px-7 text-base font-extrabold text-white shadow-[0_18px_38px_rgba(27,56,77,0.26)] hover:bg-[#369799]"
-                  >
-                    <Link href="#rsvp">RSVP now</Link>
-                  </Button>
-                  <Button
-                    asChild
-                    size="lg"
-                    variant="outline"
-                    className="h-14 rounded-[20px] border-[#9fc5d8] bg-white/8 px-7 text-base font-bold text-[#f7fbff] hover:bg-white/12 hover:text-white"
-                  >
-                    <Link href={googleMapsUrl} target="_blank" rel="noreferrer">
-                      Get directions
-                    </Link>
-                  </Button>
-                </div>
               </motion.div>
             </motion.div>
           </div>
@@ -444,26 +402,26 @@ export function BirthdayRsvpPage() {
   )
 }
 
-interface EventMetaCardProps {
+interface EventMetaRowProps {
   icon: LucideIcon
   label: string
   title: string
   description: string
 }
 
-function EventMetaCard({ icon: Icon, label, title, description }: EventMetaCardProps) {
+function EventMetaRow({ icon: Icon, label, title, description }: EventMetaRowProps) {
   return (
-    <div className="rounded-[24px] border border-white/14 bg-[rgba(247,251,255,0.08)] p-3 shadow-[0_18px_34px_rgba(16,31,44,0.14)] sm:p-5">
-      <div className="flex items-start gap-3 sm:gap-4">
-        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[18px] border border-white/14 bg-white/8 text-[#d8eff5] sm:h-14 sm:w-14 sm:rounded-[20px]">
-          <Icon className="h-4 w-4 sm:h-5 sm:w-5" />
-        </div>
+    <div className="flex items-start gap-3 md:gap-4">
+      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[18px] border border-white/14 bg-white/8 text-[#d8eff5] shadow-[0_12px_24px_rgba(16,31,44,0.14)] sm:h-14 sm:w-14 sm:rounded-[20px]">
+        <Icon className="h-4 w-4 sm:h-5 sm:w-5" />
+      </div>
 
-        <div className="min-w-0 space-y-1.5 sm:space-y-2">
-          <p className="text-xs font-extrabold uppercase tracking-[0.22em] text-[#9fc5d8]">{label}</p>
-          <p className="text-lg leading-tight text-white sm:text-2xl">{title}</p>
-          <p className="text-sm leading-5 text-[#d8eff5] sm:leading-6">{description}</p>
-        </div>
+      <div className="min-w-0 space-y-1.5">
+        <p className="text-[11px] font-extrabold uppercase tracking-[0.22em] text-[#9fc5d8] sm:text-xs">
+          {label}
+        </p>
+        <p className="text-xl leading-tight text-white sm:text-[2rem]">{title}</p>
+        <p className="text-sm leading-5 text-[#d8eff5] sm:text-base sm:leading-6">{description}</p>
       </div>
     </div>
   )
@@ -482,27 +440,39 @@ function BirthdaySignature() {
       viewport={{ once: true, amount: 0.7 }}
     >
       <SignatureStroke
-        d="M35 148C48 113 70 67 96 54C110 47 124 58 118 79C111 102 91 133 81 157C75 171 90 167 101 153C126 121 152 88 180 60C191 49 214 36 223 46C232 56 217 84 205 99C188 120 167 138 149 156C141 164 152 162 165 155C188 142 215 127 240 118C248 115 257 113 265 113"
+        d="M74 152C78 123 85 94 96 67C101 54 112 40 123 42C136 44 138 63 137 82C136 104 130 124 129 149C146 122 168 96 194 72C205 62 221 50 233 56C246 63 244 83 238 100C231 121 224 138 224 152"
         delay={0}
-        duration={1.2}
+        duration={1}
         prefersReducedMotion={prefersReducedMotion}
       />
       <SignatureStroke
-        d="M286 118C298 118 307 110 315 101C323 92 332 73 322 67C311 60 292 79 286 90C276 111 286 144 305 144C329 144 348 123 360 106C368 94 379 70 370 63C359 55 340 76 334 88C323 110 332 143 351 143C374 143 399 120 421 96"
-        delay={0.92}
-        duration={1.05}
-        prefersReducedMotion={prefersReducedMotion}
-      />
-      <SignatureStroke
-        d="M434 99C450 84 470 63 491 54C503 49 513 58 507 72C498 94 472 126 461 149C455 162 469 157 478 149C503 129 532 95 559 73C571 63 591 51 604 56C621 62 617 84 608 97C590 125 561 145 536 159C526 164 515 170 506 178"
-        delay={1.76}
-        duration={1.2}
-        prefersReducedMotion={prefersReducedMotion}
-      />
-      <SignatureStroke
-        d="M470 177C511 187 557 191 604 190C641 189 669 184 694 177"
-        delay={2.72}
+        d="M281 136C292 111 313 92 332 92C345 92 353 101 353 113C353 130 340 142 323 142C305 142 294 128 297 112C300 93 320 71 340 68C364 64 383 81 383 104C383 123 374 140 374 152"
+        delay={0.76}
         duration={0.9}
+        prefersReducedMotion={prefersReducedMotion}
+      />
+      <SignatureStroke
+        d="M424 82C440 78 455 70 468 63C475 59 481 63 479 71C473 93 468 115 469 137C469 148 476 152 488 149C502 146 516 137 529 124"
+        delay={1.46}
+        duration={0.74}
+        prefersReducedMotion={prefersReducedMotion}
+      />
+      <SignatureStroke
+        d="M431 97C450 101 472 101 493 97"
+        delay={1.92}
+        duration={0.4}
+        prefersReducedMotion={prefersReducedMotion}
+      />
+      <SignatureStroke
+        d="M550 116C560 98 576 88 592 88C607 88 617 98 617 111C617 124 606 133 591 134C574 135 563 126 563 112C563 93 581 75 606 74C626 73 643 84 652 98"
+        delay={2.16}
+        duration={0.78}
+        prefersReducedMotion={prefersReducedMotion}
+      />
+      <SignatureStroke
+        d="M260 172C318 184 381 189 446 188C514 187 581 181 641 169"
+        delay={2.7}
+        duration={0.86}
         prefersReducedMotion={prefersReducedMotion}
       />
     </motion.svg>
