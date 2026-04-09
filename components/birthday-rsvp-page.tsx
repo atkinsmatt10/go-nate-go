@@ -2,15 +2,15 @@
 
 import Image from "next/image"
 import Link from "next/link"
-import { type ComponentType, type ReactNode, FormEvent, useState } from "react"
+import { FormEvent, useState } from "react"
 import { motion, useReducedMotion } from "framer-motion"
-import { CalendarDays, CheckCircle2, MapPin, PartyPopper } from "lucide-react"
+import { CalendarDays, CheckCircle2, MapPin, type LucideIcon } from "lucide-react"
 import { Footer } from "@/components/footer"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { getPageRevealProps, getRevealProps, getScaleInProps } from "@/lib/motion"
+import { getPageRevealProps, getRevealProps } from "@/lib/motion"
 import { cn } from "@/lib/utils"
 
 type AttendanceValue = "yes" | "no" | ""
@@ -20,7 +20,7 @@ interface SubmissionState {
   message: string
 }
 
-const posterImage = "/birthday-poster-card.png"
+const coverImage = "/IMG_9908.png"
 const googleMapsUrl = "https://maps.google.com/?q=Craft+Hall+901+N+Delaware+Ave+Philadelphia+PA+19123"
 const googleMapsEmbedUrl =
   "https://www.google.com/maps?q=Craft+Hall+901+N+Delaware+Ave+Philadelphia+PA+19123&z=15&output=embed"
@@ -107,101 +107,96 @@ export function BirthdayRsvpPage() {
         <section className="relative isolate bg-[linear-gradient(180deg,_#2a3f54_0%,_#304a67_100%)]">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(66,168,169,0.24),_transparent_40%),radial-gradient(circle_at_85%_12%,_rgba(247,251,255,0.12),_transparent_22%)]" />
 
-          <div className="container relative px-4 py-10 md:px-6 md:py-14 lg:py-16">
+          <div className="container relative px-4 py-8 md:px-6 md:py-12 lg:py-14">
             <motion.div
-              className="mx-auto max-w-6xl"
+              className="mx-auto max-w-5xl space-y-8"
               {...getPageRevealProps(prefersReducedMotion, { distance: 0, duration: 0.24 })}
             >
-              <div className="grid gap-8 lg:grid-cols-[minmax(0,1.3fr)_340px] lg:items-start lg:gap-12">
-                <motion.div
-                  className="space-y-8"
-                  {...getRevealProps(prefersReducedMotion, { delay: 0.04, distance: 18 })}
-                >
-                  <div className="space-y-5">
-                    <Badge className="w-fit rounded-full border border-[#9fc5d8] bg-[#d8eff5] px-4 py-1.5 text-[11px] font-extrabold uppercase tracking-[0.24em] text-[#223b54]">
-                      Nate turns one
-                    </Badge>
+              <motion.div
+                className="overflow-hidden rounded-[32px] border border-white/14 bg-[rgba(247,251,255,0.08)] shadow-[0_24px_54px_rgba(16,31,44,0.24)]"
+                {...getRevealProps(prefersReducedMotion, { delay: 0.04, distance: 18 })}
+              >
+                <div className="relative aspect-[6/5] sm:aspect-[16/10] lg:aspect-[16/8]">
+                  <Image
+                    src={coverImage}
+                    alt="Nate smiling in the birthday page cover image"
+                    fill
+                    className="object-cover"
+                    priority
+                  />
+                  <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(22,37,51,0.06)_0%,rgba(22,37,51,0.3)_100%)]" />
+                </div>
+              </motion.div>
 
-                    <div className="space-y-4">
-                      <h1 className="max-w-3xl text-5xl leading-[0.95] text-white sm:text-6xl lg:text-7xl">
-                        One tough cookie is turning one.
-                      </h1>
-                      <p className="max-w-2xl text-base leading-7 text-[#eef5fb] sm:text-lg">
-                        Join us for Nate the Great&apos;s first birthday celebration. The page keeps the same Go Nate
-                        Go warmth, but with a much clearer event-first layout.
-                      </p>
-                    </div>
+              <motion.div className="space-y-6" {...getRevealProps(prefersReducedMotion, { delay: 0.08, distance: 18 })}>
+                <div className="space-y-4">
+                  <Badge className="w-fit rounded-full border border-[#9fc5d8] bg-[#d8eff5] px-4 py-1.5 text-[11px] font-extrabold uppercase tracking-[0.24em] text-[#223b54]">
+                    First birthday party
+                  </Badge>
+
+                  <div className="space-y-3">
+                    <h1 className="max-w-3xl text-4xl leading-[0.96] text-white sm:text-5xl md:text-6xl">
+                      One tough cookie is turning one.
+                    </h1>
+                    <p className="max-w-2xl text-base leading-7 text-[#eef5fb] sm:text-lg">
+                      Come celebrate Nate the Great with us at Craft Hall in Philadelphia.
+                    </p>
                   </div>
+                </div>
 
-                  <div className="overflow-hidden rounded-[30px] border border-white/12 bg-[rgba(247,251,255,0.06)] shadow-[0_24px_60px_rgba(16,31,44,0.22)] backdrop-blur-sm">
-                    <DetailRow
-                      icon={MapPin}
-                      eyebrow="Where"
-                      title="Craft Hall"
-                      description="901 N Delaware Ave, Philadelphia, PA 19123"
-                      action={
-                        <Button
-                          asChild
-                          variant="outline"
-                          className="h-11 rounded-[18px] border-[#9fc5d8] bg-white/8 px-5 font-bold text-[#f7fbff] hover:bg-white/12 hover:text-white"
-                        >
-                          <Link href={googleMapsUrl} target="_blank" rel="noreferrer">
-                            Get directions
-                          </Link>
-                        </Button>
-                      }
-                    />
-                    <DetailRow
-                      icon={CalendarDays}
-                      eyebrow="Date"
-                      title="Saturday, May 9, 2026"
-                      description="Come celebrate Nate the Great with family and friends."
-                    />
-                    <DetailRow
-                      icon={PartyPopper}
-                      eyebrow="Time"
-                      title="12 PM to 3 PM"
-                      description="No gifts please. In lieu of gifts, consider a donation to CHOP Neurosurgery & Neuro-Oncology."
-                      action={
-                        <Button
-                          asChild
-                          className="h-11 rounded-[18px] bg-[#42a8a9] px-5 font-extrabold text-white hover:bg-[#369799]"
-                        >
-                          <Link href={donationUrl}>Donate to CHOP</Link>
-                        </Button>
-                      }
-                    />
-                  </div>
+                <div className="grid gap-4 md:grid-cols-2">
+                  <EventMetaCard
+                    icon={CalendarDays}
+                    label="Date & time"
+                    title="Saturday, May 9, 2026"
+                    description="12 PM to 3 PM"
+                  />
+                  <EventMetaCard
+                    icon={MapPin}
+                    label="Location"
+                    title="Craft Hall"
+                    description="901 N Delaware Ave, Philadelphia, PA 19123"
+                  />
+                </div>
 
-                  <div className="flex flex-col gap-3 sm:flex-row">
+                <div className="rounded-[24px] border border-white/14 bg-[rgba(247,251,255,0.08)] px-5 py-4 text-[#eef5fb] shadow-[0_18px_34px_rgba(16,31,44,0.14)]">
+                  <p className="text-xs font-extrabold uppercase tracking-[0.22em] text-[#9fc5d8]">
+                    Your presence is enough
+                  </p>
+                  <p className="mt-2 text-sm leading-6 text-[#d8eff5]">
+                    If you&apos;d like to celebrate with a gift, please consider a donation to CHOP Neurosurgery &
+                    Neuro-Oncology.
+                  </p>
+                  <div className="mt-4">
                     <Button
                       asChild
-                      size="lg"
-                      className="h-14 rounded-[20px] bg-[#42a8a9] px-7 text-base font-extrabold text-white shadow-[0_18px_38px_rgba(27,56,77,0.26)] hover:bg-[#369799]"
+                      className="h-11 rounded-[18px] bg-[#42a8a9] px-5 font-extrabold text-white hover:bg-[#369799]"
                     >
-                      <Link href="#rsvp">RSVP now</Link>
+                      <Link href={donationUrl}>Donate to CHOP</Link>
                     </Button>
                   </div>
-                </motion.div>
+                </div>
 
-                <motion.div
-                  className="mx-auto w-full max-w-[340px]"
-                  {...getScaleInProps(prefersReducedMotion, { delay: 0.08, duration: 0.26, scale: 0.985 })}
-                >
-                  <div className="rounded-[30px] border border-white/16 bg-[rgba(247,251,255,0.08)] p-3 shadow-[0_20px_44px_rgba(16,31,44,0.24)] backdrop-blur-sm">
-                    <div className="overflow-hidden rounded-[24px] border border-white/18 bg-[#fffaf2]">
-                      <Image
-                        src={posterImage}
-                        alt="Nate the Great first birthday invitation poster"
-                        width={1024}
-                        height={1536}
-                        className="h-auto w-full"
-                        priority
-                      />
-                    </div>
-                  </div>
-                </motion.div>
-              </div>
+                <div className="flex flex-col gap-3 sm:flex-row">
+                  <Button
+                    asChild
+                    size="lg"
+                    className="h-14 rounded-[20px] bg-[#42a8a9] px-7 text-base font-extrabold text-white shadow-[0_18px_38px_rgba(27,56,77,0.26)] hover:bg-[#369799]"
+                  >
+                    <Link href="#rsvp">RSVP now</Link>
+                  </Button>
+                  <Button
+                    asChild
+                    size="lg"
+                    variant="outline"
+                    className="h-14 rounded-[20px] border-[#9fc5d8] bg-white/8 px-7 text-base font-bold text-[#f7fbff] hover:bg-white/12 hover:text-white"
+                  >
+                    <Link href={googleMapsUrl} target="_blank" rel="noreferrer">
+                      Get directions
+                    </Link>
+                  </Button>
+                </div>
+              </motion.div>
             </motion.div>
           </div>
         </section>
@@ -210,7 +205,7 @@ export function BirthdayRsvpPage() {
           <div className="container px-4 md:px-6">
             <motion.div
               id="rsvp"
-              className="mx-auto max-w-5xl rounded-[34px] border border-[#9fc5d8] bg-white shadow-[0_20px_40px_rgba(42,63,84,0.12)]"
+              className="mx-auto max-w-3xl rounded-[34px] border border-[#9fc5d8] bg-white shadow-[0_20px_40px_rgba(42,63,84,0.12)]"
               {...getRevealProps(prefersReducedMotion, { distance: 18 })}
             >
               <div className="border-b border-[#d8eff5] bg-[#f7fbff] px-6 py-5 md:px-8">
@@ -223,33 +218,7 @@ export function BirthdayRsvpPage() {
                 </p>
               </div>
 
-              <div className="grid gap-8 px-6 py-6 md:px-8 md:py-8 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)]">
-                <div className="space-y-4">
-                  <div className="rounded-[24px] border border-[#d8eff5] bg-[#f7fbff] p-5">
-                    <p className="text-xs font-extrabold uppercase tracking-[0.22em] text-[#42a8a9]">Where</p>
-                    <p className="mt-3 text-2xl text-[#223b54]">Craft Hall</p>
-                    <p className="mt-2 text-sm leading-6 text-[#3f5d81]">
-                      901 N Delaware Ave
-                      <br />
-                      Philadelphia, PA 19123
-                    </p>
-                  </div>
-                  <div className="rounded-[24px] border border-[#d8eff5] bg-[#fffaf2] p-5">
-                    <p className="text-xs font-extrabold uppercase tracking-[0.22em] text-[#42a8a9]">When</p>
-                    <p className="mt-3 text-xl text-[#223b54]">Saturday, May 9, 2026</p>
-                    <p className="mt-2 text-sm leading-6 text-[#3f5d81]">12 PM to 3 PM</p>
-                  </div>
-                  <div className="rounded-[24px] border border-[#d8eff5] bg-white p-5">
-                    <p className="text-xs font-extrabold uppercase tracking-[0.22em] text-[#42a8a9]">
-                      Your presence is enough
-                    </p>
-                    <p className="mt-3 text-sm leading-6 text-[#3f5d81]">
-                      If you&apos;d like to celebrate with a gift, please consider a donation to CHOP Neurosurgery &
-                      Neuro-Oncology.
-                    </p>
-                  </div>
-                </div>
-
+              <div className="px-6 py-6 md:px-8 md:py-8">
                 <form className="space-y-6" onSubmit={handleSubmit}>
                   <div className="space-y-2">
                     <Label htmlFor="birthday-name" className="text-sm font-bold text-[#223b54]">
@@ -399,28 +368,27 @@ export function BirthdayRsvpPage() {
   )
 }
 
-interface DetailRowProps {
-  icon: ComponentType<{ className?: string }>
-  eyebrow: string
+interface EventMetaCardProps {
+  icon: LucideIcon
+  label: string
   title: string
   description: string
-  action?: ReactNode
 }
 
-function DetailRow({ icon: Icon, eyebrow, title, description, action }: DetailRowProps) {
+function EventMetaCard({ icon: Icon, label, title, description }: EventMetaCardProps) {
   return (
-    <div className="grid gap-4 border-b border-white/10 px-5 py-5 last:border-b-0 md:grid-cols-[64px_minmax(0,1fr)_auto] md:items-center md:px-6">
-      <div className="flex h-16 w-16 items-center justify-center rounded-[22px] border border-white/14 bg-white/8 text-[#d8eff5]">
-        <Icon className="h-6 w-6" />
-      </div>
+    <div className="rounded-[26px] border border-white/14 bg-[rgba(247,251,255,0.08)] p-5 shadow-[0_18px_34px_rgba(16,31,44,0.14)]">
+      <div className="flex items-start gap-4">
+        <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-[20px] border border-white/14 bg-white/8 text-[#d8eff5]">
+          <Icon className="h-5 w-5" />
+        </div>
 
-      <div className="space-y-2">
-        <p className="text-xs font-extrabold uppercase tracking-[0.22em] text-[#9fc5d8]">{eyebrow}</p>
-        <p className="text-2xl leading-tight text-white sm:text-[2rem]">{title}</p>
-        <p className="max-w-2xl text-sm leading-6 text-[#d8eff5]">{description}</p>
+        <div className="space-y-2">
+          <p className="text-xs font-extrabold uppercase tracking-[0.22em] text-[#9fc5d8]">{label}</p>
+          <p className="text-xl leading-tight text-white sm:text-2xl">{title}</p>
+          <p className="text-sm leading-6 text-[#d8eff5]">{description}</p>
+        </div>
       </div>
-
-      {action ? <div className="md:justify-self-end">{action}</div> : null}
     </div>
   )
 }
