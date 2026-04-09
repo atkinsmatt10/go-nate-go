@@ -66,7 +66,7 @@ export function SplitFlapCell({
   const [previousAccent, setPreviousAccent] = useState<AccentTone | null>(null)
   const currentRef = useRef(" ")
   const targetRef = useRef<string | null>(null)
-  const pulseRef = useRef<number | null>(null)
+  const pulseRef = useRef(pulseKey)
   const accentRef = useRef<AccentTone | null>(null)
   const startTimerRef = useRef<number | null>(null)
   const stepTimerRef = useRef<number | null>(null)
@@ -100,12 +100,12 @@ export function SplitFlapCell({
       normalized === " "
         ? shouldRunChaos
           ? 10 + Math.floor(Math.random() * 6)
-          : 4 + Math.floor(Math.random() * 3)
+          : 1
         : shouldRunChaos
           ? 26 + Math.floor(Math.random() * 10)
-          : 9 + Math.floor(Math.random() * 5)
+          : 1
 
-    const accentChance = shouldRunChaos ? 0.72 : 0.16
+    const accentChance = shouldRunChaos ? 0.72 : 0
 
     const runStep = (step: number) => {
       const isLast = step === scrambleCount

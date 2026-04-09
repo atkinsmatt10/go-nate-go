@@ -188,6 +188,8 @@ export function BirthdayRsvpPage() {
               className="mx-auto max-w-5xl space-y-8"
               {...getPageRevealProps(prefersReducedMotion, { distance: 0, duration: 0.24 })}
             >
+              <CountdownFlippingBoard className="mx-auto w-full max-w-5xl pt-2" />
+
               <motion.div
                 className="relative"
                 {...getRevealProps(prefersReducedMotion, { delay: 0.04, distance: 18 })}
@@ -458,7 +460,6 @@ export function BirthdayRsvpPage() {
                   Nate the Great
                 </p>
               </div>
-              <CountdownFlippingBoard />
             </motion.div>
           </div>
         </section>

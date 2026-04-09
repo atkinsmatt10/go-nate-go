@@ -15,7 +15,6 @@ interface CountdownParts {
 interface CountdownSnapshot {
   hourBucket: number
   isBirthday: boolean
-  label: string
   parts: CountdownParts
 }
 
@@ -36,7 +35,6 @@ function getBirthdayCountdown(now: Date): CountdownSnapshot {
     return {
       hourBucket: 0,
       isBirthday: true,
-      label: "It's Nate's birthday today",
       parts: {
         days: "000",
         hours: "00",
@@ -53,7 +51,6 @@ function getBirthdayCountdown(now: Date): CountdownSnapshot {
   return {
     hourBucket: Math.floor(differenceInSeconds / 3600),
     isBirthday: false,
-    label: `Countdown to May 2, ${targetYear}`,
     parts: {
       days: String(Math.floor(differenceInSeconds / 86400)).padStart(3, "0"),
       hours: String(Math.floor((differenceInSeconds % 86400) / 3600)).padStart(2, "0"),
@@ -122,14 +119,12 @@ export function CountdownFlippingBoard({ className }: CountdownFlippingBoardProp
 
   return (
     <motion.div
-      className={cn("mt-8 flex flex-col items-center gap-4 text-center", className)}
+      className={cn("flex flex-col items-center gap-4 text-center", className)}
       initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 18 }}
       whileInView={prefersReducedMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.5, margin: "-24px" }}
       transition={{ duration: prefersReducedMotion ? 0.18 : 0.32, ease: [0.23, 1, 0.32, 1] }}
     >
-      <p className="text-[11px] font-extrabold uppercase tracking-[0.28em] text-[#3f5d81]">{countdown.label}</p>
-
       {countdown.isBirthday ? (
         <div className="max-w-2xl rounded-[28px] border border-[#cfe3f0] bg-white px-6 py-6 shadow-[0_18px_44px_rgba(42,63,84,0.12)]">
           <p className="text-2xl text-[#223b54] sm:text-3xl">Happy Birthday, Nate.</p>
@@ -138,7 +133,7 @@ export function CountdownFlippingBoard({ className }: CountdownFlippingBoardProp
           </p>
         </div>
       ) : (
-        <div className="w-full max-w-4xl rounded-[30px] border border-[#28445d] bg-[#142c42] px-4 py-5 shadow-[0_26px_60px_rgba(13,27,39,0.34)] sm:px-5 sm:py-6">
+        <div className="w-full max-w-5xl">
           <div className="flex flex-wrap items-start justify-center gap-3 sm:gap-4 md:gap-5">
             {segments.map((segment, segmentIndex) => (
               <motion.div
@@ -168,8 +163,8 @@ export function CountdownFlippingBoard({ className }: CountdownFlippingBoardProp
                         pulseKey={pulseKey}
                         chaosMode={chaosMode}
                         delay={segmentIndex * 70 + digitIndex * 22}
-                        stepMs={chaosMode ? 34 : 60}
-                        flipDuration={chaosMode ? 0.22 : 0.3}
+                        stepMs={chaosMode ? 34 : 0}
+                        flipDuration={chaosMode ? 0.22 : 0.24}
                         className="w-10 sm:w-11 md:w-12"
                         characterClassName="text-[clamp(1.25rem,3vw,2rem)]"
                       />
@@ -182,14 +177,8 @@ export function CountdownFlippingBoard({ className }: CountdownFlippingBoardProp
               </motion.div>
             ))}
           </div>
-
-          <p className="mt-4 text-center text-sm leading-6 text-[#c7d8e6]">
-            Every hour the board does a quick color-scramble and then snaps back to the right time.
-          </p>
         </div>
       )}
-
-      <p className="max-w-2xl text-sm leading-6 text-[#5d7796]">A little more birthday energy before the big day.</p>
     </motion.div>
   )
 }
