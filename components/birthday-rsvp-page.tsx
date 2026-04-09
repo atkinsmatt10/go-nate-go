@@ -25,8 +25,8 @@ const googleMapsUrl = "https://maps.google.com/?q=Craft+Hall+901+N+Delaware+Ave+
 const googleMapsEmbedUrl =
   "https://www.google.com/maps?q=Craft+Hall+901+N+Delaware+Ave+Philadelphia+PA+19123&z=15&output=embed"
 const attendanceOptions = [
-  { value: "yes", label: "We’ll be there", description: "Save seats and cookies for us." },
-  { value: "no", label: "Can’t make it", description: "Let the family know we’re cheering Nate on from afar." },
+  { value: "yes", label: "We’ll be there", description: "Save some seats and cookies for us." },
+  { value: "no", label: "Can’t make it", description: "We’ll be cheering Nate on from afar." },
 ] as const
 
 export function BirthdayRsvpPage() {
@@ -91,8 +91,8 @@ export function BirthdayRsvpPage() {
         tone: "success",
         message:
           attendance === "yes"
-            ? `Thanks, ${trimmedName}. Your RSVP is in and we’ll be ready for ${parsedAttendeeCount} guest${parsedAttendeeCount === 1 ? "" : "s"}.`
-            : `Thanks, ${trimmedName}. Your RSVP is in, and the Atkins family appreciates the heads up.`,
+            ? `Thanks, ${trimmedName}. We’ve got you down for ${parsedAttendeeCount} guest${parsedAttendeeCount === 1 ? "" : "s"} and can’t wait to celebrate with you.`
+            : `Thanks, ${trimmedName}. We’ll miss you and really appreciate the heads up.`,
       })
       setName("")
       setAttendeeCount("1")
@@ -166,7 +166,7 @@ export function BirthdayRsvpPage() {
                       transformPerspective: 1400,
                     }}
                   >
-                    <div className="absolute inset-x-[2%] bottom-[-10%] top-[0%] sm:inset-x-[6%] sm:bottom-[-6%] sm:top-[4%]">
+                    <div className="absolute inset-x-[8%] bottom-[4%] top-[6%] sm:inset-x-[12%] sm:bottom-[6%] sm:top-[10%] lg:inset-x-[15%] lg:bottom-[8%] lg:top-[10%]">
                       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(66,168,169,0.34),transparent_56%)] blur-3xl" />
                       <Image
                         src={coverImage}
@@ -190,10 +190,10 @@ export function BirthdayRsvpPage() {
 
                   <div className="space-y-3">
                     <h1 className="max-w-3xl text-4xl leading-[0.96] text-white sm:text-5xl md:text-6xl">
-                      One tough cookie is turning one.
+                      Nate is one tough cookie, and he&apos;s turning one.
                     </h1>
                     <p className="max-w-2xl text-base leading-7 text-[#eef5fb] sm:text-lg">
-                      Come celebrate Nate the Great with us at Craft Hall in Philadelphia.
+                      We&apos;d love to celebrate with you at Craft Hall in Philadelphia.
                     </p>
                   </div>
                 </div>
@@ -228,10 +228,10 @@ export function BirthdayRsvpPage() {
               <div className="border-b border-[#d8eff5] bg-[#f7fbff] px-6 py-5 md:px-8">
                 <p className="text-xs font-extrabold uppercase tracking-[0.24em] text-[#42a8a9]">RSVP</p>
                 <h2 className="mt-3 text-3xl leading-none text-[#223b54] sm:text-4xl">
-                  Let the family know if you&apos;re coming.
+                  Let us know if you&apos;ll be there.
                 </h2>
                 <p className="mt-3 max-w-2xl text-sm leading-6 text-[#3f5d81]">
-                  Share your name, how many people are in your party, and whether you&apos;re able to make it.
+                  Share your name, how many are coming with you, and whether we should save your crew a spot.
                 </p>
               </div>
 
@@ -245,7 +245,7 @@ export function BirthdayRsvpPage() {
                       id="birthday-name"
                       value={name}
                       onChange={(event) => setName(event.target.value)}
-                      placeholder="Nate's biggest fan"
+                      placeholder="Your name"
                       className="h-14 rounded-[20px] border-[#9fc5d8] bg-[#f7fbff] px-4 text-base text-[#223b54] placeholder:text-[#6f8ea4] focus-visible:ring-[#42a8a9]"
                       maxLength={80}
                       autoComplete="name"
@@ -271,7 +271,7 @@ export function BirthdayRsvpPage() {
                   </div>
 
                   <div className="space-y-3">
-                    <Label className="text-sm font-bold text-[#223b54]">Will your party be there?</Label>
+                    <Label className="text-sm font-bold text-[#223b54]">Will you be celebrating with us?</Label>
                     <div className="grid gap-3">
                       {attendanceOptions.map((option) => {
                         const isSelected = attendance === option.value
@@ -340,8 +340,7 @@ export function BirthdayRsvpPage() {
                 <p className="text-xs font-extrabold uppercase tracking-[0.24em] text-[#42a8a9]">Location</p>
                 <h2 className="mt-3 text-3xl leading-none text-[#223b54] sm:text-4xl">Craft Hall</h2>
                 <p className="mt-3 max-w-2xl text-sm leading-6 text-[#3f5d81]">
-                  901 N Delaware Ave, Philadelphia, PA 19123. Use the live map below to get oriented before the
-                  party.
+                  This is where we&apos;ll be celebrating. Take a quick look at the map before the party.
                 </p>
               </div>
 
