@@ -57,7 +57,7 @@ export default function NotFound() {
               {/* Go Home Button */}
               <Link
                 href="/"
-                className="inline-flex h-14 items-center justify-center rounded-lg bg-primary px-8 text-xl font-bold text-primary-foreground shadow-lg transition-[background-color,box-shadow,transform] duration-150 ease-snappy-out active:scale-[0.98] hover:bg-primary/90 hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                className="inline-flex h-14 items-center justify-center rounded-lg bg-primary px-8 text-xl font-bold text-primary-foreground shadow-lg transition-[background-color,box-shadow,transform] duration-150 ease-snappy-out active:scale-[0.98] hover:bg-primary/90 hover:shadow-xl focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               >
                 Go Home
               </Link>
@@ -65,7 +65,7 @@ export default function NotFound() {
               {/* Donate Button */}
               <Link
                 href="/donate"
-                className="inline-flex h-14 items-center justify-center rounded-lg border-2 border-primary bg-transparent px-8 text-xl font-bold text-primary shadow-sm transition-[background-color,color,border-color,box-shadow,transform] duration-150 ease-snappy-out active:scale-[0.98] hover:bg-primary hover:text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                className="inline-flex h-14 items-center justify-center rounded-lg border-2 border-primary bg-transparent px-8 text-xl font-bold text-primary shadow-xs transition-[background-color,color,border-color,box-shadow,transform] duration-150 ease-snappy-out active:scale-[0.98] hover:bg-primary hover:text-primary-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               >
                 Support Nate Instead
               </Link>

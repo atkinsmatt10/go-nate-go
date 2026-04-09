@@ -47,7 +47,7 @@ const stripePromise = publishableKey ? loadStripe(publishableKey) : null
 const donationCtaClassName =
   "h-12 w-full rounded-2xl border border-[#2f6272] bg-[#42a8a9] text-base font-bold text-white shadow-[0_16px_26px_rgba(34,59,84,0.28)] transition-[background-color,transform,box-shadow] duration-150 ease-snappy-out active:scale-[0.98] hover:-translate-y-0.5 hover:bg-[#369799]"
 const amountOptionBaseClass =
-  "h-11 rounded-2xl border text-sm font-bold touch-manipulation transition-[background-color,border-color,color,transform,box-shadow,opacity] duration-150 ease-snappy-out active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2f6272] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60 sm:text-base"
+  "h-11 rounded-2xl border text-sm font-bold touch-manipulation transition-[background-color,border-color,color,transform,box-shadow,opacity] duration-150 ease-snappy-out active:scale-[0.98] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#2f6272] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60 sm:text-base"
 const amountOptionSelectedClass =
   "border-[#2f6272] bg-[#42a8a9] text-white shadow-[0_12px_20px_rgba(34,59,84,0.22)]"
 const amountOptionDefaultClass =
@@ -629,7 +629,7 @@ export default function DonatePage() {
     <main className="relative min-h-dvh overflow-hidden bg-[#f4fbff] text-[#1f3147]">
       <a
         href="#donation-form"
-        className="sr-only absolute left-3 top-3 z-30 rounded-md bg-white px-3 py-2 text-sm font-semibold text-[#1d344d] focus:not-sr-only focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2f6272] focus-visible:ring-offset-2"
+        className="sr-only absolute left-3 top-3 z-30 rounded-md bg-white px-3 py-2 text-sm font-semibold text-[#1d344d] focus:not-sr-only focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#2f6272] focus-visible:ring-offset-2"
       >
         Skip to Donation Form
       </a>
@@ -663,7 +663,7 @@ export default function DonatePage() {
         >
           <Link
             href="/"
-            className="inline-flex items-center gap-2 rounded-full border border-[#a6c0d4] bg-white/85 px-4 py-2 text-sm font-semibold text-[#223b54] shadow-sm transition-[background-color,border-color,color,transform,box-shadow] duration-150 ease-snappy-out active:scale-[0.98] hover:-translate-y-0.5 hover:border-[#42a8a9] hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2f6272] focus-visible:ring-offset-2"
+            className="inline-flex items-center gap-2 rounded-full border border-[#a6c0d4] bg-white/85 px-4 py-2 text-sm font-semibold text-[#223b54] shadow-xs transition-[background-color,border-color,color,transform,box-shadow] duration-150 ease-snappy-out active:scale-[0.98] hover:-translate-y-0.5 hover:border-[#42a8a9] hover:bg-white focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#2f6272] focus-visible:ring-offset-2"
           >
             <ArrowLeft className="h-4 w-4" aria-hidden="true" />
             Back Home
@@ -681,11 +681,11 @@ export default function DonatePage() {
 
         <div className="grid items-start gap-6 lg:grid-cols-[1.1fr_0.95fr] lg:gap-8">
           <motion.section
-            className="order-2 relative overflow-hidden rounded-[2rem] border border-[#b6cfdf] bg-white/84 p-5 shadow-[0_24px_60px_rgba(34,59,84,0.2)] backdrop-blur-sm sm:p-7 lg:order-1"
+            className="order-2 relative overflow-hidden rounded-4xl border border-[#b6cfdf] bg-white/84 p-5 shadow-[0_24px_60px_rgba(34,59,84,0.2)] backdrop-blur-xs sm:p-7 lg:order-1"
             variants={prefersReducedMotion ? undefined : revealChildVariants}
           >
-            <div className="pointer-events-none absolute inset-x-0 top-0 h-20 bg-gradient-to-r from-[#42a8a9]/14 via-transparent to-[#2f5c7b]/14" />
-            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[#9eb8cc] to-transparent" />
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-20 bg-linear-to-r from-[#42a8a9]/14 via-transparent to-[#2f5c7b]/14" />
+            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-linear-to-r from-transparent via-[#9eb8cc] to-transparent" />
 
             <div className="relative">
               <p className="inline-flex items-center gap-2 rounded-full bg-[#d8eff5] px-4 py-1 text-xs font-bold uppercase tracking-[0.18em] text-[#1f4f68]">
@@ -743,7 +743,7 @@ export default function DonatePage() {
                 alt="Nate shark"
                 width={106}
                 height={106}
-                className="h-[84px] w-[84px] rounded-2xl border border-[#a9c4d8] bg-white p-1 object-contain shadow-sm"
+                className="h-[84px] w-[84px] rounded-2xl border border-[#a9c4d8] bg-white p-1 object-contain shadow-xs"
               />
 
               <div className="min-w-0">
@@ -759,11 +759,11 @@ export default function DonatePage() {
 
           <motion.section
             id="donation-form"
-            className="order-1 relative scroll-mt-24 overflow-hidden rounded-[2rem] border border-[#aac6d9] bg-white/92 p-5 shadow-[0_24px_56px_rgba(34,59,84,0.22)] backdrop-blur-sm sm:p-6 lg:order-2"
+            className="order-1 relative scroll-mt-24 overflow-hidden rounded-4xl border border-[#aac6d9] bg-white/92 p-5 shadow-[0_24px_56px_rgba(34,59,84,0.22)] backdrop-blur-xs sm:p-6 lg:order-2"
             variants={prefersReducedMotion ? undefined : revealChildVariants}
           >
-            <div className="pointer-events-none absolute inset-x-0 top-0 h-20 bg-gradient-to-r from-[#2f5c7b]/14 via-transparent to-[#42a8a9]/14" />
-            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[#9eb8cc] to-transparent" />
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-20 bg-linear-to-r from-[#2f5c7b]/14 via-transparent to-[#42a8a9]/14" />
+            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-linear-to-r from-transparent via-[#9eb8cc] to-transparent" />
 
             <div className="relative">
               <h2 className="text-balance text-3xl leading-tight text-[#1d344d] sm:text-4xl">Make a Donation</h2>
@@ -845,7 +845,7 @@ export default function DonatePage() {
                           setCustomAmountInput(event.target.value)
                           resetCheckoutState()
                         }}
-                        className="h-12 w-full rounded-2xl border border-[#a9c3d5] bg-white pl-8 pr-3 text-base text-[#223b54] shadow-sm outline-none transition-[border-color,box-shadow,opacity] duration-200 focus:border-[#42a8a9] focus:ring-4 focus:ring-[#d6ecec] disabled:cursor-not-allowed disabled:opacity-60"
+                        className="h-12 w-full rounded-2xl border border-[#a9c3d5] bg-white pl-8 pr-3 text-base text-[#223b54] shadow-xs outline-hidden transition-[border-color,box-shadow,opacity] duration-200 focus:border-[#42a8a9] focus:ring-4 focus:ring-[#d6ecec] disabled:cursor-not-allowed disabled:opacity-60"
                       />
                     </div>
                   </div>
@@ -874,7 +874,7 @@ export default function DonatePage() {
                       setReceiptEmail(event.target.value)
                       resetCheckoutState()
                     }}
-                    className="h-12 w-full rounded-2xl border border-[#a9c3d5] bg-white px-4 text-base text-[#223b54] shadow-sm outline-none transition-[border-color,box-shadow,opacity] duration-200 focus:border-[#42a8a9] focus:ring-4 focus:ring-[#d6ecec] disabled:cursor-not-allowed disabled:opacity-60"
+                    className="h-12 w-full rounded-2xl border border-[#a9c3d5] bg-white px-4 text-base text-[#223b54] shadow-xs outline-hidden transition-[border-color,box-shadow,opacity] duration-200 focus:border-[#42a8a9] focus:ring-4 focus:ring-[#d6ecec] disabled:cursor-not-allowed disabled:opacity-60"
                   />
                   <p className="text-sm text-[#526a7f]">
                     Used for your receipt and to help Stripe prepare saved wallet options when available.
@@ -929,7 +929,7 @@ export default function DonatePage() {
                     <button
                       type="button"
                       onClick={resetCheckoutState}
-                      className="w-full text-center text-sm font-semibold text-[#4f667b] underline-offset-4 transition-colors duration-200 hover:text-[#223b54] hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2f6272] focus-visible:ring-offset-2"
+                      className="w-full text-center text-sm font-semibold text-[#4f667b] underline-offset-4 transition-colors duration-200 hover:text-[#223b54] hover:underline focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#2f6272] focus-visible:ring-offset-2"
                     >
                       Change Donation Amount
                     </button>

@@ -146,7 +146,7 @@ export function ShirtSection() {
                       />
                       {/* Click indicator */}
                       <div className="absolute inset-0 rounded-2xl bg-black/0 opacity-0 transition-[background-color,opacity] duration-200 ease-snappy-out group-hover:bg-black/20 group-hover:opacity-100 flex items-center justify-center">
-                        <div className="bg-white/95 backdrop-blur-sm rounded-lg px-4 py-3 text-sm font-semibold text-gray-800 shadow-lg border border-white/20 transform scale-95 group-hover:scale-100 transition-transform duration-150 ease-snappy-out">
+                        <div className="bg-white/95 backdrop-blur-xs rounded-lg px-4 py-3 text-sm font-semibold text-gray-800 shadow-lg border border-white/20 transform scale-95 group-hover:scale-100 transition-transform duration-150 ease-snappy-out">
                           <div className="text-center">
                             <div className="text-primary text-lg font-bold">{merchandiseItems[currentImage].price}</div>
                             <div className="flex items-center gap-1 text-xs text-gray-600">
@@ -201,7 +201,7 @@ export function ShirtSection() {
                 Join the Natey Shark Team
               </h2>
               <div className="flex justify-start">
-                <div className="rounded-full border border-slate-300/30 bg-slate-700/90 px-3 py-1 text-sm font-medium text-white backdrop-blur-sm transition-[background-color,border-color] duration-200 ease-snappy-out hover:border-slate-300/50 hover:bg-slate-600/90">
+                <div className="rounded-full border border-slate-300/30 bg-slate-700/90 px-3 py-1 text-sm font-medium text-white backdrop-blur-xs transition-[background-color,border-color] duration-200 ease-snappy-out hover:border-slate-300/50 hover:bg-slate-600/90">
                   100+ shirts from amazing supporters
                 </div>
               </div>
@@ -218,7 +218,7 @@ export function ShirtSection() {
                 width={60}
                 height={60}
                 alt="CHOP - Children's Hospital of Philadelphia"
-                className="flex-shrink-0 w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 object-contain"
+                className="shrink-0 w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 object-contain"
               />
               <div>
                 <p className="font-semibold text-primary text-sm sm:text-base">100% of proceeds</p>

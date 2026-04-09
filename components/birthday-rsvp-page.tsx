@@ -2,15 +2,16 @@
 
 import Image from "next/image"
 import Link from "next/link"
-import { type FormEvent, type MouseEvent, useEffect, useState } from "react"
-import { AnimatePresence, motion, useMotionTemplate, useReducedMotion, useSpring } from "framer-motion"
+import { type FormEvent, type MouseEvent, useState } from "react"
+import { motion, useMotionTemplate, useReducedMotion, useSpring } from "framer-motion"
 import { CalendarDays, CheckCircle2, MapPin, type LucideIcon } from "lucide-react"
 import { Footer } from "@/components/footer"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { CountdownFlippingBoard } from "@/components/ui/countdown-flipping-board"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { MOTION_EASE_OUT, getPageRevealProps, getRevealProps } from "@/lib/motion"
+import { getPageRevealProps, getRevealProps } from "@/lib/motion"
 import { cn } from "@/lib/utils"
 
 type AttendanceValue = "yes" | "no" | ""
@@ -18,19 +19,6 @@ type AttendanceValue = "yes" | "no" | ""
 interface SubmissionState {
   tone: "success" | "error"
   message: string
-}
-
-interface CountdownParts {
-  days: string
-  hours: string
-  minutes: string
-  seconds: string
-}
-
-interface CountdownState {
-  isBirthday: boolean
-  label: string
-  parts: CountdownParts
 }
 
 const coverImage = "/01KK50NH25Q9J200T43XRW1K6V.png"
@@ -44,40 +32,6 @@ const attendanceOptions = [
   { value: "yes", label: "We’ll be there", description: "Save some seats and cookies for us." },
   { value: "no", label: "Can’t make it", description: "We’ll be cheering Nate on from afar." },
 ] as const
-const countdownLabels: ReadonlyArray<keyof CountdownParts> = ["days", "hours", "minutes", "seconds"]
-
-function getBirthdayCountdown(now: Date): CountdownState {
-  const month = now.getMonth()
-  const day = now.getDate()
-
-  if (month === 4 && day === 2) {
-    return {
-      isBirthday: true,
-      label: "It's Nate's birthday today",
-      parts: {
-        days: "00",
-        hours: "00",
-        minutes: "00",
-        seconds: "00",
-      },
-    }
-  }
-
-  const targetYear = month > 4 || (month === 4 && day > 2) ? now.getFullYear() + 1 : now.getFullYear()
-  const targetDate = new Date(targetYear, 4, 2, 0, 0, 0, 0)
-  const differenceInSeconds = Math.max(Math.floor((targetDate.getTime() - now.getTime()) / 1000), 0)
-
-  return {
-    isBirthday: false,
-    label: `Countdown to May 2, ${targetYear}`,
-    parts: {
-      days: String(Math.floor(differenceInSeconds / 86400)).padStart(2, "0"),
-      hours: String(Math.floor((differenceInSeconds % 86400) / 3600)).padStart(2, "0"),
-      minutes: String(Math.floor((differenceInSeconds % 3600) / 60)).padStart(2, "0"),
-      seconds: String(differenceInSeconds % 60).padStart(2, "0"),
-    },
-  }
-}
 
 function BirthdayActionButtons({ prefersReducedMotion }: { prefersReducedMotion: boolean }) {
   return (
@@ -124,7 +78,6 @@ export function BirthdayRsvpPage() {
   const [attendance, setAttendance] = useState<AttendanceValue>("")
   const [submissionState, setSubmissionState] = useState<SubmissionState | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [countdown, setCountdown] = useState<CountdownState>(() => getBirthdayCountdown(new Date()))
   const coverRotateX = useSpring(0, { stiffness: 180, damping: 20, mass: 0.4 })
   const coverRotateY = useSpring(0, { stiffness: 180, damping: 20, mass: 0.4 })
   const coverTranslateX = useSpring(0, { stiffness: 180, damping: 20, mass: 0.4 })
@@ -132,16 +85,6 @@ export function BirthdayRsvpPage() {
   const coverGlowX = useSpring(50, { stiffness: 160, damping: 24, mass: 0.5 })
   const coverGlowY = useSpring(28, { stiffness: 160, damping: 24, mass: 0.5 })
   const coverGlow = useMotionTemplate`radial-gradient(circle at ${coverGlowX}% ${coverGlowY}%, rgba(247,251,255,0.38), transparent 28%)`
-
-  useEffect(() => {
-    const intervalId = window.setInterval(() => {
-      setCountdown(getBirthdayCountdown(new Date()))
-    }, 1000)
-
-    return () => {
-      window.clearInterval(intervalId)
-    }
-  }, [])
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -237,8 +180,8 @@ export function BirthdayRsvpPage() {
   return (
     <div className="min-h-dvh bg-background text-foreground">
       <main className="overflow-hidden">
-        <section className="relative isolate bg-[linear-gradient(180deg,_#2a3f54_0%,_#304a67_100%)]">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(242,198,109,0.24),_transparent_38%),radial-gradient(circle_at_85%_12%,_rgba(247,251,255,0.12),_transparent_22%),radial-gradient(circle_at_18%_22%,_rgba(255,241,194,0.18),_transparent_18%)]" />
+        <section className="relative isolate bg-[linear-gradient(180deg,#2a3f54_0%,#304a67_100%)]">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(242,198,109,0.24),transparent_38%),radial-gradient(circle_at_85%_12%,rgba(247,251,255,0.12),transparent_22%),radial-gradient(circle_at_18%_22%,rgba(255,241,194,0.18),transparent_18%)]" />
 
           <div className="container relative px-4 py-8 md:px-6 md:py-12 lg:py-14">
             <motion.div
@@ -251,12 +194,12 @@ export function BirthdayRsvpPage() {
                 onMouseMove={handleCoverPointerMove}
                 onMouseLeave={handleCoverPointerLeave}
               >
-                <div className="relative aspect-[6/5] overflow-hidden sm:aspect-[16/10] lg:aspect-[16/8]">
+                <div className="relative aspect-6/5 overflow-hidden sm:aspect-16/10 lg:aspect-16/8">
                   <motion.div className="absolute inset-0" style={{ backgroundImage: coverGlow }} />
                   <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_18%,rgba(255,241,194,0.24),transparent_22%),radial-gradient(circle_at_84%_18%,rgba(242,198,109,0.2),transparent_24%),radial-gradient(circle_at_52%_82%,rgba(247,251,255,0.08),transparent_30%)]" />
 
                   <motion.div
-                    className="absolute inset-0 [transform-style:preserve-3d]"
+                    className="absolute inset-0 transform-3d"
                     style={{
                       rotateX: coverRotateX,
                       rotateY: coverRotateY,
@@ -272,6 +215,7 @@ export function BirthdayRsvpPage() {
                         alt="Nate the Great shark eating a cookie"
                         fill
                         className="object-contain drop-shadow-[0_36px_60px_rgba(15,34,47,0.38)]"
+                        sizes="(max-width: 640px) 70vw, (max-width: 1024px) 45vw, 420px"
                         priority
                       />
                     </div>
@@ -391,7 +335,7 @@ export function BirthdayRsvpPage() {
                             disabled={isSubmitting}
                             className={cn(
                               "rounded-[24px] border p-4 text-left transition-[transform,background-color,border-color,box-shadow] duration-150 ease-snappy-out",
-                              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#42a8a9] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60",
+                              "focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#42a8a9] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60",
                               isSelected
                                 ? "border-[#2f6272] bg-[#d8eff5] shadow-[0_10px_24px_rgba(66,168,169,0.18)]"
                                 : "border-[#d8eff5] bg-[#f7fbff] hover:-translate-y-0.5 hover:border-[#9fc5d8] hover:bg-white",
@@ -514,7 +458,7 @@ export function BirthdayRsvpPage() {
                   Nate the Great
                 </p>
               </div>
-              <BirthdayCountdownInline countdown={countdown} prefersReducedMotion={prefersReducedMotion} />
+              <CountdownFlippingBoard />
             </motion.div>
           </div>
         </section>
@@ -599,79 +543,6 @@ function BirthdaySignature() {
         prefersReducedMotion={prefersReducedMotion}
       />
     </motion.svg>
-  )
-}
-
-interface BirthdayCountdownInlineProps {
-  countdown: CountdownState
-  prefersReducedMotion: boolean
-}
-
-function BirthdayCountdownInline({ countdown, prefersReducedMotion }: BirthdayCountdownInlineProps) {
-  return (
-    <motion.div
-      className="mt-7 flex flex-col items-center gap-3 text-center"
-      {...getRevealProps(prefersReducedMotion, { delay: 0.06, distance: 12, margin: "-24px" })}
-    >
-      <p className="text-[11px] font-extrabold uppercase tracking-[0.24em] text-[#3f5d81]">{countdown.label}</p>
-
-      {countdown.isBirthday ? (
-        <motion.p
-          className="max-w-xl text-base leading-7 text-[#223b54] sm:text-lg"
-          initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 8 }}
-          whileInView={prefersReducedMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.7 }}
-          transition={{ duration: prefersReducedMotion ? 0.18 : 0.28, delay: 0.12, ease: MOTION_EASE_OUT }}
-        >
-          Happy Birthday, Nate. Today is for celebrating one very tough cookie and everyone who helped him get here.
-        </motion.p>
-      ) : (
-        <div className="flex flex-wrap items-center justify-center gap-2.5 sm:gap-3">
-          {countdownLabels.map((label, index) => (
-            <motion.div
-              key={label}
-              className="flex items-center gap-2 rounded-full border border-[#d8eff5] bg-white/75 px-3 py-2 shadow-[0_10px_20px_rgba(42,63,84,0.06)] backdrop-blur-sm"
-              {...getRevealProps(prefersReducedMotion, {
-                delay: 0.1 + index * 0.04,
-                distance: 8,
-                margin: "-16px",
-              })}
-            >
-              <span className="text-xl font-black leading-none text-[#223b54] sm:text-2xl">
-                <AnimatedCountdownValue value={countdown.parts[label]} prefersReducedMotion={prefersReducedMotion} />
-              </span>
-              <span className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-[#5d7796]">{label}</span>
-            </motion.div>
-          ))}
-        </div>
-      )}
-
-      <p className="text-sm leading-6 text-[#5d7796]">A little more birthday energy before the big day.</p>
-    </motion.div>
-  )
-}
-
-interface AnimatedCountdownValueProps {
-  value: string
-  prefersReducedMotion: boolean
-}
-
-function AnimatedCountdownValue({ value, prefersReducedMotion }: AnimatedCountdownValueProps) {
-  return (
-    <span className="relative inline-flex h-[1.1em] min-w-[2.15ch] items-center justify-center overflow-hidden align-middle">
-      <AnimatePresence initial={false} mode="popLayout">
-        <motion.span
-          key={value}
-          className="absolute inset-0 inline-flex items-center justify-center tabular-nums"
-          initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: "60%", filter: "blur(6px)" }}
-          animate={prefersReducedMotion ? { opacity: 1 } : { opacity: 1, y: "0%", filter: "blur(0px)" }}
-          exit={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: "-60%", filter: "blur(6px)" }}
-          transition={{ duration: prefersReducedMotion ? 0.16 : 0.26, ease: MOTION_EASE_OUT }}
-        >
-          {value}
-        </motion.span>
-      </AnimatePresence>
-    </span>
   )
 }
 

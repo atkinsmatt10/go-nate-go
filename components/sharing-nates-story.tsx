@@ -2,11 +2,22 @@
 
 import { motion, useReducedMotion } from "framer-motion"
 import Image from "next/image"
-import { Tweet } from "react-tweet"
-import { InstagramEmbed } from "react-social-media-embed"
-import { Suspense } from "react"
+import dynamic from "next/dynamic"
 import Script from "next/script"
 import { getRevealProps } from "@/lib/motion"
+
+const TweetEmbed = dynamic(() => import("react-tweet").then((module) => module.Tweet), {
+  ssr: false,
+  loading: () => <PostSkeleton />,
+})
+
+const InstagramPostEmbed = dynamic(
+  () => import("react-social-media-embed").then((module) => module.InstagramEmbed),
+  {
+    ssr: false,
+    loading: () => <PostSkeleton />,
+  },
+)
 
 // Loading skeleton component for social media posts
 function PostSkeleton() {
@@ -40,16 +51,17 @@ function SubstackCard({
   replies?: number;
 }) {
   return (
-    <div className="w-full rounded-lg overflow-hidden border border-gray-200 bg-white shadow-sm hover:shadow-md transition-shadow">
+    <div className="w-full rounded-lg overflow-hidden border border-gray-200 bg-white shadow-xs hover:shadow-md transition-shadow">
       {/* Image */}
       {image && (
         <a href={url} target="_blank" rel="noopener noreferrer">
-          <div className="relative w-full aspect-[16/9]">
+          <div className="relative w-full aspect-video">
             <Image
               src={image} 
               alt={title}
               fill
               className="w-full h-full object-cover"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
             />
           </div>
         </a>
@@ -294,7 +306,7 @@ export function SharingNatesStory() {
               className="text-center space-y-4"
               {...getRevealProps(prefersReducedMotion, { delay: 0.04, margin: "-50px" })}
             >
-              <div className="inline-block rounded-lg bg-primary/20 px-4 py-2 text-sm font-medium text-primary border border-primary/30 backdrop-blur-sm">
+              <div className="inline-block rounded-lg bg-primary/20 px-4 py-2 text-sm font-medium text-primary border border-primary/30 backdrop-blur-xs">
                 Social Media
               </div>
               <h2 className="text-4xl font-bold tracking-tighter sm:text-5xl text-foreground">
@@ -319,9 +331,7 @@ export function SharingNatesStory() {
                   {...getRevealProps(prefersReducedMotion, { delay: 0.1 + index * 0.04 })}
                 >
                   <div className="w-full">
-                    <Suspense fallback={<PostSkeleton />}>
-                      <Tweet id={tweetId} />
-                    </Suspense>
+                    <TweetEmbed id={tweetId} />
                   </div>
                 </motion.div>
               ))}
@@ -334,14 +344,9 @@ export function SharingNatesStory() {
                   {...getRevealProps(prefersReducedMotion, { delay: 0.16 + index * 0.04 })}
                 >
                   <div className="w-full">
-                    <Suspense fallback={<PostSkeleton />}>
-                      <div className="rounded-xl overflow-hidden">
-                        <InstagramEmbed 
-                          url={url} 
-                          width="100%"
-                        />
-                      </div>
-                    </Suspense>
+                    <div className="rounded-xl overflow-hidden">
+                      <InstagramPostEmbed url={url} width="100%" />
+                    </div>
                   </div>
                 </motion.div>
               ))}

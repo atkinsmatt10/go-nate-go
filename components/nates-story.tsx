@@ -39,7 +39,7 @@ export function NatesStory() {
               className="flex justify-center"
               {...getRevealProps(prefersReducedMotion, { delay: 0.04, margin: "-50px" })}
             >
-              <div className="inline-block rounded-lg bg-primary/20 px-4 py-2 text-sm font-medium text-primary border border-primary/30 backdrop-blur-sm">
+              <div className="inline-block rounded-lg bg-primary/20 px-4 py-2 text-sm font-medium text-primary border border-primary/30 backdrop-blur-xs">
                 Nate&apos;s Journey
               </div>
             </motion.div>
@@ -58,7 +58,7 @@ export function NatesStory() {
               {...getRevealProps(prefersReducedMotion, { delay: 0.12, margin: "-50px" })}
             >
               <div className="flex justify-center sm:justify-start">
-                <Badge variant="outline" className="text-xs font-medium bg-background/80 backdrop-blur-sm border-primary/50 text-foreground">
+                <Badge variant="outline" className="text-xs font-medium bg-background/80 backdrop-blur-xs border-primary/50 text-foreground">
                   Diagnosis
                 </Badge>
               </div>
@@ -78,7 +78,7 @@ export function NatesStory() {
               {...getRevealProps(prefersReducedMotion, { delay: 0.16, margin: "-50px" })}
             >
               <div className="flex justify-center sm:justify-start">
-                <Badge variant="outline" className="text-xs font-medium bg-background/80 backdrop-blur-sm border-primary/50 text-foreground">
+                <Badge variant="outline" className="text-xs font-medium bg-background/80 backdrop-blur-xs border-primary/50 text-foreground">
                   Treatment
                 </Badge>
               </div>
@@ -97,7 +97,7 @@ export function NatesStory() {
               {...getRevealProps(prefersReducedMotion, { delay: 0.2, margin: "-50px" })}
             >
               <div className="flex justify-center sm:justify-start">
-                <Badge variant="outline" className="text-xs font-medium bg-background/80 backdrop-blur-sm border-primary/50 text-foreground">
+                <Badge variant="outline" className="text-xs font-medium bg-background/80 backdrop-blur-xs border-primary/50 text-foreground">
                   Hope
                 </Badge>
               </div>
@@ -128,17 +128,18 @@ export function NatesStory() {
                 rel="noopener noreferrer"
                 className="block group"
               >
-                <Card className="cursor-pointer overflow-hidden border-primary/30 bg-background/80 backdrop-blur-sm transition-[box-shadow,border-color] duration-200 ease-snappy-out hover:border-primary/60 hover:shadow-lg">
+                <Card className="cursor-pointer overflow-hidden border-primary/30 bg-background/80 backdrop-blur-xs transition-[box-shadow,border-color] duration-200 ease-snappy-out hover:border-primary/60 hover:shadow-lg">
                   <CardContent className="p-0">
                     <div className="flex flex-col sm:flex-row items-center gap-6 p-6">
                       {/* Logo Section */}
-                      <div className="flex-shrink-0">
+                      <div className="shrink-0">
                         <div className="relative w-40 h-32 sm:w-48 sm:h-36">
                           <Image
                             src="/logo1-color.webp"
                             alt="Pediatric Brain Tumor Foundation"
                             fill
                             className="object-contain"
+                            sizes="(max-width: 640px) 160px, 192px"
                           />
                         </div>
                       </div>
@@ -154,7 +155,7 @@ export function NatesStory() {
                       </div>
                       
                       {/* Icon */}
-                      <div className="flex-shrink-0">
+                      <div className="shrink-0">
                         <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
                           <ExternalLink className="w-5 h-5 text-primary group-hover:scale-110 transition-transform" />
                         </div>

@@ -134,14 +134,19 @@ export function HeroSection() {
         >
           {/* Logo */}
           <motion.div {...getScaleInProps(prefersReducedMotion, { duration: 0.26, scale: 0.96 })}>
-            <Image
-              src="/Nate-the-great-logo.png"
-              width="600"
-              height="400"
-              alt="Nate the Great Title Logo"
-              className="mx-auto max-w-full h-auto object-contain"
-              priority
-            />
+            <div
+              className="relative mx-auto w-full max-w-[600px] min-h-[160px] sm:min-h-[220px] md:min-h-[280px]"
+              style={{ aspectRatio: "3 / 2" }}
+            >
+              <Image
+                src="/Nate-the-great-logo.png"
+                alt="Nate the Great Title Logo"
+                fill
+                className="object-contain"
+                sizes="(max-width: 768px) 100vw, 600px"
+                priority
+              />
+            </div>
           </motion.div>
 
           {/* Enhanced Photo Carousel with Smooth Animations - MOVED UP */}
@@ -198,7 +203,7 @@ export function HeroSection() {
                   height={80}
                   alt="Nate's Shark Mascot"
                   className="drop-shadow-lg"
-                  style={{ height: "auto" }}
+                  style={{ width: "auto", height: "auto" }}
                 />
               </motion.div>
             </div>
@@ -269,7 +274,7 @@ export function HeroSection() {
               variant="outline"
               size="lg"
               haptic="light"
-              className="h-14 border-2 border-primary bg-transparent text-xl font-bold text-primary shadow-sm transition-[background-color,color,border-color,box-shadow,transform] duration-150 ease-snappy-out hover:bg-primary hover:text-primary-foreground"
+              className="h-14 border-2 border-primary bg-transparent text-xl font-bold text-primary shadow-xs transition-[background-color,color,border-color,box-shadow,transform] duration-150 ease-snappy-out hover:bg-primary hover:text-primary-foreground"
             >
               <Link
                 href="https://shop.gonatego.com"

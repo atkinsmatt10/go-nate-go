@@ -28,3 +28,20 @@
 - [x] Move the birthday countdown below the closing signature and remove the standalone card treatment
 - [x] Add subtle countdown entrance/value motion that respects reduced motion
 - [x] Re-run `pnpm lint` and `pnpm exec tsc --noEmit` for the birthday page follow-up
+
+## Flipboard Countdown Slice
+
+- [x] Reframe the request in [tasks/context/birthday-flipboard-countdown.md](/Users/Matt.Atkins/Code/go-nate-go-1/tasks/context/birthday-flipboard-countdown.md)
+- [x] Capture the implementation slice in [tasks/architecture/birthday-flipboard-countdown.md](/Users/Matt.Atkins/Code/go-nate-go-1/tasks/architecture/birthday-flipboard-countdown.md)
+- [x] Adapt the provided split-flap concept to the repo's upgraded Tailwind 4 stack in `@/components/ui`
+- [x] Build a countdown-specific board with days, hours, minutes, seconds, and hourly chaos mode
+- [x] Replace the current `/birthday` countdown UI with the new board without disturbing the rest of the page
+- [x] Run `pnpm lint` and `pnpm exec tsc --noEmit`
+- [x] Review the rendered `/birthday` page in a browser screenshot via `agent-browser`
+- [x] Run a focused cleanup pass for social embeds and responsive image warnings, then smoke-test `/`, `/birthday`, and `/donate` with `agent-browser`
+
+## Cleanup Notes
+
+- The homepage social embeds now load client-only to avoid third-party hydration mismatches.
+- `agent-browser` smoke checks passed on `/`, `/birthday`, and `/donate` with screenshots captured under `/tmp/`.
+- Remaining browser noise is environment-specific: local DonorDrive TLS certificate failure on `/api/donations`, Stripe's expected HTTP dev warning on `/donate`, and one generic browser library warning about scroll offset container positioning.
