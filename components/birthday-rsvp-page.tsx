@@ -452,39 +452,39 @@ function BirthdaySignature() {
       viewport={{ once: true, amount: 0.7 }}
     >
       <SignatureStroke
-        d="M74 152C78 123 85 94 96 67C101 54 112 40 123 42C136 44 138 63 137 82C136 104 130 124 129 149C146 122 168 96 194 72C205 62 221 50 233 56C246 63 244 83 238 100C231 121 224 138 224 152"
+        d="M78 154C88 118 102 86 118 65C126 55 138 53 145 61C151 68 151 83 148 100C143 122 133 144 129 156C143 141 159 123 178 103C200 81 221 61 237 61C247 61 253 71 250 82C244 103 233 127 224 155"
         delay={0}
-        duration={1}
+        duration={0.96}
         prefersReducedMotion={prefersReducedMotion}
       />
       <SignatureStroke
-        d="M281 136C292 111 313 92 332 92C345 92 353 101 353 113C353 130 340 142 323 142C305 142 294 128 297 112C300 93 320 71 340 68C364 64 383 81 383 104C383 123 374 140 374 152"
-        delay={0.76}
-        duration={0.9}
+        d="M248 131C260 113 278 104 294 107C307 109 313 121 309 134C305 147 293 154 280 153C267 152 258 143 258 131C258 115 272 93 290 89C313 84 329 99 327 123C325 142 318 154 314 159"
+        delay={0.72}
+        duration={0.8}
         prefersReducedMotion={prefersReducedMotion}
       />
       <SignatureStroke
-        d="M424 82C440 78 455 70 468 63C475 59 481 63 479 71C473 93 468 115 469 137C469 148 476 152 488 149C502 146 516 137 529 124"
-        delay={1.46}
-        duration={0.74}
+        d="M366 84C377 72 390 63 402 61C410 60 415 66 414 75C412 87 405 103 400 121C395 139 393 151 397 157C403 164 417 160 432 151C444 144 454 135 463 124"
+        delay={1.34}
+        duration={0.72}
         prefersReducedMotion={prefersReducedMotion}
       />
       <SignatureStroke
-        d="M431 97C450 101 472 101 493 97"
-        delay={1.92}
-        duration={0.4}
+        d="M358 99C377 97 395 94 415 91"
+        delay={1.88}
+        duration={0.32}
         prefersReducedMotion={prefersReducedMotion}
       />
       <SignatureStroke
-        d="M550 116C560 98 576 88 592 88C607 88 617 98 617 111C617 124 606 133 591 134C574 135 563 126 563 112C563 93 581 75 606 74C626 73 643 84 652 98"
-        delay={2.16}
-        duration={0.78}
+        d="M479 130C492 111 510 103 525 105C537 106 543 116 540 126C535 140 519 146 506 146C490 145 483 134 483 122C483 101 501 83 526 80C551 77 572 90 589 109C606 127 624 144 655 151"
+        delay={2.08}
+        duration={0.88}
         prefersReducedMotion={prefersReducedMotion}
       />
       <SignatureStroke
-        d="M260 172C318 184 381 189 446 188C514 187 581 181 641 169"
-        delay={2.7}
-        duration={0.86}
+        d="M505 163C546 171 592 173 656 165"
+        delay={2.74}
+        duration={0.54}
         prefersReducedMotion={prefersReducedMotion}
       />
     </motion.svg>

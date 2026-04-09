@@ -80,7 +80,7 @@ Recommended environment variable:
 BIRTHDAY_RSVP_TO_EMAIL=
 ```
 
-If `BIRTHDAY_RSVP_TO_EMAIL` is unset, the app falls back to `RESEND_REPLY_TO_EMAIL`, then the address inside `RESEND_FROM_EMAIL`.
+If `BIRTHDAY_RSVP_TO_EMAIL` is unset, the app falls back to `support@gonatego.com`, then `RESEND_REPLY_TO_EMAIL`, then the address inside `RESEND_FROM_EMAIL`.
 
 ### Local webhook testing
 

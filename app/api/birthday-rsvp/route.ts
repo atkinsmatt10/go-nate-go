@@ -2,6 +2,8 @@ import { NextResponse } from "next/server"
 import { z } from "zod"
 import { getResendClient, getResendFromEmail, getResendReplyToEmail } from "@/lib/resend"
 
+const defaultBirthdayRsvpRecipient = "support@gonatego.com"
+
 const birthdayRsvpSchema = z.object({
   name: z.string().trim().min(2).max(80),
   attendeeCount: z.number().int().min(1).max(12),
@@ -89,8 +91,9 @@ export async function POST(request: Request) {
 
 function getBirthdayRsvpRecipients(): string[] {
   const configuredRecipients =
-    process.env.BIRTHDAY_RSVP_TO_EMAIL ??
-    getResendReplyToEmail() ??
+    process.env.BIRTHDAY_RSVP_TO_EMAIL?.trim() ||
+    defaultBirthdayRsvpRecipient ||
+    getResendReplyToEmail() ||
     parseEmailAddress(process.env.RESEND_FROM_EMAIL)
 
   return configuredRecipients
