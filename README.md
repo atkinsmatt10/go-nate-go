@@ -70,6 +70,18 @@ resend domains list --json
 
 `RESEND_FROM_EMAIL` must use a sender on a verified Resend domain. The currently verified sending domain is `gonatego.com`, so a `nicolematt.com` sender will be rejected by Resend.
 
+## Birthday RSVP
+
+The site now includes a birthday RSVP landing page at `/birthday` with a form that emails the organizers through Resend.
+
+Recommended environment variable:
+
+```bash
+BIRTHDAY_RSVP_TO_EMAIL=
+```
+
+If `BIRTHDAY_RSVP_TO_EMAIL` is unset, the app falls back to `RESEND_REPLY_TO_EMAIL`, then the address inside `RESEND_FROM_EMAIL`.
+
 ### Local webhook testing
 
 Forward Stripe events to the Next.js route while running `pnpm dev`:
