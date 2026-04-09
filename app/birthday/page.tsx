@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import { BirthdayRsvpPage } from "@/components/birthday-rsvp-page"
 
-const birthdayOgImage = "/01KK50NH25Q9J200T43XRW1K6V.png"
+const birthdayOgImage = "/birthday-og-one-tough-cookie.png"
 
 export const metadata: Metadata = {
   title: "Nate is One Tough Cookie",
@@ -16,9 +16,9 @@ export const metadata: Metadata = {
     images: [
       {
         url: birthdayOgImage,
-        width: 2104,
-        height: 2048,
-        alt: "Nate the Great shark holding a cookie",
+        width: 2400,
+        height: 1260,
+        alt: "One Tough Cookie birthday card with Nate's shark mascot",
         type: "image/png",
       },
     ],
