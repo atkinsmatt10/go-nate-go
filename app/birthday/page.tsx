@@ -20,15 +20,15 @@ import { Footer } from "@/components/footer"
 import { getPageRevealProps, getScaleInProps, MOTION_EASE_OUT } from "@/lib/motion"
 
 const inputClassName =
-  "h-12 rounded-2xl border border-[#9bb7cc] bg-white/95 px-4 text-[#223b54] shadow-sm transition-[border-color,box-shadow] duration-150 ease-snappy-out placeholder:text-[#8aa4b8] focus:border-[#42a8a9] focus:ring-2 focus:ring-[#42a8a9]/25 focus:ring-offset-0"
+  "h-12 rounded-2xl border border-border bg-card/80 px-4 text-foreground shadow-sm transition-[border-color,box-shadow] duration-150 ease-snappy-out placeholder:text-muted-foreground focus:border-primary focus:ring-2 focus:ring-primary/25 focus:ring-offset-0"
 
-const labelClassName = "text-sm font-semibold text-[#223b54]"
+const labelClassName = "text-sm font-semibold text-foreground"
 
 const submitButtonClassName =
-  "h-14 w-full rounded-2xl border border-[#2f6272] bg-[#42a8a9] text-lg font-bold text-white shadow-[0_16px_26px_rgba(34,59,84,0.28)] transition-[background-color,transform,box-shadow] duration-150 ease-snappy-out active:scale-[0.98] hover:-translate-y-0.5 hover:bg-[#369799] disabled:cursor-not-allowed disabled:opacity-60"
+  "h-14 w-full rounded-2xl border border-primary bg-primary text-lg font-bold text-primary-foreground shadow-[0_16px_26px_rgba(66,168,169,0.2)] transition-[background-color,transform,box-shadow] duration-150 ease-snappy-out active:scale-[0.98] hover:-translate-y-0.5 hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-60"
 
 const cardClassName =
-  "rounded-[1.5rem] border border-[#9fc5d8] bg-white/95 p-6 shadow-[0_14px_30px_rgba(34,59,84,0.16)] sm:p-8"
+  "rounded-[1.5rem] border border-border bg-card/95 p-6 shadow-[0_14px_30px_rgba(42,63,84,0.16)] sm:p-8"
 
 export default function BirthdayRSVPPage() {
   const prefersReducedMotion = useReducedMotion() ?? false
@@ -72,29 +72,29 @@ export default function BirthdayRSVPPage() {
 
   return (
     <div className="flex min-h-dvh flex-col bg-background text-foreground">
-      <main className="relative flex-1 overflow-hidden bg-[#f4fbff]">
+      <main className="relative flex-1 overflow-hidden bg-background">
         {/* Decorative background elements */}
         <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
           <svg
             viewBox="0 0 1200 120"
-            className="absolute bottom-0 h-32 w-full opacity-10"
+            className="absolute bottom-0 h-32 w-full opacity-5"
             preserveAspectRatio="none"
           >
             <path
               d="M0,60 C300,100 900,20 1200,60 L1200,120 L0,120 Z"
               fill="currentColor"
-              className="text-primary/20"
+              className="text-primary"
             />
           </svg>
           <svg
             viewBox="0 0 1200 120"
-            className="absolute bottom-0 h-40 w-full opacity-5"
+            className="absolute bottom-0 h-40 w-full opacity-[0.02]"
             preserveAspectRatio="none"
           >
             <path
               d="M0,80 C400,120 800,40 1200,80 L1200,120 L0,120 Z"
               fill="currentColor"
-              className="text-primary/30"
+              className="text-primary"
             />
           </svg>
         </div>
@@ -107,7 +107,7 @@ export default function BirthdayRSVPPage() {
           >
             <Link
               href="/"
-              className="inline-flex items-center gap-2 text-sm font-semibold text-[#42a8a9] transition-colors hover:text-[#369799]"
+              className="inline-flex items-center gap-2 text-sm font-semibold text-primary transition-colors hover:text-primary/80"
             >
               <ArrowLeft className="h-4 w-4" />
               Back to Home
@@ -125,15 +125,15 @@ export default function BirthdayRSVPPage() {
                   delay: 0.08,
                   scale: 0.96,
                 })}
-                className="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-[#42a8a9] to-[#369799] shadow-lg"
+                className="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-primary shadow-lg"
               >
-                <Cake className="h-12 w-12 text-white" />
+                <Cake className="h-12 w-12 text-primary-foreground" />
               </motion.div>
 
-              <h1 className="mb-3 text-4xl font-bold tracking-tight text-[#1f3147] sm:text-5xl">
+              <h1 className="mb-3 text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
                 Nate&apos;s First Birthday!
               </h1>
-              <p className="mx-auto max-w-md text-lg leading-relaxed text-[#46627a]">
+              <p className="mx-auto max-w-md text-lg leading-relaxed text-muted-foreground">
                 Join us in celebrating this incredible milestone! We&apos;d love to have
                 you there to share in the joy.
               </p>
@@ -146,27 +146,27 @@ export default function BirthdayRSVPPage() {
             >
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#42a8a9]/10">
-                    <PartyPopper className="h-6 w-6 text-[#42a8a9]" />
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10">
+                    <PartyPopper className="h-6 w-6 text-primary" />
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-[#6a8396]">
+                    <p className="text-sm font-medium text-muted-foreground">
                       Save the Date
                     </p>
-                    <p className="text-lg font-bold text-[#223b54]">
+                    <p className="text-lg font-bold text-foreground">
                       May 2026
                     </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#42a8a9]/10">
-                    <Users className="h-6 w-6 text-[#42a8a9]" />
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10">
+                    <Users className="h-6 w-6 text-primary" />
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-[#6a8396]">
+                    <p className="text-sm font-medium text-muted-foreground">
                       All Ages Welcome
                     </p>
-                    <p className="text-lg font-bold text-[#223b54]">
+                    <p className="text-lg font-bold text-foreground">
                       Family Friendly
                     </p>
                   </div>
@@ -186,19 +186,19 @@ export default function BirthdayRSVPPage() {
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 0.3, ease: MOTION_EASE_OUT }}
                 >
-                  <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-[#42a8a9]">
-                    <Check className="h-10 w-10 text-white" />
+                  <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-primary">
+                    <Check className="h-10 w-10 text-primary-foreground" />
                   </div>
-                  <h2 className="mb-3 text-2xl font-bold text-[#223b54]">
+                  <h2 className="mb-3 text-2xl font-bold text-foreground">
                     Thank You!
                   </h2>
-                  <p className="mx-auto max-w-sm text-[#46627a]">
+                  <p className="mx-auto max-w-sm text-muted-foreground">
                     Your RSVP has been received. We can&apos;t wait to celebrate with
                     you! We&apos;ll be in touch with more details soon.
                   </p>
                   <Button
                     asChild
-                    className="mt-6 h-12 rounded-2xl border border-[#2f6272] bg-[#42a8a9] px-8 font-bold text-white shadow-lg transition-all hover:-translate-y-0.5 hover:bg-[#369799] hover:shadow-xl"
+                    className="mt-6 h-12 rounded-2xl border border-primary bg-primary px-8 font-bold text-primary-foreground shadow-lg transition-all hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-xl"
                   >
                     <Link href="/">Return Home</Link>
                   </Button>
@@ -206,10 +206,10 @@ export default function BirthdayRSVPPage() {
               ) : (
                 <>
                   <div className="mb-6">
-                    <h2 className="text-2xl font-bold text-[#223b54]">
+                    <h2 className="text-2xl font-bold text-foreground">
                       RSVP Form
                     </h2>
-                    <p className="mt-1 text-sm text-[#6a8396]">
+                    <p className="mt-1 text-sm text-muted-foreground">
                       Please fill out the form below to let us know you&apos;re coming.
                     </p>
                   </div>
@@ -282,7 +282,7 @@ export default function BirthdayRSVPPage() {
                         >
                           <SelectValue placeholder="Select number of guests" />
                         </SelectTrigger>
-                        <SelectContent className="rounded-xl border border-[#9bb7cc] bg-white shadow-lg">
+                        <SelectContent className="rounded-xl border border-border bg-card shadow-lg">
                           <SelectItem value="1">1 Guest</SelectItem>
                           <SelectItem value="2">2 Guests</SelectItem>
                           <SelectItem value="3">3 Guests</SelectItem>
@@ -337,7 +337,7 @@ export default function BirthdayRSVPPage() {
                       {isSubmitting ? "Submitting..." : "Submit RSVP"}
                     </Button>
 
-                    <p className="text-center text-xs font-medium text-[#6a8396]">
+                    <p className="text-center text-xs font-medium text-muted-foreground">
                       We&apos;ll send confirmation and event details to your email.
                     </p>
                   </form>
