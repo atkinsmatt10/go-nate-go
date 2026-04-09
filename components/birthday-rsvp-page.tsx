@@ -2,7 +2,7 @@
 
 import Image from "next/image"
 import Link from "next/link"
-import { type ComponentType, FormEvent, useState } from "react"
+import { type ComponentType, type ReactNode, FormEvent, useState } from "react"
 import { motion, useReducedMotion } from "framer-motion"
 import { CalendarDays, CheckCircle2, MapPin, PartyPopper } from "lucide-react"
 import { Footer } from "@/components/footer"
@@ -22,6 +22,8 @@ interface SubmissionState {
 
 const posterImage = "/birthday-poster-card.png"
 const googleMapsUrl = "https://maps.google.com/?q=Craft+Hall+901+N+Delaware+Ave+Philadelphia+PA+19123"
+const googleMapsEmbedUrl =
+  "https://www.google.com/maps?q=Craft+Hall+901+N+Delaware+Ave+Philadelphia+PA+19123&z=15&output=embed"
 const donationUrl = "/donate"
 const attendanceOptions = [
   { value: "yes", label: "We’ll be there", description: "Save seats and cookies for us." },
@@ -102,227 +104,291 @@ export function BirthdayRsvpPage() {
   return (
     <div className="min-h-dvh bg-background text-foreground">
       <main className="overflow-hidden">
-        <section className="relative isolate">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(66,168,169,0.32),_transparent_38%),linear-gradient(180deg,_#2a3f54_0%,_#355270_100%)]" />
-          <div className="absolute inset-x-0 top-0 h-28 bg-[radial-gradient(circle_at_center,_rgba(247,251,255,0.14),_transparent_65%)]" />
+        <section className="relative isolate bg-[linear-gradient(180deg,_#2a3f54_0%,_#304a67_100%)]">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(66,168,169,0.24),_transparent_40%),radial-gradient(circle_at_85%_12%,_rgba(247,251,255,0.12),_transparent_22%)]" />
 
-          <div className="container relative px-4 py-10 md:px-6 md:py-16">
+          <div className="container relative px-4 py-10 md:px-6 md:py-14 lg:py-16">
             <motion.div
-              className="grid items-center gap-8 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] lg:gap-14"
+              className="mx-auto max-w-6xl"
               {...getPageRevealProps(prefersReducedMotion, { distance: 0, duration: 0.24 })}
             >
-              <motion.div
-                className="order-2 lg:order-1"
-                {...getRevealProps(prefersReducedMotion, { delay: 0.04, distance: 20 })}
-              >
-                <div className="mx-auto max-w-xl space-y-6 text-center lg:text-left">
-                  <Badge className="mx-auto w-fit rounded-full border border-[#9fc5d8] bg-[#d8eff5] px-4 py-1.5 text-[11px] font-extrabold uppercase tracking-[0.24em] text-[#223b54] lg:mx-0">
-                    Nate turns one on May 9, 2026
-                  </Badge>
+              <div className="grid gap-8 lg:grid-cols-[minmax(0,1.3fr)_340px] lg:items-start lg:gap-12">
+                <motion.div
+                  className="space-y-8"
+                  {...getRevealProps(prefersReducedMotion, { delay: 0.04, distance: 18 })}
+                >
+                  <div className="space-y-5">
+                    <Badge className="w-fit rounded-full border border-[#9fc5d8] bg-[#d8eff5] px-4 py-1.5 text-[11px] font-extrabold uppercase tracking-[0.24em] text-[#223b54]">
+                      Nate turns one
+                    </Badge>
 
-                  <div className="space-y-4">
-                    <h1 className="text-4xl leading-none text-white sm:text-5xl md:text-6xl">
-                      One tough cookie is turning one.
-                    </h1>
-                    <p className="max-w-xl text-base leading-7 text-[#eef5fb] sm:text-lg">
-                      Join us for Nate the Great&apos;s first birthday celebration at Craft Hall. We kept the page warm,
-                      simple, and easy to trust, just like the rest of Go Nate Go.
-                    </p>
+                    <div className="space-y-4">
+                      <h1 className="max-w-3xl text-5xl leading-[0.95] text-white sm:text-6xl lg:text-7xl">
+                        One tough cookie is turning one.
+                      </h1>
+                      <p className="max-w-2xl text-base leading-7 text-[#eef5fb] sm:text-lg">
+                        Join us for Nate the Great&apos;s first birthday celebration. The page keeps the same Go Nate
+                        Go warmth, but with a much clearer event-first layout.
+                      </p>
+                    </div>
                   </div>
 
-                  <div className="grid gap-3 sm:grid-cols-3">
-                    <EventStat icon={CalendarDays} label="When" value="Saturday, May 9, 2026" />
-                    <EventStat icon={PartyPopper} label="Time" value="12 PM to 3 PM" />
-                    <EventStat icon={MapPin} label="Where" value="Craft Hall" />
+                  <div className="overflow-hidden rounded-[30px] border border-white/12 bg-[rgba(247,251,255,0.06)] shadow-[0_24px_60px_rgba(16,31,44,0.22)] backdrop-blur-sm">
+                    <DetailRow
+                      icon={MapPin}
+                      eyebrow="Where"
+                      title="Craft Hall"
+                      description="901 N Delaware Ave, Philadelphia, PA 19123"
+                      action={
+                        <Button
+                          asChild
+                          variant="outline"
+                          className="h-11 rounded-[18px] border-[#9fc5d8] bg-white/8 px-5 font-bold text-[#f7fbff] hover:bg-white/12 hover:text-white"
+                        >
+                          <Link href={googleMapsUrl} target="_blank" rel="noreferrer">
+                            Get directions
+                          </Link>
+                        </Button>
+                      }
+                    />
+                    <DetailRow
+                      icon={CalendarDays}
+                      eyebrow="Date"
+                      title="Saturday, May 9, 2026"
+                      description="Come celebrate Nate the Great with family and friends."
+                    />
+                    <DetailRow
+                      icon={PartyPopper}
+                      eyebrow="Time"
+                      title="12 PM to 3 PM"
+                      description="No gifts please. In lieu of gifts, consider a donation to CHOP Neurosurgery & Neuro-Oncology."
+                      action={
+                        <Button
+                          asChild
+                          className="h-11 rounded-[18px] bg-[#42a8a9] px-5 font-extrabold text-white hover:bg-[#369799]"
+                        >
+                          <Link href={donationUrl}>Donate to CHOP</Link>
+                        </Button>
+                      }
+                    />
                   </div>
 
-                  <div className="flex flex-col gap-3 sm:flex-row sm:justify-center lg:justify-start">
+                  <div className="flex flex-col gap-3 sm:flex-row">
                     <Button
                       asChild
                       size="lg"
-                      className="h-14 rounded-[20px] bg-[#42a8a9] px-7 text-base font-extrabold text-white shadow-[0_18px_38px_rgba(27,56,77,0.3)] hover:bg-[#369799]"
+                      className="h-14 rounded-[20px] bg-[#42a8a9] px-7 text-base font-extrabold text-white shadow-[0_18px_38px_rgba(27,56,77,0.26)] hover:bg-[#369799]"
                     >
                       <Link href="#rsvp">RSVP now</Link>
                     </Button>
-                    <Button
-                      asChild
-                      size="lg"
-                      variant="outline"
-                      className="h-14 rounded-[20px] border-[#9fc5d8] bg-white/10 px-7 text-base font-bold text-[#f7fbff] hover:bg-white/15 hover:text-white"
-                    >
-                      <Link href={googleMapsUrl} target="_blank" rel="noreferrer">
-                        Get directions
-                      </Link>
-                    </Button>
                   </div>
-                </div>
-              </motion.div>
+                </motion.div>
 
-              <motion.div
-                className="order-1 lg:order-2"
-                {...getScaleInProps(prefersReducedMotion, { delay: 0.08, duration: 0.28, scale: 0.98 })}
-              >
-                <div className="mx-auto max-w-md rounded-[32px] border border-white/35 bg-[#f7f1e7] p-4 shadow-[0_28px_60px_rgba(18,35,49,0.32)]">
-                  <div className="overflow-hidden rounded-[26px] border border-[#eadfc8] bg-[#fffaf2]">
-                    <Image
-                      src={posterImage}
-                      alt="Nate the Great first birthday invitation poster"
-                      width={1024}
-                      height={1536}
-                      className="h-auto w-full"
-                      priority
-                    />
+                <motion.div
+                  className="mx-auto w-full max-w-[340px]"
+                  {...getScaleInProps(prefersReducedMotion, { delay: 0.08, duration: 0.26, scale: 0.985 })}
+                >
+                  <div className="rounded-[30px] border border-white/16 bg-[rgba(247,251,255,0.08)] p-3 shadow-[0_20px_44px_rgba(16,31,44,0.24)] backdrop-blur-sm">
+                    <div className="overflow-hidden rounded-[24px] border border-white/18 bg-[#fffaf2]">
+                      <Image
+                        src={posterImage}
+                        alt="Nate the Great first birthday invitation poster"
+                        width={1024}
+                        height={1536}
+                        className="h-auto w-full"
+                        priority
+                      />
+                    </div>
                   </div>
-                </div>
-              </motion.div>
+                </motion.div>
+              </div>
             </motion.div>
           </div>
         </section>
 
         <section className="bg-[#eef5fb] py-12 md:py-16">
-          <div className="container grid gap-8 px-4 md:px-6 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
-            <motion.div className="space-y-5" {...getRevealProps(prefersReducedMotion, { distance: 20 })}>
-              <div className="space-y-3">
-                <Badge className="rounded-full border border-[#9fc5d8] bg-white px-4 py-1.5 text-[11px] font-extrabold uppercase tracking-[0.24em] text-[#3f5d81]">
-                  Event details
-                </Badge>
-                <h2 className="text-3xl leading-none text-[#223b54] sm:text-4xl">Craft Hall, cookies, and a room full of people who love Nate.</h2>
-                <p className="max-w-xl text-base leading-7 text-[#3f5d81]">
-                  The party is at Craft Hall, 901 N Delaware Ave, Philadelphia, PA 19123. The invite asks for no gifts.
-                  If you want to honor Nate, the family suggests a donation to CHOP Neurosurgery & Neuro-Oncology instead.
-                </p>
-              </div>
-
-              <div className="rounded-[30px] border border-[#d8eff5] bg-white p-6 shadow-[0_16px_30px_rgba(42,63,84,0.08)]">
-                <div className="space-y-4">
-                  <div>
-                    <p className="text-xs font-extrabold uppercase tracking-[0.24em] text-[#42a8a9]">Venue</p>
-                    <p className="mt-2 text-2xl text-[#223b54]">Craft Hall</p>
-                    <p className="mt-1 text-sm leading-6 text-[#3f5d81]">901 N Delaware Ave<br />Philadelphia, PA 19123</p>
-                  </div>
-                  <div className="h-px bg-[#d8eff5]" />
-                  <div>
-                    <p className="text-xs font-extrabold uppercase tracking-[0.24em] text-[#42a8a9]">Gift note</p>
-                    <p className="mt-2 text-sm leading-6 text-[#3f5d81]">
-                      No gifts please. In lieu of gifts, consider a donation to CHOP Neurosurgery & Neuro-Oncology.
-                    </p>
-                  </div>
-                  <div className="flex flex-col gap-3 sm:flex-row">
-                    <Button asChild className="h-12 rounded-[18px] bg-[#42a8a9] px-5 font-extrabold text-white hover:bg-[#369799]">
-                      <Link href={donationUrl}>Donate to CHOP</Link>
-                    </Button>
-                    <Button asChild variant="outline" className="h-12 rounded-[18px] border-[#9fc5d8] bg-[#f7fbff] px-5 font-bold text-[#223b54] hover:bg-white">
-                      <Link href={googleMapsUrl} target="_blank" rel="noreferrer">
-                        Open in maps
-                      </Link>
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-
+          <div className="container px-4 md:px-6">
             <motion.div
               id="rsvp"
-              className="rounded-[32px] border border-[#9fc5d8] bg-white p-6 shadow-[0_18px_36px_rgba(42,63,84,0.12)] md:p-8"
-              {...getRevealProps(prefersReducedMotion, { delay: 0.06, distance: 18 })}
+              className="mx-auto max-w-5xl rounded-[34px] border border-[#9fc5d8] bg-white shadow-[0_20px_40px_rgba(42,63,84,0.12)]"
+              {...getRevealProps(prefersReducedMotion, { distance: 18 })}
             >
-              <div className="space-y-2">
+              <div className="border-b border-[#d8eff5] bg-[#f7fbff] px-6 py-5 md:px-8">
                 <p className="text-xs font-extrabold uppercase tracking-[0.24em] text-[#42a8a9]">RSVP</p>
-                <h2 className="text-3xl leading-none text-[#223b54] sm:text-4xl">Let the family know if you&apos;re coming.</h2>
-                <p className="text-sm leading-6 text-[#3f5d81]">
+                <h2 className="mt-3 text-3xl leading-none text-[#223b54] sm:text-4xl">
+                  Let the family know if you&apos;re coming.
+                </h2>
+                <p className="mt-3 max-w-2xl text-sm leading-6 text-[#3f5d81]">
                   Share your name, how many people are in your party, and whether you&apos;re able to make it.
                 </p>
               </div>
 
-              <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-                <div className="space-y-2">
-                  <Label htmlFor="birthday-name" className="text-sm font-bold text-[#223b54]">
-                    Your name
-                  </Label>
-                  <Input
-                    id="birthday-name"
-                    value={name}
-                    onChange={(event) => setName(event.target.value)}
-                    placeholder="Nate's biggest fan"
-                    className="h-14 rounded-[20px] border-[#9fc5d8] bg-[#f7fbff] px-4 text-base text-[#223b54] placeholder:text-[#6f8ea4] focus-visible:ring-[#42a8a9]"
-                    maxLength={80}
-                    autoComplete="name"
-                    disabled={isSubmitting}
-                  />
+              <div className="grid gap-8 px-6 py-6 md:px-8 md:py-8 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)]">
+                <div className="space-y-4">
+                  <div className="rounded-[24px] border border-[#d8eff5] bg-[#f7fbff] p-5">
+                    <p className="text-xs font-extrabold uppercase tracking-[0.22em] text-[#42a8a9]">Where</p>
+                    <p className="mt-3 text-2xl text-[#223b54]">Craft Hall</p>
+                    <p className="mt-2 text-sm leading-6 text-[#3f5d81]">
+                      901 N Delaware Ave
+                      <br />
+                      Philadelphia, PA 19123
+                    </p>
+                  </div>
+                  <div className="rounded-[24px] border border-[#d8eff5] bg-[#fffaf2] p-5">
+                    <p className="text-xs font-extrabold uppercase tracking-[0.22em] text-[#42a8a9]">When</p>
+                    <p className="mt-3 text-xl text-[#223b54]">Saturday, May 9, 2026</p>
+                    <p className="mt-2 text-sm leading-6 text-[#3f5d81]">12 PM to 3 PM</p>
+                  </div>
+                  <div className="rounded-[24px] border border-[#d8eff5] bg-white p-5">
+                    <p className="text-xs font-extrabold uppercase tracking-[0.22em] text-[#42a8a9]">
+                      Your presence is enough
+                    </p>
+                    <p className="mt-3 text-sm leading-6 text-[#3f5d81]">
+                      If you&apos;d like to celebrate with a gift, please consider a donation to CHOP Neurosurgery &
+                      Neuro-Oncology.
+                    </p>
+                  </div>
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="birthday-attendees" className="text-sm font-bold text-[#223b54]">
-                    Number of attendees
-                  </Label>
-                  <Input
-                    id="birthday-attendees"
-                    type="number"
-                    min={1}
-                    max={12}
-                    inputMode="numeric"
-                    value={attendeeCount}
-                    onChange={(event) => setAttendeeCount(event.target.value)}
-                    className="h-14 rounded-[20px] border-[#9fc5d8] bg-[#f7fbff] px-4 text-base text-[#223b54] focus-visible:ring-[#42a8a9]"
-                    disabled={isSubmitting}
-                  />
-                </div>
+                <form className="space-y-6" onSubmit={handleSubmit}>
+                  <div className="space-y-2">
+                    <Label htmlFor="birthday-name" className="text-sm font-bold text-[#223b54]">
+                      Your name
+                    </Label>
+                    <Input
+                      id="birthday-name"
+                      value={name}
+                      onChange={(event) => setName(event.target.value)}
+                      placeholder="Nate's biggest fan"
+                      className="h-14 rounded-[20px] border-[#9fc5d8] bg-[#f7fbff] px-4 text-base text-[#223b54] placeholder:text-[#6f8ea4] focus-visible:ring-[#42a8a9]"
+                      maxLength={80}
+                      autoComplete="name"
+                      disabled={isSubmitting}
+                    />
+                  </div>
 
-                <div className="space-y-3">
-                  <Label className="text-sm font-bold text-[#223b54]">Will your party be there?</Label>
-                  <div className="grid gap-3">
-                    {attendanceOptions.map((option) => {
-                      const isSelected = attendance === option.value
+                  <div className="space-y-2">
+                    <Label htmlFor="birthday-attendees" className="text-sm font-bold text-[#223b54]">
+                      Number of attendees
+                    </Label>
+                    <Input
+                      id="birthday-attendees"
+                      type="number"
+                      min={1}
+                      max={12}
+                      inputMode="numeric"
+                      value={attendeeCount}
+                      onChange={(event) => setAttendeeCount(event.target.value)}
+                      className="h-14 rounded-[20px] border-[#9fc5d8] bg-[#f7fbff] px-4 text-base text-[#223b54] focus-visible:ring-[#42a8a9]"
+                      disabled={isSubmitting}
+                    />
+                  </div>
 
-                      return (
-                        <button
-                          key={option.value}
-                          type="button"
-                          onClick={() => setAttendance(option.value)}
-                          disabled={isSubmitting}
-                          className={cn(
-                            "rounded-[24px] border p-4 text-left transition-[transform,background-color,border-color,box-shadow] duration-150 ease-snappy-out",
-                            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#42a8a9] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60",
-                            isSelected
-                              ? "border-[#2f6272] bg-[#d8eff5] shadow-[0_10px_24px_rgba(66,168,169,0.18)]"
-                              : "border-[#d8eff5] bg-[#f7fbff] hover:-translate-y-0.5 hover:border-[#9fc5d8] hover:bg-white",
-                          )}
-                        >
-                          <div className="flex items-start justify-between gap-4">
-                            <div>
-                              <p className="text-base font-extrabold text-[#223b54]">{option.label}</p>
-                              <p className="mt-1 text-sm leading-6 text-[#3f5d81]">{option.description}</p>
+                  <div className="space-y-3">
+                    <Label className="text-sm font-bold text-[#223b54]">Will your party be there?</Label>
+                    <div className="grid gap-3">
+                      {attendanceOptions.map((option) => {
+                        const isSelected = attendance === option.value
+
+                        return (
+                          <button
+                            key={option.value}
+                            type="button"
+                            onClick={() => setAttendance(option.value)}
+                            disabled={isSubmitting}
+                            className={cn(
+                              "rounded-[24px] border p-4 text-left transition-[transform,background-color,border-color,box-shadow] duration-150 ease-snappy-out",
+                              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#42a8a9] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60",
+                              isSelected
+                                ? "border-[#2f6272] bg-[#d8eff5] shadow-[0_10px_24px_rgba(66,168,169,0.18)]"
+                                : "border-[#d8eff5] bg-[#f7fbff] hover:-translate-y-0.5 hover:border-[#9fc5d8] hover:bg-white",
+                            )}
+                          >
+                            <div className="flex items-start justify-between gap-4">
+                              <div>
+                                <p className="text-base font-extrabold text-[#223b54]">{option.label}</p>
+                                <p className="mt-1 text-sm leading-6 text-[#3f5d81]">{option.description}</p>
+                              </div>
+                              {isSelected ? <CheckCircle2 className="mt-0.5 h-5 w-5 text-[#2f6272]" /> : null}
                             </div>
-                            {isSelected ? <CheckCircle2 className="mt-0.5 h-5 w-5 text-[#2f6272]" /> : null}
-                          </div>
-                        </button>
-                      )
-                    })}
+                          </button>
+                        )
+                      })}
+                    </div>
                   </div>
+
+                  {submissionState ? (
+                    <div
+                      className={cn(
+                        "rounded-[22px] border px-4 py-3 text-sm leading-6",
+                        submissionState.tone === "success"
+                          ? "border-[#bfe7dc] bg-[#ecfbf4] text-[#215b47]"
+                          : "border-[#f3c2c2] bg-[#fff3f3] text-[#8a3333]",
+                      )}
+                    >
+                      {submissionState.message}
+                    </div>
+                  ) : null}
+
+                  <Button
+                    type="submit"
+                    size="lg"
+                    disabled={isSubmitting}
+                    className="h-14 w-full rounded-[20px] bg-[#42a8a9] text-base font-extrabold text-white shadow-[0_18px_32px_rgba(42,63,84,0.18)] hover:bg-[#369799]"
+                  >
+                    {isSubmitting ? "Sending RSVP..." : "Send RSVP"}
+                  </Button>
+                </form>
+              </div>
+            </motion.div>
+          </div>
+        </section>
+
+        <section className="bg-[#eef5fb] pb-14 md:pb-20">
+          <div className="container px-4 md:px-6">
+            <motion.div
+              className="mx-auto max-w-5xl rounded-[34px] border border-[#9fc5d8] bg-white shadow-[0_20px_40px_rgba(42,63,84,0.12)]"
+              {...getRevealProps(prefersReducedMotion, { distance: 18 })}
+            >
+              <div className="border-b border-[#d8eff5] px-6 py-5 md:px-8">
+                <p className="text-xs font-extrabold uppercase tracking-[0.24em] text-[#42a8a9]">Location</p>
+                <h2 className="mt-3 text-3xl leading-none text-[#223b54] sm:text-4xl">Craft Hall</h2>
+                <p className="mt-3 max-w-2xl text-sm leading-6 text-[#3f5d81]">
+                  901 N Delaware Ave, Philadelphia, PA 19123. Use the live map below to get oriented before the
+                  party.
+                </p>
+              </div>
+
+              <div className="space-y-5 px-6 py-6 md:px-8 md:py-8">
+                <div className="overflow-hidden rounded-[28px] border border-[#d8eff5] bg-[#eef5fb] shadow-[0_14px_30px_rgba(42,63,84,0.08)]">
+                  <iframe
+                    title="Map showing Craft Hall in Philadelphia"
+                    src={googleMapsEmbedUrl}
+                    className="h-[320px] w-full border-0 md:h-[380px]"
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                  />
                 </div>
 
-                {submissionState ? (
-                  <div
-                    className={cn(
-                      "rounded-[22px] border px-4 py-3 text-sm leading-6",
-                      submissionState.tone === "success"
-                        ? "border-[#bfe7dc] bg-[#ecfbf4] text-[#215b47]"
-                        : "border-[#f3c2c2] bg-[#fff3f3] text-[#8a3333]",
-                    )}
-                  >
-                    {submissionState.message}
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <div className="text-sm leading-6 text-[#3f5d81]">
+                    <p className="font-extrabold uppercase tracking-[0.2em] text-[#42a8a9]">Address</p>
+                    <p className="mt-2 text-base font-semibold text-[#223b54]">Craft Hall</p>
+                    <p>901 N Delaware Ave</p>
+                    <p>Philadelphia, PA 19123</p>
                   </div>
-                ) : null}
 
-                <Button
-                  type="submit"
-                  size="lg"
-                  disabled={isSubmitting}
-                  className="h-14 w-full rounded-[20px] bg-[#42a8a9] text-base font-extrabold text-white shadow-[0_18px_32px_rgba(42,63,84,0.18)] hover:bg-[#369799]"
-                >
-                  {isSubmitting ? "Sending RSVP..." : "Send RSVP"}
-                </Button>
-              </form>
+                  <Button
+                    asChild
+                    variant="outline"
+                    className="h-12 rounded-[18px] border-[#9fc5d8] bg-[#f7fbff] px-5 font-bold text-[#223b54] hover:bg-white"
+                  >
+                    <Link href={googleMapsUrl} target="_blank" rel="noreferrer">
+                      Open in Google Maps
+                    </Link>
+                  </Button>
+                </div>
+              </div>
             </motion.div>
           </div>
         </section>
@@ -333,20 +399,28 @@ export function BirthdayRsvpPage() {
   )
 }
 
-interface EventStatProps {
+interface DetailRowProps {
   icon: ComponentType<{ className?: string }>
-  label: string
-  value: string
+  eyebrow: string
+  title: string
+  description: string
+  action?: ReactNode
 }
 
-function EventStat({ icon: Icon, label, value }: EventStatProps) {
+function DetailRow({ icon: Icon, eyebrow, title, description, action }: DetailRowProps) {
   return (
-    <div className="rounded-[24px] border border-white/15 bg-white/10 p-4 text-left backdrop-blur-sm">
-      <div className="flex items-center gap-2 text-[#d8eff5]">
-        <Icon className="h-4 w-4" />
-        <p className="text-xs font-extrabold uppercase tracking-[0.22em]">{label}</p>
+    <div className="grid gap-4 border-b border-white/10 px-5 py-5 last:border-b-0 md:grid-cols-[64px_minmax(0,1fr)_auto] md:items-center md:px-6">
+      <div className="flex h-16 w-16 items-center justify-center rounded-[22px] border border-white/14 bg-white/8 text-[#d8eff5]">
+        <Icon className="h-6 w-6" />
       </div>
-      <p className="mt-3 text-sm font-semibold leading-6 text-white">{value}</p>
+
+      <div className="space-y-2">
+        <p className="text-xs font-extrabold uppercase tracking-[0.22em] text-[#9fc5d8]">{eyebrow}</p>
+        <p className="text-2xl leading-tight text-white sm:text-[2rem]">{title}</p>
+        <p className="max-w-2xl text-sm leading-6 text-[#d8eff5]">{description}</p>
+      </div>
+
+      {action ? <div className="md:justify-self-end">{action}</div> : null}
     </div>
   )
 }
