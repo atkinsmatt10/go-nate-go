@@ -21,3 +21,10 @@
 - The RSVP backend contract stays unchanged.
 - The requested CTAs are additive to the RSVP invitation page rather than replacing RSVP as the primary action.
 - Verification passed with `pnpm lint` and `pnpm exec tsc --noEmit` using the repo's `asdf` Node 22.10.0 runtime.
+
+## Countdown Polish Follow-Up
+
+- [x] Capture the UI review in [tasks/design/birthday-countdown-signature.md](/Users/Matt.Atkins/Code/go-nate-go-1/tasks/design/birthday-countdown-signature.md)
+- [x] Move the birthday countdown below the closing signature and remove the standalone card treatment
+- [x] Add subtle countdown entrance/value motion that respects reduced motion
+- [x] Re-run `pnpm lint` and `pnpm exec tsc --noEmit` for the birthday page follow-up

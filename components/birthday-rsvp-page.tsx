@@ -3,14 +3,14 @@
 import Image from "next/image"
 import Link from "next/link"
 import { type FormEvent, type MouseEvent, useEffect, useState } from "react"
-import { motion, useMotionTemplate, useReducedMotion, useSpring } from "framer-motion"
+import { AnimatePresence, motion, useMotionTemplate, useReducedMotion, useSpring } from "framer-motion"
 import { CalendarDays, CheckCircle2, MapPin, type LucideIcon } from "lucide-react"
 import { Footer } from "@/components/footer"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { getPageRevealProps, getRevealProps } from "@/lib/motion"
+import { MOTION_EASE_OUT, getPageRevealProps, getRevealProps } from "@/lib/motion"
 import { cn } from "@/lib/utils"
 
 type AttendanceValue = "yes" | "no" | ""
@@ -303,47 +303,6 @@ export function BirthdayRsvpPage() {
                   </div>
                 </div>
 
-                <div
-                  className="rounded-[30px] border px-4 py-5 backdrop-blur-sm md:px-5"
-                  style={{
-                    borderColor: "rgba(242, 198, 109, 0.28)",
-                    background: "linear-gradient(135deg, rgba(255,241,194,0.08), rgba(255,255,255,0.04))",
-                    boxShadow: "0 24px 50px rgba(18, 35, 52, 0.2)",
-                  }}
-                >
-                  <div className="flex flex-wrap items-center justify-between gap-3">
-                    <p className="text-xs font-extrabold uppercase tracking-[0.24em] text-[#f8e7b4]">
-                      {countdown.label}
-                    </p>
-                    <p className="text-sm text-[#eef5fb]">A little more birthday energy before the big day.</p>
-                  </div>
-
-                  {countdown.isBirthday ? (
-                    <div className="mt-4 rounded-[24px] border border-white/12 bg-white/8 px-5 py-6 text-center">
-                      <p className="text-3xl leading-tight text-white sm:text-4xl">Happy Birthday, Nate.</p>
-                      <p className="mt-3 text-base leading-7 text-[#eef5fb]">
-                        Today is for celebrating one very tough cookie and everyone who helped him get here.
-                      </p>
-                    </div>
-                  ) : (
-                    <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
-                      {countdownLabels.map((label) => (
-                        <div
-                          key={label}
-                          className="rounded-[24px] border px-4 py-4 text-center"
-                          style={{
-                            borderColor: "rgba(242, 198, 109, 0.18)",
-                            backgroundColor: "rgba(255, 255, 255, 0.06)",
-                          }}
-                        >
-                          <p className="text-4xl font-extrabold tracking-tight text-white">{countdown.parts[label]}</p>
-                          <p className="mt-2 text-[11px] font-extrabold uppercase tracking-[0.24em] text-[#f8e7b4]">{label}</p>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
                 <BirthdayActionButtons prefersReducedMotion={prefersReducedMotion} />
 
                 <div className="grid gap-5 border-y border-white/10 py-5 md:grid-cols-2 md:gap-8 md:py-6">
@@ -555,6 +514,7 @@ export function BirthdayRsvpPage() {
                   Nate the Great
                 </p>
               </div>
+              <BirthdayCountdownInline countdown={countdown} prefersReducedMotion={prefersReducedMotion} />
             </motion.div>
           </div>
         </section>
@@ -639,6 +599,79 @@ function BirthdaySignature() {
         prefersReducedMotion={prefersReducedMotion}
       />
     </motion.svg>
+  )
+}
+
+interface BirthdayCountdownInlineProps {
+  countdown: CountdownState
+  prefersReducedMotion: boolean
+}
+
+function BirthdayCountdownInline({ countdown, prefersReducedMotion }: BirthdayCountdownInlineProps) {
+  return (
+    <motion.div
+      className="mt-7 flex flex-col items-center gap-3 text-center"
+      {...getRevealProps(prefersReducedMotion, { delay: 0.06, distance: 12, margin: "-24px" })}
+    >
+      <p className="text-[11px] font-extrabold uppercase tracking-[0.24em] text-[#3f5d81]">{countdown.label}</p>
+
+      {countdown.isBirthday ? (
+        <motion.p
+          className="max-w-xl text-base leading-7 text-[#223b54] sm:text-lg"
+          initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 8 }}
+          whileInView={prefersReducedMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.7 }}
+          transition={{ duration: prefersReducedMotion ? 0.18 : 0.28, delay: 0.12, ease: MOTION_EASE_OUT }}
+        >
+          Happy Birthday, Nate. Today is for celebrating one very tough cookie and everyone who helped him get here.
+        </motion.p>
+      ) : (
+        <div className="flex flex-wrap items-center justify-center gap-2.5 sm:gap-3">
+          {countdownLabels.map((label, index) => (
+            <motion.div
+              key={label}
+              className="flex items-center gap-2 rounded-full border border-[#d8eff5] bg-white/75 px-3 py-2 shadow-[0_10px_20px_rgba(42,63,84,0.06)] backdrop-blur-sm"
+              {...getRevealProps(prefersReducedMotion, {
+                delay: 0.1 + index * 0.04,
+                distance: 8,
+                margin: "-16px",
+              })}
+            >
+              <span className="text-xl font-black leading-none text-[#223b54] sm:text-2xl">
+                <AnimatedCountdownValue value={countdown.parts[label]} prefersReducedMotion={prefersReducedMotion} />
+              </span>
+              <span className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-[#5d7796]">{label}</span>
+            </motion.div>
+          ))}
+        </div>
+      )}
+
+      <p className="text-sm leading-6 text-[#5d7796]">A little more birthday energy before the big day.</p>
+    </motion.div>
+  )
+}
+
+interface AnimatedCountdownValueProps {
+  value: string
+  prefersReducedMotion: boolean
+}
+
+function AnimatedCountdownValue({ value, prefersReducedMotion }: AnimatedCountdownValueProps) {
+  return (
+    <span className="relative inline-flex h-[1.1em] min-w-[2.15ch] items-center justify-center overflow-hidden align-middle">
+      <AnimatePresence initial={false} mode="popLayout">
+        <motion.span
+          key={value}
+          className="absolute inset-0 inline-flex items-center justify-center tabular-nums"
+          initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: "60%", filter: "blur(6px)" }}
+          animate={prefersReducedMotion ? { opacity: 1 } : { opacity: 1, y: "0%", filter: "blur(0px)" }}
+          exit={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: "-60%", filter: "blur(6px)" }}
+          transition={{ duration: prefersReducedMotion ? 0.16 : 0.26, ease: MOTION_EASE_OUT }}
+        >
+          {value}
+        </motion.span>
+      </AnimatePresence>
+    </span>
   )
 }
 
