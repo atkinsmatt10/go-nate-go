@@ -2,7 +2,7 @@
 
 import Image from "next/image"
 import Link from "next/link"
-import { type MouseEvent, FormEvent, useState } from "react"
+import { type FormEvent, type MouseEvent, useEffect, useState } from "react"
 import { motion, useMotionTemplate, useReducedMotion, useSpring } from "framer-motion"
 import { CalendarDays, CheckCircle2, MapPin, type LucideIcon } from "lucide-react"
 import { Footer } from "@/components/footer"
@@ -20,14 +20,102 @@ interface SubmissionState {
   message: string
 }
 
+interface CountdownParts {
+  days: string
+  hours: string
+  minutes: string
+  seconds: string
+}
+
+interface CountdownState {
+  isBirthday: boolean
+  label: string
+  parts: CountdownParts
+}
+
 const coverImage = "/01KK50NH25Q9J200T43XRW1K6V.png"
 const googleMapsUrl = "https://maps.google.com/?q=Craft+Hall+901+N+Delaware+Ave+Philadelphia+PA+19123"
 const googleMapsEmbedUrl =
   "https://www.google.com/maps?q=Craft+Hall+901+N+Delaware+Ave+Philadelphia+PA+19123&z=15&output=embed"
+const birthdayAccent = "#F2C66D"
+const birthdayAccentSoft = "#FFF1C2"
+const birthdayAccentDeep = "#E2A94A"
 const attendanceOptions = [
   { value: "yes", label: "We’ll be there", description: "Save some seats and cookies for us." },
   { value: "no", label: "Can’t make it", description: "We’ll be cheering Nate on from afar." },
 ] as const
+const countdownLabels: ReadonlyArray<keyof CountdownParts> = ["days", "hours", "minutes", "seconds"]
+
+function getBirthdayCountdown(now: Date): CountdownState {
+  const month = now.getMonth()
+  const day = now.getDate()
+
+  if (month === 4 && day === 2) {
+    return {
+      isBirthday: true,
+      label: "It's Nate's birthday today",
+      parts: {
+        days: "00",
+        hours: "00",
+        minutes: "00",
+        seconds: "00",
+      },
+    }
+  }
+
+  const targetYear = month > 4 || (month === 4 && day > 2) ? now.getFullYear() + 1 : now.getFullYear()
+  const targetDate = new Date(targetYear, 4, 2, 0, 0, 0, 0)
+  const differenceInSeconds = Math.max(Math.floor((targetDate.getTime() - now.getTime()) / 1000), 0)
+
+  return {
+    isBirthday: false,
+    label: `Countdown to May 2, ${targetYear}`,
+    parts: {
+      days: String(Math.floor(differenceInSeconds / 86400)).padStart(2, "0"),
+      hours: String(Math.floor((differenceInSeconds % 86400) / 3600)).padStart(2, "0"),
+      minutes: String(Math.floor((differenceInSeconds % 3600) / 60)).padStart(2, "0"),
+      seconds: String(differenceInSeconds % 60).padStart(2, "0"),
+    },
+  }
+}
+
+function BirthdayActionButtons({ prefersReducedMotion }: { prefersReducedMotion: boolean }) {
+  return (
+    <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap">
+      <motion.div whileHover={prefersReducedMotion ? undefined : { y: -3, scale: 1.015 }}>
+        <Button
+          asChild
+          size="lg"
+          className="h-14 rounded-[20px] px-6 text-base font-extrabold text-[#223b54] transition-[transform,filter,box-shadow] duration-200 ease-snappy-out hover:brightness-105"
+          style={{
+            backgroundImage: `linear-gradient(135deg, ${birthdayAccentSoft} 0%, ${birthdayAccent} 54%, ${birthdayAccentDeep} 100%)`,
+            boxShadow: "0 18px 34px rgba(242, 198, 109, 0.28)",
+          }}
+        >
+          <Link href="/donate">Donate Now</Link>
+        </Button>
+      </motion.div>
+
+      <motion.div whileHover={prefersReducedMotion ? undefined : { y: -3, scale: 1.015 }}>
+        <Button
+          asChild
+          size="lg"
+          variant="outline"
+          className="h-14 rounded-[20px] border-2 px-6 text-base font-extrabold text-white transition-[transform,background-color,border-color,box-shadow,color] duration-200 ease-snappy-out hover:border-[#F2C66D] hover:bg-[#F2C66D] hover:text-[#223b54]"
+          style={{
+            borderColor: birthdayAccent,
+            backgroundColor: "rgba(255, 255, 255, 0.06)",
+            boxShadow: "0 16px 30px rgba(18, 35, 52, 0.2)",
+          }}
+        >
+          <Link href="https://shop.gonatego.com" target="_blank" rel="noopener noreferrer" prefetch={false}>
+            Shop Now
+          </Link>
+        </Button>
+      </motion.div>
+    </div>
+  )
+}
 
 export function BirthdayRsvpPage() {
   const prefersReducedMotion = useReducedMotion() ?? false
@@ -36,6 +124,7 @@ export function BirthdayRsvpPage() {
   const [attendance, setAttendance] = useState<AttendanceValue>("")
   const [submissionState, setSubmissionState] = useState<SubmissionState | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [countdown, setCountdown] = useState<CountdownState>(() => getBirthdayCountdown(new Date()))
   const coverRotateX = useSpring(0, { stiffness: 180, damping: 20, mass: 0.4 })
   const coverRotateY = useSpring(0, { stiffness: 180, damping: 20, mass: 0.4 })
   const coverTranslateX = useSpring(0, { stiffness: 180, damping: 20, mass: 0.4 })
@@ -43,6 +132,16 @@ export function BirthdayRsvpPage() {
   const coverGlowX = useSpring(50, { stiffness: 160, damping: 24, mass: 0.5 })
   const coverGlowY = useSpring(28, { stiffness: 160, damping: 24, mass: 0.5 })
   const coverGlow = useMotionTemplate`radial-gradient(circle at ${coverGlowX}% ${coverGlowY}%, rgba(247,251,255,0.38), transparent 28%)`
+
+  useEffect(() => {
+    const intervalId = window.setInterval(() => {
+      setCountdown(getBirthdayCountdown(new Date()))
+    }, 1000)
+
+    return () => {
+      window.clearInterval(intervalId)
+    }
+  }, [])
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -139,7 +238,7 @@ export function BirthdayRsvpPage() {
     <div className="min-h-dvh bg-background text-foreground">
       <main className="overflow-hidden">
         <section className="relative isolate bg-[linear-gradient(180deg,_#2a3f54_0%,_#304a67_100%)]">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(66,168,169,0.24),_transparent_40%),radial-gradient(circle_at_85%_12%,_rgba(247,251,255,0.12),_transparent_22%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(242,198,109,0.24),_transparent_38%),radial-gradient(circle_at_85%_12%,_rgba(247,251,255,0.12),_transparent_22%),radial-gradient(circle_at_18%_22%,_rgba(255,241,194,0.18),_transparent_18%)]" />
 
           <div className="container relative px-4 py-8 md:px-6 md:py-12 lg:py-14">
             <motion.div
@@ -154,7 +253,7 @@ export function BirthdayRsvpPage() {
               >
                 <div className="relative aspect-[6/5] overflow-hidden sm:aspect-[16/10] lg:aspect-[16/8]">
                   <motion.div className="absolute inset-0" style={{ backgroundImage: coverGlow }} />
-                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_18%,rgba(216,239,245,0.18),transparent_22%),radial-gradient(circle_at_84%_18%,rgba(66,168,169,0.2),transparent_24%),radial-gradient(circle_at_52%_82%,rgba(247,251,255,0.08),transparent_30%)]" />
+                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_18%,rgba(255,241,194,0.24),transparent_22%),radial-gradient(circle_at_84%_18%,rgba(242,198,109,0.2),transparent_24%),radial-gradient(circle_at_52%_82%,rgba(247,251,255,0.08),transparent_30%)]" />
 
                   <motion.div
                     className="absolute inset-0 [transform-style:preserve-3d]"
@@ -167,7 +266,7 @@ export function BirthdayRsvpPage() {
                     }}
                   >
                     <div className="absolute inset-x-[8%] bottom-[4%] top-[6%] sm:inset-x-[12%] sm:bottom-[6%] sm:top-[10%] lg:inset-x-[15%] lg:bottom-[8%] lg:top-[10%]">
-                      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(66,168,169,0.34),transparent_56%)] blur-3xl" />
+                      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(242,198,109,0.32),transparent_56%)] blur-3xl" />
                       <Image
                         src={coverImage}
                         alt="Nate the Great shark eating a cookie"
@@ -184,7 +283,13 @@ export function BirthdayRsvpPage() {
 
               <motion.div className="space-y-6" {...getRevealProps(prefersReducedMotion, { delay: 0.08, distance: 18 })}>
                 <div className="space-y-4">
-                  <Badge className="w-fit rounded-full border border-[#9fc5d8] bg-[#d8eff5] px-4 py-1.5 text-[11px] font-extrabold uppercase tracking-[0.24em] text-[#223b54]">
+                  <Badge
+                    className="w-fit rounded-full border px-4 py-1.5 text-[11px] font-extrabold uppercase tracking-[0.24em] text-[#223b54] shadow-[0_12px_24px_rgba(242,198,109,0.16)]"
+                    style={{
+                      borderColor: "rgba(242,198,109,0.7)",
+                      background: "linear-gradient(135deg, rgba(255,241,194,0.98), rgba(242,198,109,0.96))",
+                    }}
+                  >
                     First birthday party
                   </Badge>
 
@@ -197,6 +302,49 @@ export function BirthdayRsvpPage() {
                     </p>
                   </div>
                 </div>
+
+                <div
+                  className="rounded-[30px] border px-4 py-5 backdrop-blur-sm md:px-5"
+                  style={{
+                    borderColor: "rgba(242, 198, 109, 0.28)",
+                    background: "linear-gradient(135deg, rgba(255,241,194,0.08), rgba(255,255,255,0.04))",
+                    boxShadow: "0 24px 50px rgba(18, 35, 52, 0.2)",
+                  }}
+                >
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <p className="text-xs font-extrabold uppercase tracking-[0.24em] text-[#f8e7b4]">
+                      {countdown.label}
+                    </p>
+                    <p className="text-sm text-[#eef5fb]">A little more birthday energy before the big day.</p>
+                  </div>
+
+                  {countdown.isBirthday ? (
+                    <div className="mt-4 rounded-[24px] border border-white/12 bg-white/8 px-5 py-6 text-center">
+                      <p className="text-3xl leading-tight text-white sm:text-4xl">Happy Birthday, Nate.</p>
+                      <p className="mt-3 text-base leading-7 text-[#eef5fb]">
+                        Today is for celebrating one very tough cookie and everyone who helped him get here.
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
+                      {countdownLabels.map((label) => (
+                        <div
+                          key={label}
+                          className="rounded-[24px] border px-4 py-4 text-center"
+                          style={{
+                            borderColor: "rgba(242, 198, 109, 0.18)",
+                            backgroundColor: "rgba(255, 255, 255, 0.06)",
+                          }}
+                        >
+                          <p className="text-4xl font-extrabold tracking-tight text-white">{countdown.parts[label]}</p>
+                          <p className="mt-2 text-[11px] font-extrabold uppercase tracking-[0.24em] text-[#f8e7b4]">{label}</p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                <BirthdayActionButtons prefersReducedMotion={prefersReducedMotion} />
 
                 <div className="grid gap-5 border-y border-white/10 py-5 md:grid-cols-2 md:gap-8 md:py-6">
                   <EventMetaRow
@@ -333,7 +481,10 @@ export function BirthdayRsvpPage() {
                     type="submit"
                     size="lg"
                     disabled={isSubmitting}
-                    className="h-14 w-full rounded-[20px] bg-[#42a8a9] text-base font-extrabold text-white shadow-[0_18px_32px_rgba(42,63,84,0.18)] hover:bg-[#369799]"
+                    className="h-14 w-full rounded-[20px] text-base font-extrabold text-[#223b54] shadow-[0_18px_32px_rgba(242,198,109,0.22)] transition-[transform,filter,box-shadow] duration-200 ease-snappy-out hover:brightness-105"
+                    style={{
+                      backgroundImage: `linear-gradient(135deg, ${birthdayAccentSoft} 0%, ${birthdayAccent} 54%, ${birthdayAccentDeep} 100%)`,
+                    }}
                   >
                     {isSubmitting ? "Sending RSVP..." : "Send RSVP"}
                   </Button>
@@ -379,7 +530,7 @@ export function BirthdayRsvpPage() {
                   <Button
                     asChild
                     variant="outline"
-                    className="h-12 rounded-[18px] border-[#9fc5d8] bg-[#f7fbff] px-5 font-bold text-[#223b54] hover:bg-white"
+                    className="h-12 rounded-[18px] border-[#d8eff5] bg-[#f7fbff] px-5 font-bold text-[#223b54] hover:border-[#f2c66d] hover:bg-white"
                   >
                     <Link href={googleMapsUrl} target="_blank" rel="noreferrer">
                       Open in Google Maps
@@ -424,12 +575,12 @@ interface EventMetaRowProps {
 function EventMetaRow({ icon: Icon, label, title, description }: EventMetaRowProps) {
   return (
     <div className="flex items-start gap-3 md:gap-4">
-      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[18px] border border-white/14 bg-white/8 text-[#d8eff5] shadow-[0_12px_24px_rgba(16,31,44,0.14)] sm:h-14 sm:w-14 sm:rounded-[20px]">
+      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[18px] border border-white/14 bg-white/8 text-[#f8e7b4] shadow-[0_12px_24px_rgba(16,31,44,0.14)] sm:h-14 sm:w-14 sm:rounded-[20px]">
         <Icon className="h-4 w-4 sm:h-5 sm:w-5" />
       </div>
 
       <div className="min-w-0 space-y-1.5">
-        <p className="text-[11px] font-extrabold uppercase tracking-[0.22em] text-[#9fc5d8] sm:text-xs">
+        <p className="text-[11px] font-extrabold uppercase tracking-[0.22em] text-[#f8e7b4] sm:text-xs">
           {label}
         </p>
         <p className="text-xl leading-tight text-white sm:text-[2rem]">{title}</p>
