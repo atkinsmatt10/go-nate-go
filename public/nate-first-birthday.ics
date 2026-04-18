@@ -1,0 +1,15 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Go Nate Go//Birthday RSVP//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:nate-first-birthday-2026@gonatego.com
+DTSTAMP:20260417T000000Z
+DTSTART:20260509T160000Z
+DTEND:20260509T190000Z
+SUMMARY:Nate is One Tough Cookie Birthday Party
+DESCRIPTION:Celebrate Nate's first birthday at Craft Hall in Philadelphia.
+LOCATION:Craft Hall\, 901 N Delaware Ave\, Philadelphia\, PA 19123
+END:VEVENT
+END:VCALENDAR

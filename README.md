@@ -72,7 +72,7 @@ resend domains list --json
 
 ## Birthday RSVP
 
-The site now includes a birthday RSVP landing page at `/birthday` with a form that emails the organizers through Resend.
+The site now includes a birthday RSVP landing page at `/birthday` with a form that emails the organizers through Resend, supports an optional attendee email field, sends a confirmation email after RSVP, and schedules a reminder email for guests who RSVP `yes`.
 
 Recommended environment variable:
 

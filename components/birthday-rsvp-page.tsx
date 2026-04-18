@@ -2,13 +2,32 @@
 
 import Image from "next/image"
 import Link from "next/link"
-import { type FormEvent, type MouseEvent, useState } from "react"
+import { type FormEvent, type MouseEvent, type ReactNode, useEffect, useState } from "react"
 import { motion, useMotionTemplate, useReducedMotion, useSpring } from "framer-motion"
-import { CalendarDays, CheckCircle2, MapPin, type LucideIcon } from "lucide-react"
+import {
+  ArrowLeft,
+  ArrowRight,
+  ArrowUpRight,
+  CalendarDays,
+  CheckCircle2,
+  Download,
+  ExternalLink,
+  MapPin,
+  type LucideIcon,
+} from "lucide-react"
 import { Footer } from "@/components/footer"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { Carousel, type CarouselApi, CarouselContent, CarouselItem } from "@/components/ui/carousel"
 import { CountdownFlippingBoard } from "@/components/ui/countdown-flipping-board"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { getPageRevealProps, getRevealProps } from "@/lib/motion"
@@ -28,52 +47,122 @@ const googleMapsEmbedUrl =
 const birthdayAccent = "#F2C66D"
 const birthdayAccentSoft = "#FFF1C2"
 const birthdayAccentDeep = "#E2A94A"
+const birthdayCalendarTitle = "Nate is One Tough Cookie Birthday Party"
+const birthdayCalendarDescription = "Celebrate Nate's first birthday at Craft Hall in Philadelphia."
+const birthdayCalendarLocation = "Craft Hall, 901 N Delaware Ave, Philadelphia, PA 19123"
+const birthdayCalendarStart = "2026-05-09T12:00:00-04:00"
+const birthdayCalendarEnd = "2026-05-09T15:00:00-04:00"
 const attendanceOptions = [
   { value: "yes", label: "We’ll be there", description: "Save some seats and cookies for us." },
   { value: "no", label: "Can’t make it", description: "We’ll be cheering Nate on from afar." },
 ] as const
+const birthdayGalleryPhotos = [
+  {
+    src: "/Nate-image.png",
+    alt: "Nate in a pale green sleeper and hat, wide-eyed and cozy",
+    caption: "Wide-eyed and cozy at home.",
+  },
+  {
+    src: "/Nicole baby park.png",
+    alt: "Nate sleeping in Nicole's arms outdoors",
+    caption: "Fresh-air snuggles with mom.",
+  },
+  {
+    src: "/IMG_9609.png",
+    alt: "Nate resting on a striped hospital blanket",
+    caption: "Tiny but already tough.",
+  },
+  {
+    src: "/IMG_9684.png",
+    alt: "Nate sleeping while swaddled shortly after birth",
+    caption: "A very peaceful first nap.",
+  },
+  {
+    src: "/IMG_9908.png",
+    alt: "Nate lying on a couch in a blue sleeper and looking toward the camera",
+    caption: "Stillness, curiosity, and big eyes.",
+  },
+] as const
 
-function BirthdayActionButtons({ prefersReducedMotion }: { prefersReducedMotion: boolean }) {
+function formatCalendarDateForGoogle(dateValue: string): string {
+  return new Date(dateValue).toISOString().replace(/[-:]/g, "").replace(/\.\d{3}Z$/, "Z")
+}
+
+function buildGoogleCalendarUrl(): string {
+  const searchParams = new URLSearchParams({
+    action: "TEMPLATE",
+    text: birthdayCalendarTitle,
+    details: birthdayCalendarDescription,
+    location: birthdayCalendarLocation,
+    dates: `${formatCalendarDateForGoogle(birthdayCalendarStart)}/${formatCalendarDateForGoogle(birthdayCalendarEnd)}`,
+    ctz: "America/New_York",
+  })
+
+  return `https://calendar.google.com/calendar/render?${searchParams.toString()}`
+}
+
+function buildOutlookCalendarUrl(): string {
+  const searchParams = new URLSearchParams({
+    path: "/calendar/action/compose",
+    rru: "addevent",
+    subject: birthdayCalendarTitle,
+    body: birthdayCalendarDescription,
+    location: birthdayCalendarLocation,
+    startdt: birthdayCalendarStart,
+    enddt: birthdayCalendarEnd,
+  })
+
+  return `https://outlook.live.com/calendar/0/deeplink/compose?${searchParams.toString()}`
+}
+
+function BirthdayCalendarActions() {
   return (
-    <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap">
-      <motion.div whileHover={prefersReducedMotion ? undefined : { y: -3, scale: 1.015 }}>
-        <Button
-          asChild
-          size="lg"
-          className="h-14 rounded-[20px] px-6 text-base font-extrabold text-[#223b54] transition-[transform,filter,box-shadow] duration-200 ease-snappy-out hover:brightness-105"
-          style={{
-            backgroundImage: `linear-gradient(135deg, ${birthdayAccentSoft} 0%, ${birthdayAccent} 54%, ${birthdayAccentDeep} 100%)`,
-            boxShadow: "0 18px 34px rgba(242, 198, 109, 0.28)",
-          }}
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button
+          type="button"
+          className="inline-flex items-center gap-1 p-0 text-sm font-semibold leading-5 text-[#f8e7b4] underline decoration-[#f2c66d]/80 underline-offset-4 transition-colors duration-150 ease-snappy-out hover:text-white focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#f2c66d] focus-visible:ring-offset-2 focus-visible:ring-offset-[#304a67]"
         >
-          <Link href="/donate">Donate Now</Link>
-        </Button>
-      </motion.div>
+          <span>Add to calendar</span>
+          <ArrowUpRight className="size-3.5 shrink-0" />
+        </button>
+      </DropdownMenuTrigger>
 
-      <motion.div whileHover={prefersReducedMotion ? undefined : { y: -3, scale: 1.015 }}>
-        <Button
-          asChild
-          size="lg"
-          variant="outline"
-          className="h-14 rounded-[20px] border-2 px-6 text-base font-extrabold text-white transition-[transform,background-color,border-color,box-shadow,color] duration-200 ease-snappy-out hover:border-[#F2C66D] hover:bg-[#F2C66D] hover:text-[#223b54]"
-          style={{
-            borderColor: birthdayAccent,
-            backgroundColor: "rgba(255, 255, 255, 0.06)",
-            boxShadow: "0 16px 30px rgba(18, 35, 52, 0.2)",
-          }}
-        >
-          <Link href="https://shop.gonatego.com" target="_blank" rel="noopener noreferrer" prefetch={false}>
-            Shop Now
-          </Link>
-        </Button>
-      </motion.div>
-    </div>
+      <DropdownMenuContent
+        align="start"
+        className="w-60 rounded-[20px] border-[#9fc5d8] bg-[#f7fbff] p-2 text-[#223b54] shadow-[0_20px_36px_rgba(42,63,84,0.18)]"
+      >
+        <DropdownMenuLabel className="px-3 pb-1 pt-2 text-[11px] font-extrabold uppercase tracking-[0.2em] text-[#3f5d81]">
+          Add to calendar
+        </DropdownMenuLabel>
+        <DropdownMenuSeparator className="bg-[#d8eff5]" />
+        <DropdownMenuItem asChild className="rounded-[14px] px-3 py-2.5 focus:bg-[#eef5fb] focus:text-[#223b54]">
+          <a href={buildGoogleCalendarUrl()} target="_blank" rel="noopener noreferrer">
+            <ExternalLink className="size-4 text-[#42a8a9]" />
+            Google Calendar
+          </a>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild className="rounded-[14px] px-3 py-2.5 focus:bg-[#eef5fb] focus:text-[#223b54]">
+          <a href={buildOutlookCalendarUrl()} target="_blank" rel="noopener noreferrer">
+            <ExternalLink className="size-4 text-[#42a8a9]" />
+            Outlook
+          </a>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild className="rounded-[14px] px-3 py-2.5 focus:bg-[#eef5fb] focus:text-[#223b54]">
+          <a href="/nate-first-birthday.ics">
+            <Download className="size-4 text-[#42a8a9]" />
+            Apple Calendar / .ics
+          </a>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   )
 }
 
 export function BirthdayRsvpPage() {
   const prefersReducedMotion = useReducedMotion() ?? false
   const [name, setName] = useState("")
+  const [email, setEmail] = useState("")
   const [attendeeCount, setAttendeeCount] = useState("1")
   const [attendance, setAttendance] = useState<AttendanceValue>("")
   const [submissionState, setSubmissionState] = useState<SubmissionState | null>(null)
@@ -91,6 +180,7 @@ export function BirthdayRsvpPage() {
     setSubmissionState(null)
 
     const trimmedName = name.trim()
+    const trimmedEmail = email.trim()
     const parsedAttendeeCount = Number.parseInt(attendeeCount, 10)
 
     if (!trimmedName) {
@@ -108,6 +198,14 @@ export function BirthdayRsvpPage() {
       return
     }
 
+    if (trimmedEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
+      setSubmissionState({
+        tone: "error",
+        message: "Enter a valid email address if you’d like a confirmation and reminder.",
+      })
+      return
+    }
+
     setIsSubmitting(true)
 
     try {
@@ -118,6 +216,7 @@ export function BirthdayRsvpPage() {
         },
         body: JSON.stringify({
           name: trimmedName,
+          email: trimmedEmail,
           attendeeCount: parsedAttendeeCount,
           attendance,
         }),
@@ -133,10 +232,15 @@ export function BirthdayRsvpPage() {
         tone: "success",
         message:
           attendance === "yes"
-            ? `Thanks, ${trimmedName}. We’ve got you down for ${parsedAttendeeCount} guest${parsedAttendeeCount === 1 ? "" : "s"} and can’t wait to celebrate with you.`
-            : `Thanks, ${trimmedName}. We’ll miss you and really appreciate the heads up.`,
+            ? trimmedEmail
+              ? `Thanks, ${trimmedName}. We’ve got you down for ${parsedAttendeeCount} guest${parsedAttendeeCount === 1 ? "" : "s"}, and we’ll send a confirmation now plus a reminder closer to the party.`
+              : `Thanks, ${trimmedName}. We’ve got you down for ${parsedAttendeeCount} guest${parsedAttendeeCount === 1 ? "" : "s"} and can’t wait to celebrate with you.`
+            : trimmedEmail
+              ? `Thanks, ${trimmedName}. We’ll miss you, and we’ve sent a quick confirmation to your inbox.`
+              : `Thanks, ${trimmedName}. We’ll miss you and really appreciate the heads up.`,
       })
       setName("")
+      setEmail("")
       setAttendeeCount("1")
       setAttendance("")
     } catch (error) {
@@ -248,16 +352,15 @@ export function BirthdayRsvpPage() {
                     </p>
                   </div>
                 </div>
-
-                <BirthdayActionButtons prefersReducedMotion={prefersReducedMotion} />
-
                 <div className="grid gap-5 border-y border-white/10 py-5 md:grid-cols-2 md:gap-8 md:py-6">
                   <EventMetaRow
                     icon={CalendarDays}
                     label="Date & time"
                     title="Saturday, May 9, 2026"
                     description="12 PM to 3 PM"
-                  />
+                    descriptionAction={<BirthdayCalendarActions />}
+                  >
+                  </EventMetaRow>
                   <EventMetaRow
                     icon={MapPin}
                     label="Location"
@@ -321,6 +424,29 @@ export function BirthdayRsvpPage() {
                       className="h-14 rounded-[20px] border-[#9fc5d8] bg-[#f7fbff] px-4 text-base text-[#223b54] focus-visible:ring-[#42a8a9]"
                       disabled={isSubmitting}
                     />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="birthday-email" className="text-sm font-bold text-[#223b54]">
+                      Email
+                      <span className="ml-2 text-xs font-semibold uppercase tracking-[0.16em] text-[#42a8a9]">
+                        Optional
+                      </span>
+                    </Label>
+                    <Input
+                      id="birthday-email"
+                      type="email"
+                      value={email}
+                      onChange={(event) => setEmail(event.target.value)}
+                      placeholder="you@example.com"
+                      className="h-14 rounded-[20px] border-[#9fc5d8] bg-[#f7fbff] px-4 text-base text-[#223b54] placeholder:text-[#6f8ea4] focus-visible:ring-[#42a8a9]"
+                      maxLength={160}
+                      autoComplete="email"
+                      disabled={isSubmitting}
+                    />
+                    <p className="text-sm leading-6 text-[#3f5d81]">
+                      For a reminder before the party.
+                    </p>
                   </div>
 
                   <div className="space-y-3">
@@ -463,6 +589,17 @@ export function BirthdayRsvpPage() {
             </motion.div>
           </div>
         </section>
+
+        <section className="bg-[#eef5fb] pb-16 md:pb-24">
+          <div className="container px-4 md:px-6">
+            <motion.div
+              className="mx-auto max-w-5xl"
+              {...getRevealProps(prefersReducedMotion, { distance: 18 })}
+            >
+              <BirthdayPhotoCarousel />
+            </motion.div>
+          </div>
+        </section>
       </main>
 
       <Footer />
@@ -475,9 +612,10 @@ interface EventMetaRowProps {
   label: string
   title: string
   description: string
+  descriptionAction?: ReactNode
 }
 
-function EventMetaRow({ icon: Icon, label, title, description }: EventMetaRowProps) {
+function EventMetaRow({ icon: Icon, label, title, description, descriptionAction }: EventMetaRowProps) {
   return (
     <div className="flex items-start gap-3 md:gap-4">
       <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[18px] border border-white/14 bg-white/8 text-[#f8e7b4] shadow-[0_12px_24px_rgba(16,31,44,0.14)] sm:h-14 sm:w-14 sm:rounded-[20px]">
@@ -489,7 +627,92 @@ function EventMetaRow({ icon: Icon, label, title, description }: EventMetaRowPro
           {label}
         </p>
         <p className="text-xl leading-tight text-white sm:text-[2rem]">{title}</p>
-        <p className="text-sm leading-5 text-[#d8eff5] sm:text-base sm:leading-6">{description}</p>
+        <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+          <p className="text-sm leading-5 text-[#d8eff5] sm:text-base sm:leading-6">{description}</p>
+          {descriptionAction}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function BirthdayPhotoCarousel() {
+  const [api, setApi] = useState<CarouselApi>()
+  const [currentSlide, setCurrentSlide] = useState(0)
+
+  useEffect(() => {
+    if (!api) {
+      return
+    }
+
+    const syncSlide = () => {
+      setCurrentSlide(api.selectedScrollSnap())
+    }
+
+    syncSlide()
+    api.on("select", syncSlide)
+    api.on("reInit", syncSlide)
+
+    return () => {
+      api.off("select", syncSlide)
+      api.off("reInit", syncSlide)
+    }
+  }, [api])
+
+  return (
+    <div className="space-y-5">
+      <Carousel setApi={setApi} opts={{ align: "start", loop: true }} className="w-full">
+        <CarouselContent>
+          {birthdayGalleryPhotos.map((photo) => (
+            <CarouselItem key={photo.src} className="basis-[88%] md:basis-[72%] lg:basis-[58%]">
+              <div className="relative aspect-[4/5] overflow-hidden rounded-[30px] bg-[#d8eff5] shadow-[0_22px_40px_rgba(42,63,84,0.16)]">
+                <Image
+                  src={photo.src}
+                  alt={photo.alt}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 640px) 88vw, (max-width: 1024px) 72vw, 58vw"
+                />
+              </div>
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+      </Carousel>
+
+      <div className="flex items-center justify-center gap-4">
+        <Button
+          type="button"
+          size="icon"
+          variant="outline"
+          className="h-10 w-10 rounded-full border-[#9fc5d8] bg-white/90 text-[#223b54] hover:border-[#42a8a9] hover:bg-white"
+          onClick={() => api?.scrollPrev()}
+        >
+          <ArrowLeft className="h-4 w-4" />
+          <span className="sr-only">Previous photo</span>
+        </Button>
+
+        <div className="flex items-center gap-2">
+          {birthdayGalleryPhotos.map((photo, index) => (
+            <span
+              key={photo.src}
+              className={cn(
+                "h-2.5 rounded-full transition-all duration-200 ease-snappy-out",
+                index === currentSlide ? "w-7 bg-[#42a8a9]" : "w-2.5 bg-[#c8dfea]",
+              )}
+            />
+          ))}
+        </div>
+
+        <Button
+          type="button"
+          size="icon"
+          variant="outline"
+          className="h-10 w-10 rounded-full border-[#9fc5d8] bg-white/90 text-[#223b54] hover:border-[#42a8a9] hover:bg-white"
+          onClick={() => api?.scrollNext()}
+        >
+          <ArrowRight className="h-4 w-4" />
+          <span className="sr-only">Next photo</span>
+        </Button>
       </div>
     </div>
   )

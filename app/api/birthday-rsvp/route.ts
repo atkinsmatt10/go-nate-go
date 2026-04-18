@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 import { z } from "zod"
+import { sendBirthdayRsvpAttendeeEmails } from "@/lib/email/send-birthday-rsvp-emails"
 import { getResendClient, getResendFromEmail, getResendReplyToEmail } from "@/lib/resend"
 
 const defaultBirthdayRsvpRecipient = "support@gonatego.com"
@@ -8,6 +9,7 @@ const birthdayRsvpSchema = z.object({
   name: z.string().trim().min(2).max(80),
   attendeeCount: z.number().int().min(1).max(12),
   attendance: z.enum(["yes", "no"]),
+  email: z.string().trim().max(160).optional(),
 })
 
 export async function POST(request: Request) {
@@ -19,7 +21,7 @@ export async function POST(request: Request) {
 
     if (!parsed.success) {
       return NextResponse.json(
-        { error: "Please enter a valid name, party size, and RSVP choice." },
+        { error: "Please enter a valid name, party size, RSVP choice, and email if you want a reminder." },
         { status: 400 },
       )
     }
@@ -39,7 +41,16 @@ export async function POST(request: Request) {
       )
     }
 
-    const { attendeeCount, attendance, name } = parsed.data
+    const { attendeeCount, attendance, email, name } = parsed.data
+    const normalizedEmail = normalizeBirthdayEmail(email)
+
+    if (normalizedEmail && !z.string().email().safeParse(normalizedEmail).success) {
+      return NextResponse.json(
+        { error: "Please enter a valid email address if you’d like a confirmation and reminder." },
+        { status: 400 },
+      )
+    }
+
     const resend = getResendClient()
     const submittedAt = new Intl.DateTimeFormat("en-US", {
       dateStyle: "full",
@@ -60,6 +71,7 @@ export async function POST(request: Request) {
         `Name: ${name}`,
         `Attendance: ${attendanceLabel}`,
         `Party size: ${attendeeCount}`,
+        `Reminder email: ${normalizedEmail || "Not provided"}`,
         `Submitted: ${submittedAt}`,
         "",
         "Event details",
@@ -77,6 +89,19 @@ export async function POST(request: Request) {
         { error: "Your RSVP could not be sent right now. Please try again." },
         { status: 500 },
       )
+    }
+
+    if (normalizedEmail) {
+      try {
+        await sendBirthdayRsvpAttendeeEmails({
+          attendeeCount,
+          attendance,
+          email: normalizedEmail,
+          name,
+        })
+      } catch (attendeeEmailError) {
+        console.error("Birthday RSVP attendee email delivery failed.", attendeeEmailError)
+      }
     }
 
     return NextResponse.json({ message: "RSVP sent." }, { status: 201 })
@@ -109,4 +134,9 @@ function parseEmailAddress(emailValue: string | undefined): string {
 
   const match = emailValue.match(/<([^>]+)>/)
   return match?.[1]?.trim() ?? emailValue.trim()
+}
+
+function normalizeBirthdayEmail(emailValue: string | undefined): string | undefined {
+  const trimmedEmail = emailValue?.trim().toLowerCase()
+  return trimmedEmail ? trimmedEmail : undefined
 }

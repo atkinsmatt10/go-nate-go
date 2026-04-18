@@ -133,12 +133,12 @@ export function CountdownFlippingBoard({ className }: CountdownFlippingBoardProp
           </p>
         </div>
       ) : (
-        <div className="w-full max-w-5xl">
-          <div className="flex flex-wrap items-start justify-center gap-3 sm:gap-4 md:gap-5">
+        <div className="w-full max-w-5xl px-1 sm:px-0">
+          <div className="flex flex-nowrap items-start justify-center gap-1 sm:gap-4 md:gap-5">
             {segments.map((segment, segmentIndex) => (
               <motion.div
                 key={segment.label}
-                className="flex flex-col items-center gap-3"
+                className="flex min-w-0 flex-col items-center gap-1.5 sm:gap-3"
                 animate={
                   prefersReducedMotion || !chaosMode
                     ? undefined
@@ -154,8 +154,8 @@ export function CountdownFlippingBoard({ className }: CountdownFlippingBoardProp
                   ease: [0.23, 1, 0.32, 1],
                 }}
               >
-                <div className="rounded-[22px] border border-white/10 bg-[#1a3650] p-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
-                  <div className="flex gap-1.5 sm:gap-2">
+                <div className="rounded-[14px] border border-white/10 bg-[#1a3650] p-1 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] sm:rounded-[22px] sm:p-2.5">
+                  <div className="flex gap-0.5 sm:gap-2">
                     {segment.value.split("").map((digit, digitIndex) => (
                       <SplitFlapCell
                         key={`${segment.label}-${digitIndex}`}
@@ -165,13 +165,13 @@ export function CountdownFlippingBoard({ className }: CountdownFlippingBoardProp
                         delay={segmentIndex * 70 + digitIndex * 22}
                         stepMs={chaosMode ? 34 : 0}
                         flipDuration={chaosMode ? 0.22 : 0.24}
-                        className="w-10 sm:w-11 md:w-12"
-                        characterClassName="text-[clamp(1.25rem,3vw,2rem)]"
+                        className="w-[1.375rem] sm:w-11 md:w-12"
+                        characterClassName="text-[0.85rem] sm:text-[clamp(1.25rem,3vw,2rem)]"
                       />
                     ))}
                   </div>
                 </div>
-                <span className="text-[10px] font-extrabold uppercase tracking-[0.24em] text-[#b9d0e1]">
+                <span className="text-[8px] font-extrabold uppercase tracking-[0.18em] text-[#b9d0e1] sm:text-[10px] sm:tracking-[0.24em]">
                   {segment.label}
                 </span>
               </motion.div>
