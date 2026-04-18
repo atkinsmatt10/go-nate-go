@@ -40,6 +40,16 @@ interface SubmissionState {
   message: string
 }
 
+interface BirthdayGalleryPhoto {
+  alt: string
+  caption: string
+  src: string
+}
+
+interface BirthdayGalleryResponse {
+  photos: BirthdayGalleryPhoto[]
+}
+
 const coverImage = "/01KK50NH25Q9J200T43XRW1K6V.png"
 const googleMapsUrl = "https://maps.google.com/?q=Craft+Hall+901+N+Delaware+Ave+Philadelphia+PA+19123"
 const googleMapsEmbedUrl =
@@ -56,7 +66,7 @@ const attendanceOptions = [
   { value: "yes", label: "We’ll be there", description: "Save some seats and cookies for us." },
   { value: "no", label: "Can’t make it", description: "We’ll be cheering Nate on from afar." },
 ] as const
-const birthdayGalleryPhotos = [
+const defaultBirthdayGalleryPhotos: readonly BirthdayGalleryPhoto[] = [
   {
     src: "/Nate-image.png",
     alt: "Nate in a pale green sleeper and hat, wide-eyed and cozy",
@@ -83,6 +93,30 @@ const birthdayGalleryPhotos = [
     caption: "Stillness, curiosity, and big eyes.",
   },
 ] as const
+
+function isBirthdayGalleryPhoto(value: unknown): value is BirthdayGalleryPhoto {
+  if (!value || typeof value !== "object") {
+    return false
+  }
+
+  const candidate = value as Record<string, unknown>
+
+  return (
+    typeof candidate.src === "string" &&
+    typeof candidate.alt === "string" &&
+    typeof candidate.caption === "string"
+  )
+}
+
+function isBirthdayGalleryResponse(value: unknown): value is BirthdayGalleryResponse {
+  if (!value || typeof value !== "object") {
+    return false
+  }
+
+  const candidate = value as { photos?: unknown }
+
+  return Array.isArray(candidate.photos) && candidate.photos.every(isBirthdayGalleryPhoto)
+}
 
 function formatCalendarDateForGoogle(dateValue: string): string {
   return new Date(dateValue).toISOString().replace(/[-:]/g, "").replace(/\.\d{3}Z$/, "Z")
@@ -292,7 +326,9 @@ export function BirthdayRsvpPage() {
               className="mx-auto max-w-5xl space-y-8"
               {...getPageRevealProps(prefersReducedMotion, { distance: 0, duration: 0.24 })}
             >
-              <CountdownFlippingBoard className="mx-auto w-full max-w-5xl pt-2" />
+              <motion.div {...getRevealProps(prefersReducedMotion, { delay: 0.02, distance: 14, duration: 0.22 })}>
+                <CountdownFlippingBoard className="mx-auto w-full max-w-5xl pt-2" />
+              </motion.div>
 
               <motion.div
                 className="relative"
@@ -331,8 +367,11 @@ export function BirthdayRsvpPage() {
                 </div>
               </motion.div>
 
-              <motion.div className="space-y-6" {...getRevealProps(prefersReducedMotion, { delay: 0.08, distance: 18 })}>
-                <div className="space-y-4">
+              <div className="space-y-6">
+                <motion.div
+                  className="space-y-4"
+                  {...getRevealProps(prefersReducedMotion, { delay: 0.08, distance: 16, duration: 0.24 })}
+                >
                   <Badge
                     className="w-fit rounded-full border px-4 py-1.5 text-[11px] font-extrabold uppercase tracking-[0.24em] text-[#223b54] shadow-[0_12px_24px_rgba(242,198,109,0.16)]"
                     style={{
@@ -351,25 +390,37 @@ export function BirthdayRsvpPage() {
                       We&apos;d love to celebrate with you at Craft Hall in Philadelphia.
                     </p>
                   </div>
-                </div>
-                <div className="grid gap-5 border-y border-white/10 py-5 md:grid-cols-2 md:gap-8 md:py-6">
-                  <EventMetaRow
-                    icon={CalendarDays}
-                    label="Date & time"
-                    title="Saturday, May 9, 2026"
-                    description="12 PM to 3 PM"
-                    descriptionAction={<BirthdayCalendarActions />}
-                  >
-                  </EventMetaRow>
-                  <EventMetaRow
-                    icon={MapPin}
-                    label="Location"
-                    title="Craft Hall"
-                    description="901 N Delaware Ave, Philadelphia, PA 19123"
-                  />
-                </div>
+                </motion.div>
 
-              </motion.div>
+                <motion.div
+                  className="grid gap-5 border-y border-white/10 py-5 md:grid-cols-2 md:gap-8 md:py-6"
+                  {...getRevealProps(prefersReducedMotion, { delay: 0.14, distance: 16, duration: 0.22 })}
+                >
+                  <motion.div
+                    whileHover={prefersReducedMotion ? undefined : { y: -3 }}
+                    transition={{ duration: 0.18, ease: [0.23, 1, 0.32, 1] }}
+                  >
+                    <EventMetaRow
+                      icon={CalendarDays}
+                      label="Date & time"
+                      title="Saturday, May 9, 2026"
+                      description="12 PM to 3 PM"
+                      descriptionAction={<BirthdayCalendarActions />}
+                    />
+                  </motion.div>
+                  <motion.div
+                    whileHover={prefersReducedMotion ? undefined : { y: -3 }}
+                    transition={{ duration: 0.18, ease: [0.23, 1, 0.32, 1] }}
+                  >
+                    <EventMetaRow
+                      icon={MapPin}
+                      label="Location"
+                      title="Craft Hall"
+                      description="901 N Delaware Ave, Philadelphia, PA 19123"
+                    />
+                  </motion.div>
+                </motion.div>
+              </div>
             </motion.div>
           </div>
         </section>
@@ -512,7 +563,7 @@ export function BirthdayRsvpPage() {
                     type="submit"
                     size="lg"
                     disabled={isSubmitting}
-                    className="h-14 w-full rounded-[20px] text-base font-extrabold text-[#223b54] shadow-[0_18px_32px_rgba(242,198,109,0.22)] transition-[transform,filter,box-shadow] duration-200 ease-snappy-out hover:brightness-105"
+                    className="h-14 w-full rounded-[20px] text-base font-extrabold text-[#223b54] shadow-[0_18px_32px_rgba(242,198,109,0.22)] transition-[transform,filter,box-shadow] duration-200 ease-snappy-out active:scale-[0.98] hover:brightness-105"
                     style={{
                       backgroundImage: `linear-gradient(135deg, ${birthdayAccentSoft} 0%, ${birthdayAccent} 54%, ${birthdayAccentDeep} 100%)`,
                     }}
@@ -540,7 +591,17 @@ export function BirthdayRsvpPage() {
               </div>
 
               <div className="space-y-5 px-6 py-6 md:px-8 md:py-8">
-                <div className="overflow-hidden rounded-[28px] border border-[#d8eff5] bg-[#eef5fb] shadow-[0_14px_30px_rgba(42,63,84,0.08)]">
+                <motion.div
+                  className="overflow-hidden rounded-[28px] border border-[#d8eff5] bg-[#eef5fb] shadow-[0_14px_30px_rgba(42,63,84,0.08)]"
+                  initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, scale: 0.985, clipPath: "inset(0 0 12% 0)" }}
+                  whileInView={
+                    prefersReducedMotion
+                      ? { opacity: 1 }
+                      : { opacity: 1, scale: 1, clipPath: "inset(0 0 0% 0)" }
+                  }
+                  viewport={{ once: true, amount: 0.4, margin: "-56px" }}
+                  transition={{ duration: prefersReducedMotion ? 0.18 : 0.34, ease: [0.23, 1, 0.32, 1] }}
+                >
                   <iframe
                     title="Map showing Craft Hall in Philadelphia"
                     src={googleMapsEmbedUrl}
@@ -548,7 +609,7 @@ export function BirthdayRsvpPage() {
                     loading="lazy"
                     referrerPolicy="no-referrer-when-downgrade"
                   />
-                </div>
+                </motion.div>
 
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                   <div className="text-sm leading-6 text-[#3f5d81]">
@@ -561,7 +622,7 @@ export function BirthdayRsvpPage() {
                   <Button
                     asChild
                     variant="outline"
-                    className="h-12 rounded-[18px] border-[#d8eff5] bg-[#f7fbff] px-5 font-bold text-[#223b54] hover:border-[#f2c66d] hover:bg-white"
+                    className="h-12 rounded-[18px] border-[#d8eff5] bg-[#f7fbff] px-5 font-bold text-[#223b54] transition-[transform,border-color,background-color,box-shadow,color] duration-200 ease-snappy-out active:scale-[0.98] hover:-translate-y-0.5 hover:border-[#42a8a9]/70 hover:bg-[#effaf9] hover:text-[#1f5860] hover:shadow-[0_16px_30px_rgba(66,168,169,0.18)]"
                   >
                     <Link href={googleMapsUrl} target="_blank" rel="noreferrer">
                       Open in Google Maps
@@ -593,6 +654,7 @@ export function BirthdayRsvpPage() {
         <section className="bg-[#eef5fb] pb-16 md:pb-24">
           <div className="container px-4 md:px-6">
             <motion.div
+              id="gallery"
               className="mx-auto max-w-5xl"
               {...getRevealProps(prefersReducedMotion, { distance: 18 })}
             >
@@ -639,6 +701,7 @@ function EventMetaRow({ icon: Icon, label, title, description, descriptionAction
 function BirthdayPhotoCarousel() {
   const [api, setApi] = useState<CarouselApi>()
   const [currentSlide, setCurrentSlide] = useState(0)
+  const [photos, setPhotos] = useState<readonly BirthdayGalleryPhoto[]>(defaultBirthdayGalleryPhotos)
 
   useEffect(() => {
     if (!api) {
@@ -659,11 +722,49 @@ function BirthdayPhotoCarousel() {
     }
   }, [api])
 
+  useEffect(() => {
+    let isActive = true
+
+    const loadBirthdayPhotos = async (): Promise<void> => {
+      try {
+        const response = await fetch("/api/birthday-photos")
+
+        if (!response.ok) {
+          return
+        }
+
+        const payload: unknown = await response.json()
+
+        if (!isBirthdayGalleryResponse(payload) || payload.photos.length === 0 || !isActive) {
+          return
+        }
+
+        setPhotos(payload.photos)
+      } catch (error) {
+        console.error("Unable to load birthday photos from Google Drive.", error)
+      }
+    }
+
+    void loadBirthdayPhotos()
+
+    return () => {
+      isActive = false
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!api) {
+      return
+    }
+
+    api.scrollTo(0, true)
+  }, [api, photos])
+
   return (
     <div className="space-y-5">
       <Carousel setApi={setApi} opts={{ align: "start", loop: true }} className="w-full">
         <CarouselContent>
-          {birthdayGalleryPhotos.map((photo) => (
+          {photos.map((photo) => (
             <CarouselItem key={photo.src} className="basis-[88%] md:basis-[72%] lg:basis-[58%]">
               <div className="relative aspect-[4/5] overflow-hidden rounded-[30px] bg-[#d8eff5] shadow-[0_22px_40px_rgba(42,63,84,0.16)]">
                 <Image
@@ -684,7 +785,7 @@ function BirthdayPhotoCarousel() {
           type="button"
           size="icon"
           variant="outline"
-          className="h-10 w-10 rounded-full border-[#9fc5d8] bg-white/90 text-[#223b54] hover:border-[#42a8a9] hover:bg-white"
+          className="h-10 w-10 rounded-full border-[#9fc5d8] bg-white/90 text-[#223b54] transition-[transform,border-color,background-color,box-shadow] duration-200 ease-snappy-out active:scale-[0.98] hover:-translate-y-0.5 hover:border-[#42a8a9] hover:bg-white hover:shadow-[0_12px_24px_rgba(42,63,84,0.14)]"
           onClick={() => api?.scrollPrev()}
         >
           <ArrowLeft className="h-4 w-4" />
@@ -692,13 +793,15 @@ function BirthdayPhotoCarousel() {
         </Button>
 
         <div className="flex items-center gap-2">
-          {birthdayGalleryPhotos.map((photo, index) => (
-            <span
+          {photos.map((photo, index) => (
+            <motion.span
+              layout
               key={photo.src}
               className={cn(
-                "h-2.5 rounded-full transition-all duration-200 ease-snappy-out",
+                "h-2.5 rounded-full transition-[width,background-color] duration-200 ease-snappy-out",
                 index === currentSlide ? "w-7 bg-[#42a8a9]" : "w-2.5 bg-[#c8dfea]",
               )}
+              transition={{ type: "spring", stiffness: 420, damping: 30, mass: 0.7 }}
             />
           ))}
         </div>
@@ -707,7 +810,7 @@ function BirthdayPhotoCarousel() {
           type="button"
           size="icon"
           variant="outline"
-          className="h-10 w-10 rounded-full border-[#9fc5d8] bg-white/90 text-[#223b54] hover:border-[#42a8a9] hover:bg-white"
+          className="h-10 w-10 rounded-full border-[#9fc5d8] bg-white/90 text-[#223b54] transition-[transform,border-color,background-color,box-shadow] duration-200 ease-snappy-out active:scale-[0.98] hover:-translate-y-0.5 hover:border-[#42a8a9] hover:bg-white hover:shadow-[0_12px_24px_rgba(42,63,84,0.14)]"
           onClick={() => api?.scrollNext()}
         >
           <ArrowRight className="h-4 w-4" />

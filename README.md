@@ -74,6 +74,8 @@ resend domains list --json
 
 The site now includes a birthday RSVP landing page at `/birthday` with a form that emails the organizers through Resend, supports an optional attendee email field, sends a confirmation email after RSVP, and schedules a reminder email for guests who RSVP `yes`.
 
+The `/birthday` photo carousel now prefers images from the shared Google Drive birthday folder configured in [app/api/birthday-photos/route.ts](/Users/Matt.Atkins/Code/go-nate-go-1/app/api/birthday-photos/route.ts). To add new carousel photos, drop image files into that folder. The page keeps the bundled local photos as fallback if Drive is unavailable.
+
 Recommended environment variable:
 
 ```bash

@@ -1,5 +1,23 @@
 # Birthday Page Celebration Plan
 
+## Drive Gallery Slice
+
+- [x] Reframe the request in [tasks/context/birthday-drive-gallery.md](/Users/Matt.Atkins/Code/go-nate-go-1/tasks/context/birthday-drive-gallery.md)
+- [x] Capture the implementation slice in [tasks/architecture/birthday-drive-gallery.md](/Users/Matt.Atkins/Code/go-nate-go-1/tasks/architecture/birthday-drive-gallery.md)
+- [x] Add a read-only `GET /api/birthday-photos` route that parses the public Google Drive folder
+- [x] Update the `/birthday` carousel to prefer Drive-backed photos and fall back to local images
+- [x] Allow Next image loading from the Google image host used by the Drive-backed gallery
+- [x] Document how to add photos through the shared Google Drive folder
+- [x] Run `pnpm lint` and `pnpm exec tsc --noEmit`
+- [x] Record verification notes for the Drive-backed birthday gallery
+
+### Drive Gallery Verification Notes
+
+- `pnpm lint` passed.
+- `pnpm exec tsc --noEmit` passed.
+- `curl http://localhost:3000/api/birthday-photos` returned live Google Drive image entries with `lh3.googleusercontent.com` image URLs.
+- The route keeps the existing bundled birthday photos as client fallback if the Google Drive fetch fails or returns no images.
+
 ## Artifacts
 
 - [x] Reframe the request in [tasks/context/birthday-page-celebration.md](/Users/Matt.Atkins/.codex/worktrees/be28/go-nate-go-1/tasks/context/birthday-page-celebration.md)
