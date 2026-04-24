@@ -133,10 +133,13 @@ export function HeroSection() {
           {...getPageRevealProps(prefersReducedMotion)}
         >
           {/* Logo */}
-          <motion.div {...getScaleInProps(prefersReducedMotion, { duration: 0.26, scale: 0.96 })}>
+          <motion.div
+            className="w-full"
+            {...getScaleInProps(prefersReducedMotion, { duration: 0.26, scale: 0.96 })}
+          >
             <div
-              className="relative mx-auto w-full max-w-[600px] min-h-[160px] sm:min-h-[220px] md:min-h-[280px]"
-              style={{ aspectRatio: "3 / 2" }}
+              className="relative left-1/2 mx-auto h-[190px] w-[calc(100vw-1rem)] max-w-none -translate-x-1/2 sm:left-auto sm:h-auto sm:w-full sm:max-w-[600px] sm:translate-x-0 sm:min-h-[220px] md:min-h-[280px]"
+              style={{ aspectRatio: "5971 / 2238" }}
             >
               <Image
                 src="/Nate-the-great-logo.png"

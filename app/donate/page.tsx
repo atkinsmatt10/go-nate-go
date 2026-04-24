@@ -15,7 +15,7 @@ import {
   type StripeCheckoutPaymentElementOptions,
   type StripeExpressCheckoutElementConfirmEvent,
 } from "@stripe/stripe-js"
-import { motion, useReducedMotion, type Variants } from "framer-motion"
+import { AnimatePresence, motion, useReducedMotion, type Variants } from "framer-motion"
 import { ArrowLeft, Gift, Heart, Mail, Sparkles, Stethoscope } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { MOTION_EASE_OUT } from "@/lib/motion"
@@ -114,7 +114,7 @@ function getEmailValidationMessage(normalizedEmail: string): string | null {
     return null
   }
 
-  return isValidEmail(normalizedEmail) ? null : "Enter a valid email address to load secure checkout."
+  return isValidEmail(normalizedEmail) ? null : "Enter a valid email address for your receipt."
 }
 
 function getDonationAmountInDollars(
@@ -186,25 +186,29 @@ function getPreCheckoutHelperMessage(params: {
     return "Secure checkout is not available right now. Please try again later."
   }
 
+  if (params.amountValidationMessage) {
+    if (!params.hasReceiptEmail) {
+      return "Choose an amount and enter an email address for your receipt."
+    }
+
+    return params.amountValidationMessage
+  }
+
   if (!params.hasReceiptEmail) {
-    return "Add your email so Stripe can prepare your receipt and secure checkout."
+    return "Enter an email address for your receipt, then the secure payment form will load."
   }
 
   if (params.emailValidationMessage) {
     return params.emailValidationMessage
   }
 
-  if (params.amountValidationMessage) {
-    return params.amountValidationMessage
-  }
-
   if (params.isCreatingSession) {
-    return "Preparing secure checkout for this amount."
+    return "Preparing your secure donation form."
   }
 
   return params.checkoutReady
-    ? "Secure checkout is ready below."
-    : "Choose an amount above and secure checkout will load automatically."
+    ? "Review the payment form below to finish your donation."
+    : "Choose an amount and enter your email to continue."
 }
 
 function getStripeElementLoadErrorMessage(event: StripeCheckoutLoadErrorEvent): string {
@@ -257,6 +261,29 @@ const revealChildVariants: Variants = {
     y: 0,
     transition: {
       duration: 0.32,
+      ease: MOTION_EASE_OUT,
+    },
+  },
+}
+
+const checkoutPanelVariants: Variants = {
+  hidden: {
+    opacity: 0,
+    y: 10,
+  },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.22,
+      ease: MOTION_EASE_OUT,
+    },
+  },
+  exit: {
+    opacity: 0,
+    y: -6,
+    transition: {
+      duration: 0.14,
       ease: MOTION_EASE_OUT,
     },
   },
@@ -341,12 +368,12 @@ function CheckoutForm({ amountLabel, onIntentionalNavigationChange }: CheckoutFo
     : isSubmitting
       ? "Finalizing your donation. This can take a few seconds."
       : checkoutState.type === "loading" || isCheckoutUiLoading
-      ? "Secure checkout is loading below."
+      ? "Loading the payment form."
       : !hasCheckoutUiReady
-        ? "Secure checkout is preparing your payment options."
+        ? "Setting up the payment form."
         : canSubmit
-          ? "Secure checkout is ready. Review your details and donate when you're ready."
-          : "Choose a wallet or card to finish your donation."
+          ? "Review your details and donate when you're ready."
+          : "Choose a payment method to finish your donation."
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
@@ -534,7 +561,7 @@ export default function DonatePage() {
       }
 
       if (!email) {
-        setErrorMessage("Add your email to continue to secure checkout.")
+        setErrorMessage("Enter an email address for your receipt to continue.")
         receiptEmailInputRef.current?.focus()
         return
       }
@@ -681,10 +708,9 @@ export default function DonatePage() {
 
         <div className="grid items-start gap-6 lg:grid-cols-[1.1fr_0.95fr] lg:gap-8">
           <motion.section
-            className="order-2 relative overflow-hidden rounded-4xl border border-[#b6cfdf] bg-white/84 p-5 shadow-[0_24px_60px_rgba(34,59,84,0.2)] backdrop-blur-xs sm:p-7 lg:order-1"
+            className="order-2 relative overflow-hidden rounded-4xl border border-[#b6cfdf] bg-[#f7fbff] p-5 shadow-[0_24px_60px_rgba(34,59,84,0.2)] sm:p-7 lg:order-1"
             variants={prefersReducedMotion ? undefined : revealChildVariants}
           >
-            <div className="pointer-events-none absolute inset-x-0 top-0 h-20 bg-linear-to-r from-[#42a8a9]/14 via-transparent to-[#2f5c7b]/14" />
             <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-linear-to-r from-transparent via-[#9eb8cc] to-transparent" />
 
             <div className="relative">
@@ -759,10 +785,9 @@ export default function DonatePage() {
 
           <motion.section
             id="donation-form"
-            className="order-1 relative scroll-mt-24 overflow-hidden rounded-4xl border border-[#aac6d9] bg-white/92 p-5 shadow-[0_24px_56px_rgba(34,59,84,0.22)] backdrop-blur-xs sm:p-6 lg:order-2"
+            className="order-1 relative scroll-mt-24 overflow-hidden rounded-4xl border border-[#aac6d9] bg-[#f7fbff] p-5 shadow-[0_24px_56px_rgba(34,59,84,0.22)] sm:p-6 lg:order-2"
             variants={prefersReducedMotion ? undefined : revealChildVariants}
           >
-            <div className="pointer-events-none absolute inset-x-0 top-0 h-20 bg-linear-to-r from-[#2f5c7b]/14 via-transparent to-[#42a8a9]/14" />
             <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-linear-to-r from-transparent via-[#9eb8cc] to-transparent" />
 
             <div className="relative">
@@ -778,7 +803,7 @@ export default function DonatePage() {
                   </p>
                   {isCheckoutActive ? (
                     <span className="rounded-full border border-[#a7c7d8] bg-white px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#46627a]">
-                      Locked for secure checkout
+                      Checkout started
                     </span>
                   ) : null}
                 </div>
@@ -877,7 +902,7 @@ export default function DonatePage() {
                     className="h-12 w-full rounded-2xl border border-[#a9c3d5] bg-white px-4 text-base text-[#223b54] shadow-xs outline-hidden transition-[border-color,box-shadow,opacity] duration-200 focus:border-[#42a8a9] focus:ring-4 focus:ring-[#d6ecec] disabled:cursor-not-allowed disabled:opacity-60"
                   />
                   <p className="text-sm text-[#526a7f]">
-                    Used for your receipt and to help Stripe prepare saved wallet options when available.
+                    We&apos;ll use this email for your donation receipt.
                   </p>
                 </div>
 
@@ -891,11 +916,11 @@ export default function DonatePage() {
                 <ul className="mt-3 space-y-2 border-t border-[#c7d8e4] pt-3 text-left text-sm text-[#4f667b]">
                   <li className="flex items-start gap-2">
                     <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-[#42a8a9]" aria-hidden="true" />
-                    Mobile wallets and cards appear automatically when they&apos;re available.
+                    Use the secure payment form to finish your donation.
                   </li>
                   <li className="flex items-start gap-2">
                     <Mail className="mt-0.5 h-4 w-4 shrink-0 text-[#2f5c7b]" aria-hidden="true" />
-                    Add your email here so Stripe can prepare your receipt and checkout details up front.
+                    Your receipt will be sent to the email above.
                   </li>
                 </ul>
               </div>
@@ -915,34 +940,59 @@ export default function DonatePage() {
               </div>
 
               <div className="mt-4">
-                {checkoutClientSecret ? (
-                  <div ref={checkoutContainerRef} className="space-y-4">
-                    <div className="rounded-2xl border border-[#c8dae6] bg-[#f5fbff] px-4 py-3 text-sm font-medium text-[#36546c]">
-                      Secure checkout is ready below. To change the amount, go back to donation details first.
-                    </div>
-                    <CheckoutProvider stripe={stripePromise} options={checkoutOptions}>
-                      <CheckoutForm
-                        amountLabel={amountLabel}
-                        onIntentionalNavigationChange={setIsIntentionalNavigationPending}
-                      />
-                    </CheckoutProvider>
-                    <button
-                      type="button"
-                      onClick={resetCheckoutState}
-                      className="w-full text-center text-sm font-semibold text-[#4f667b] underline-offset-4 transition-colors duration-200 hover:text-[#223b54] hover:underline focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#2f6272] focus-visible:ring-offset-2"
+                <AnimatePresence initial={false}>
+                  {checkoutClientSecret ? (
+                    <motion.div
+                      key="checkout"
+                      ref={checkoutContainerRef}
+                      className="space-y-4"
+                      variants={prefersReducedMotion ? undefined : checkoutPanelVariants}
+                      initial={prefersReducedMotion ? false : "hidden"}
+                      animate={prefersReducedMotion ? undefined : "show"}
+                      exit={prefersReducedMotion ? undefined : "exit"}
                     >
-                      Change Donation Amount
-                    </button>
-                  </div>
-                ) : canPrepareCheckout ? (
-                  <div className="rounded-2xl border border-[#c8dae6] bg-[#f5fbff] px-4 py-6 text-center text-sm font-medium text-[#36546c]">
-                    {isCreatingSession ? "Preparing secure checkout…" : "Loading secure checkout…"}
-                  </div>
-                ) : (
-                  <div className="rounded-2xl border border-dashed border-[#c8dae6] bg-white/75 px-4 py-6 text-center text-sm font-medium text-[#5f7689]">
-                    Enter your amount and email to load secure checkout.
-                  </div>
-                )}
+                      <div className="rounded-2xl border border-[#c8dae6] bg-[#f5fbff] px-4 py-3 text-sm font-medium text-[#36546c]">
+                        Donation details are locked while checkout is open. Use the link below if you need to
+                        make a change.
+                      </div>
+                      <CheckoutProvider stripe={stripePromise} options={checkoutOptions}>
+                        <CheckoutForm
+                          amountLabel={amountLabel}
+                          onIntentionalNavigationChange={setIsIntentionalNavigationPending}
+                        />
+                      </CheckoutProvider>
+                      <button
+                        type="button"
+                        onClick={resetCheckoutState}
+                        className="w-full text-center text-sm font-semibold text-[#4f667b] underline-offset-4 transition-colors duration-200 hover:text-[#223b54] hover:underline focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#2f6272] focus-visible:ring-offset-2"
+                      >
+                        Change donation details
+                      </button>
+                    </motion.div>
+                  ) : canPrepareCheckout ? (
+                    <motion.div
+                      key="loading"
+                      className="rounded-2xl border border-[#c8dae6] bg-[#f5fbff] px-4 py-6 text-center text-sm font-medium text-[#36546c]"
+                      variants={prefersReducedMotion ? undefined : checkoutPanelVariants}
+                      initial={prefersReducedMotion ? false : "hidden"}
+                      animate={prefersReducedMotion ? undefined : "show"}
+                      exit={prefersReducedMotion ? undefined : "exit"}
+                    >
+                      {isCreatingSession ? "Preparing your secure donation form..." : "Loading the payment form..."}
+                    </motion.div>
+                  ) : (
+                    <motion.div
+                      key="idle"
+                      className="rounded-2xl border border-dashed border-[#c8dae6] bg-white/75 px-4 py-6 text-center text-sm font-medium text-[#5f7689]"
+                      variants={prefersReducedMotion ? undefined : checkoutPanelVariants}
+                      initial={prefersReducedMotion ? false : "hidden"}
+                      animate={prefersReducedMotion ? undefined : "show"}
+                      exit={prefersReducedMotion ? undefined : "exit"}
+                    >
+                      Choose an amount and enter your email to continue.
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             </div>
           </motion.section>
