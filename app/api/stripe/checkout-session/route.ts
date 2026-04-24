@@ -94,6 +94,7 @@ export async function POST(request: Request) {
     const checkoutSession = await stripe.checkout.sessions.create({
       ui_mode: "custom",
       mode: "payment",
+      payment_method_types: ["card"],
       billing_address_collection: "auto",
       currency: "usd",
       customer_creation: "if_required",
