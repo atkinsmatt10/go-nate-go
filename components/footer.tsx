@@ -15,8 +15,7 @@ export function Footer() {
             width={40}
             height={40}
             alt="Nate's Shark Mascot"
-            className="object-contain"
-            style={{ width: "auto", height: "auto" }}
+            className="h-10 w-10 object-contain"
           />
           <p className="text-xs text-muted-foreground text-center">
             Built with ❤️ for Nate the Great
