@@ -6,10 +6,13 @@ import dynamic from "next/dynamic"
 import Script from "next/script"
 import { getRevealProps } from "@/lib/motion"
 
-const TweetEmbed = dynamic(() => import("react-tweet").then((module) => module.Tweet), {
-  ssr: false,
-  loading: () => <PostSkeleton />,
-})
+const TwitterPostEmbed = dynamic(
+  () => import("react-social-media-embed").then((module) => module.TwitterEmbed),
+  {
+    ssr: false,
+    loading: () => <PostSkeleton />,
+  },
+)
 
 const InstagramPostEmbed = dynamic(
   () => import("react-social-media-embed").then((module) => module.InstagramEmbed),
@@ -331,7 +334,10 @@ export function SharingNatesStory() {
                   {...getRevealProps(prefersReducedMotion, { delay: 0.1 + index * 0.04 })}
                 >
                   <div className="w-full">
-                    <TweetEmbed id={tweetId} />
+                    <TwitterPostEmbed
+                      url={`https://twitter.com/i/web/status/${tweetId}`}
+                      width="100%"
+                    />
                   </div>
                 </motion.div>
               ))}
