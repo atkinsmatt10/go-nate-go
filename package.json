@@ -11,6 +11,7 @@
   "dependencies": {
     "@emotion/is-prop-valid": "latest",
     "@hookform/resolvers": "^3.9.1",
+    "@number-flow/react": "^0.6.2",
     "@radix-ui/react-accordion": "latest",
     "@radix-ui/react-alert-dialog": "latest",
     "@radix-ui/react-aspect-ratio": "latest",
@@ -63,7 +64,6 @@
     "react-hook-form": "latest",
     "react-resizable-panels": "latest",
     "react-social-media-embed": "^2.5.18",
-    "react-tweet": "^3.2.2",
     "recharts": "latest",
     "resend": "^6.9.4",
     "sonner": "latest",

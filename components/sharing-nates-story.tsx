@@ -1,15 +1,12 @@
 "use client"
 
+import { useState } from "react"
 import { motion, useReducedMotion } from "framer-motion"
 import Image from "next/image"
 import dynamic from "next/dynamic"
 import Script from "next/script"
 import { getRevealProps } from "@/lib/motion"
-
-const TweetEmbed = dynamic(() => import("react-tweet").then((module) => module.Tweet), {
-  ssr: false,
-  loading: () => <PostSkeleton />,
-})
+import { getXRuntime, XPostEmbed, type XScriptStatus } from "@/components/x-post-embed"
 
 const InstagramPostEmbed = dynamic(
   () => import("react-social-media-embed").then((module) => module.InstagramEmbed),
@@ -208,8 +205,22 @@ function LinkedInEmbed({ url }: { url: string }) {
 
 export function SharingNatesStory() {
   const prefersReducedMotion = useReducedMotion() ?? false
+  const [xScriptStatus, setXScriptStatus] = useState<XScriptStatus>("loading")
 
-  // Placeholder tweet IDs - replace these with actual tweet IDs
+  function handleXScriptReady(): void {
+    const runtime = getXRuntime()
+
+    if (!runtime) {
+      setXScriptStatus("error")
+      return
+    }
+
+    runtime.ready(() => {
+      setXScriptStatus(runtime.widgets ? "ready" : "error")
+    })
+  }
+
+  // X posts about Nate
   const tweetIds = [
     "1983295045806546968", // PBTF tweet about Nate
     "1967256596313936211", // Second tweet about Nate
@@ -278,6 +289,13 @@ export function SharingNatesStory() {
         async
         charSet="utf-8"
       />
+      <Script
+        id="x-widgets-script"
+        src="https://platform.twitter.com/widgets.js"
+        strategy="lazyOnload"
+        onReady={handleXScriptReady}
+        onError={() => setXScriptStatus("error")}
+      />
     <section id="social-media" className="w-full relative bg-background">
       {/* Wave Shape at the top */}
       <div className="absolute top-0 left-0 w-full overflow-hidden leading-none">
@@ -331,7 +349,7 @@ export function SharingNatesStory() {
                   {...getRevealProps(prefersReducedMotion, { delay: 0.1 + index * 0.04 })}
                 >
                   <div className="w-full">
-                    <TweetEmbed id={tweetId} />
+                    <XPostEmbed id={tweetId} scriptStatus={xScriptStatus} />
                   </div>
                 </motion.div>
               ))}
