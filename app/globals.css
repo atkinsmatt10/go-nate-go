@@ -98,6 +98,92 @@
   }
 }
 
+@keyframes campaign-marquee-scroll {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@layer components {
+  .campaign-marquee__ribbon {
+    overflow: hidden;
+    color: #223b54;
+    background: #42a8a9;
+    border-block: 2px solid rgb(34 59 84 / 55%);
+    box-shadow: 0 14px 32px rgb(20 43 64 / 18%);
+    transform: rotate(-1deg) scale(1.02);
+    transform-origin: center;
+  }
+
+  .campaign-marquee__track {
+    display: flex;
+    width: max-content;
+    padding-block: clamp(0.9rem, 2vw, 1.15rem);
+    font-family: var(--font-lilita-one);
+    font-size: clamp(1.25rem, 2.2vw, 1.75rem);
+    line-height: 1;
+    letter-spacing: 0.035em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    will-change: transform;
+    animation: campaign-marquee-scroll 32s linear infinite;
+  }
+
+  .campaign-marquee__group {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+  }
+
+  .campaign-marquee__item {
+    display: inline-flex;
+    align-items: center;
+    gap: clamp(1.25rem, 2.5vw, 2.25rem);
+    padding-right: clamp(1.25rem, 2.5vw, 2.25rem);
+  }
+
+  .campaign-marquee__sparkle {
+    color: #2a3f54;
+    font-family: var(--font-work-sans);
+    font-size: 0.8em;
+  }
+
+  .campaign-marquee__reduced {
+    display: none;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .campaign-marquee__ribbon:hover .campaign-marquee__track {
+    animation-play-state: paused;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .campaign-marquee__track {
+    display: none;
+  }
+
+  .campaign-marquee__reduced {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(0.65rem, 2.5vw, 1.25rem);
+    min-height: 3.75rem;
+    padding-inline: 1rem;
+    font-family: var(--font-lilita-one);
+    font-size: clamp(0.95rem, 3.75vw, 1.5rem);
+    line-height: 1;
+    letter-spacing: 0.035em;
+    text-align: center;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+}
+
 @layer base {
   :root {
     --background: 212 33% 25%; /* #2a3f54 */

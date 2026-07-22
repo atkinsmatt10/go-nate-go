@@ -133,7 +133,10 @@ export function HeroSection() {
           {...getPageRevealProps(prefersReducedMotion)}
         >
           {/* Logo */}
-          <motion.div {...getScaleInProps(prefersReducedMotion, { duration: 0.26, scale: 0.96 })}>
+          <motion.div
+            className="w-full max-w-[533px]"
+            {...getScaleInProps(prefersReducedMotion, { duration: 0.26, scale: 0.96 })}
+          >
             <div
               className="relative mx-auto w-full max-w-[600px] min-h-[160px] sm:min-h-[220px] md:min-h-[280px]"
               style={{ aspectRatio: "3 / 2" }}
@@ -143,7 +146,7 @@ export function HeroSection() {
                 alt="Nate the Great Title Logo"
                 fill
                 className="object-contain"
-                sizes="(max-width: 768px) 100vw, 600px"
+                sizes="(max-width: 768px) 100vw, 533px"
                 priority
               />
             </div>

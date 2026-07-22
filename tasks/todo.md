@@ -1,5 +1,67 @@
 # Birthday Page Celebration Plan
 
+## Homepage Campaign Marquee
+
+- [x] Reframe the request in [tasks/context/homepage-campaign-marquee.md](/Users/Matt.Atkins/Code/go-nate-go-1/tasks/context/homepage-campaign-marquee.md)
+- [x] Complete the pre-build review in [tasks/design/homepage-campaign-marquee.md](/Users/Matt.Atkins/Code/go-nate-go-1/tasks/design/homepage-campaign-marquee.md)
+- [x] Add the campaign marquee between the hero and Nate's story
+- [x] Verify seamless motion, mobile layout, and the reduced-motion fallback
+- [x] Run `pnpm lint` and `pnpm exec tsc --noEmit`
+- [x] Complete screenshot review, pre-merge review, refinement, and documentation notes
+
+### Marquee Verification Notes
+
+- `pnpm lint` passed.
+- `pnpm exec tsc --noEmit` passed.
+- Desktop and mobile screenshots confirmed the ribbon keeps clear space from the hero actions and story heading.
+- At 390px, document width matched viewport width and both repeated phrase groups measured 1120px.
+- Reduced-motion emulation hid the moving track and displayed the static campaign line.
+- The accessibility snapshot exposed one region with one copy of all five rallying cries.
+- The simplify and deslop passes found no unnecessary abstraction, defensive code, comments, or style drift to remove.
+
+## Nate's Journey Editorial Timeline
+
+- [x] Reframe the request in [tasks/context/nates-journey-editorial-timeline.md](/Users/Matt.Atkins/Code/go-nate-go-1/tasks/context/nates-journey-editorial-timeline.md)
+- [x] Complete the pre-build review in [tasks/design/nates-journey-editorial-timeline.md](/Users/Matt.Atkins/Code/go-nate-go-1/tasks/design/nates-journey-editorial-timeline.md)
+- [x] Reshape Nate's existing story copy into the five-milestone editorial timeline
+- [x] Add the family quote and compact Pediatric Brain Tumor Foundation story action
+- [x] Verify desktop, mobile, and reduced-motion presentation in the browser
+- [x] Run `pnpm lint` and `pnpm exec tsc --noEmit`
+- [x] Complete refinement, pre-merge review, and documentation notes
+
+### Nate's Journey Verification Notes
+
+- `/opt/homebrew/bin/pnpm lint` passed.
+- `/opt/homebrew/bin/pnpm exec tsc --noEmit` passed.
+- Desktop browser review confirmed the centered introduction, two-column chronology, quote, and compact external-story action.
+- Responsive browser review confirmed stacked date/content rows and no document-level horizontal overflow at the narrow viewport.
+- The story section is static rather than transform-driven, making every milestone immediately available when reduced motion is preferred.
+- The Pediatric Brain Tumor Foundation action renders once and preserves the existing full-story URL.
+- A slim teal rail connects the desktop date markers, inspired by Mobbin's Wise timeline pattern; the rail is hidden in the stacked mobile layout.
+
+## Fundraising Progress Celebration
+
+- [x] Reframe the request in [tasks/context/fundraising-progress-celebration.md](/Users/Matt.Atkins/Code/go-nate-go-1/tasks/context/fundraising-progress-celebration.md)
+- [x] Record the data and animation plan in [tasks/architecture/fundraising-progress-celebration.md](/Users/Matt.Atkins/Code/go-nate-go-1/tasks/architecture/fundraising-progress-celebration.md)
+- [x] Complete the pre-build review in [tasks/design/fundraising-progress-celebration.md](/Users/Matt.Atkins/Code/go-nate-go-1/tasks/design/fundraising-progress-celebration.md)
+- [x] Add NumberFlow and replace the hand-built counter loops
+- [x] Rebuild the section hierarchy, shark-led progress track, supporter pill, and CTA
+- [x] Verify fallback data, preserve the live contract, and check desktop, mobile, reduced-motion, semantics, and CTA presentation
+- [x] Run `pnpm lint` and `pnpm exec tsc --noEmit`
+- [x] Complete refinement, pre-merge review, and documentation notes
+
+### Fundraising Progress Verification Notes
+
+- `/opt/homebrew/bin/pnpm lint` passed.
+- `/opt/homebrew/bin/pnpm exec tsc --noEmit` passed.
+- NumberFlow replaced both hand-written `requestAnimationFrame` loops and rendered accessible raised/supporter labels.
+- Desktop screenshot review confirmed the supplied hierarchy and a 64.8% fill for the `$16,250` / `$25,000` fallback values.
+- Normal-motion browser geometry measured the fill at 21.9% during entry and 64.8% at rest.
+- Reduced-motion emulation reported the preference and rendered the final 64.8% immediately.
+- Responsive geometry confirmed document width equals viewport width and the headline, amount, track, supporter content, and CTA stay within the mobile content area.
+- The local upstream returns `404`; the fallback disclosure rendered correctly, while the live `/api/donations` and 15-second SWR refresh contracts remain unchanged.
+- The simplify and deslop passes removed the nested status ternary and unnecessary `will-change` hint; no other scope or style drift remained.
+
 ## Drive Gallery Slice
 
 - [x] Reframe the request in [tasks/context/birthday-drive-gallery.md](/Users/Matt.Atkins/Code/go-nate-go-1/tasks/context/birthday-drive-gallery.md)
@@ -63,3 +125,23 @@
 - The homepage social embeds now load client-only to avoid third-party hydration mismatches.
 - `agent-browser` smoke checks passed on `/`, `/birthday`, and `/donate` with screenshots captured under `/tmp/`.
 - Remaining browser noise is environment-specific: local DonorDrive TLS certificate failure on `/api/donations`, Stripe's expected HTTP dev warning on `/donate`, and one generic browser library warning about scroll offset container positioning.
+
+## Official X Post Embeds
+
+- [x] Reframe the request in [tasks/context/official-x-post-embeds.md](/Users/Matt.Atkins/Code/go-nate-go-1/tasks/context/official-x-post-embeds.md)
+- [x] Capture the integration plan in [tasks/architecture/official-x-post-embeds.md](/Users/Matt.Atkins/Code/go-nate-go-1/tasks/architecture/official-x-post-embeds.md)
+- [x] Complete the pre-build review in [tasks/design/official-x-post-embeds.md](/Users/Matt.Atkins/Code/go-nate-go-1/tasks/design/official-x-post-embeds.md)
+- [x] Replace the temporary links with X's official embedded-post widget and remove `react-tweet`
+- [x] Verify official rendering plus loading, failure, desktop, and mobile states in Browser
+- [x] Run `pnpm lint`, `pnpm exec tsc --noEmit`, and `git diff --check`
+- [x] Complete refinement, pre-merge review, screenshot review, and documentation notes
+
+### Official X Embed Verification Notes
+
+- X's official `widgets.createTweet()` factory rendered all three Nate posts in the existing masonry section with dark theme, centered alignment, hidden parent conversation, and `dnt: true`.
+- The render target stays measurable beneath a 440px loading overlay; this prevents the official iframe from initializing at zero width while still reserving layout space.
+- Desktop Browser geometry measured three completed widget iframes at 309px wide with no loading cards, fallback links, or horizontal overflow.
+- The narrow Browser pass rendered all three widgets in one column without document-level overflow; the Browser backend clamped its requested 390px emulation to a 481px viewport.
+- A deliberately missing widget script switched all three posts directly to usable X permalinks with no iframes or indefinite loading state.
+- `react-tweet` was removed from the direct dependency manifest and lockfile.
+- `/opt/homebrew/bin/pnpm lint`, `/opt/homebrew/bin/pnpm exec tsc --noEmit`, and `git diff --check` passed.
