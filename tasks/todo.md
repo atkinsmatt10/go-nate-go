@@ -145,3 +145,36 @@
 - A deliberately missing widget script switched all three posts directly to usable X permalinks with no iframes or indefinite loading state.
 - `react-tweet` was removed from the direct dependency manifest and lockfile.
 - `/opt/homebrew/bin/pnpm lint`, `/opt/homebrew/bin/pnpm exec tsc --noEmit`, and `git diff --check` passed.
+
+## Homepage Hero Motion Refresh
+
+- [x] Reframe the slice in [tasks/context/homepage-hero-motion-refresh.md](/Users/Matt.Atkins/Code/go-nate-go-1/tasks/context/homepage-hero-motion-refresh.md)
+- [x] Capture the architecture boundary in [tasks/architecture/homepage-hero-motion-refresh.md](/Users/Matt.Atkins/Code/go-nate-go-1/tasks/architecture/homepage-hero-motion-refresh.md)
+- [x] Record the pre-build UI and animation review in [tasks/design/homepage-hero-motion-refresh.md](/Users/Matt.Atkins/Code/go-nate-go-1/tasks/design/homepage-hero-motion-refresh.md)
+- [x] Write self-contained animation improvement plans under `plans/`
+- [x] Tighten the responsive hero composition and correct the logo aspect ratio
+- [x] Simplify the hero entrance and remove decorative scroll parallax
+- [x] Move predetermined shared reveal translation to full transform strings
+- [x] Run `pnpm lint` and `pnpm exec tsc --noEmit`
+- [x] Capture and review mobile, desktop, and reduced-motion browser states
+- [x] Complete pre-merge, simplification, deslop, and documentation passes
+
+### Homepage Hero Verification Notes
+
+- Local `main` was fast-forwarded to deployed commit `302f1927` before the scoped patch was reapplied.
+- `pnpm lint` passed.
+- `pnpm exec tsc --noEmit` passed.
+- `pnpm build` passed after allowing the configured Google font fetches.
+- The local homepage returned HTTP `200`.
+- At `390x844`, the logo begins at `16px`, the headline moved from approximately `674px` to `600px`, document width matches the viewport, and both CTA targets are `56px` tall.
+- At `1440x1000`, the hero is `751px` tall and the primary donation action begins at `615px`, inside the first viewport.
+- Reduced-motion emulation keeps hero transforms at identity and replaces the moving campaign ribbon with its static line.
+- Shared reveal smoke tests passed on `/birthday`, the not-found route, merchandise, and every social element visible in the viewport.
+- The screenshot review caught and fixed a mobile flex-basis regression and a Next image-ratio warning before handoff.
+- The simplification pass removed the nested parent reveal, decorative parallax, and one unused styling hook; the deslop pass found no defensive code, casts, or explanatory comments to remove.
+
+### Homepage Hero Documentation Release
+
+- Reviewed `README.md`, `AGENTS.md`, the active context, architecture, design, plan, and review artifacts.
+- No README or contributor-guide update is needed because routes, setup, APIs, environment variables, and operational behavior are unchanged.
+- Updated the plan index and task records with the completed behavior and verification evidence.
