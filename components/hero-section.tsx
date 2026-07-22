@@ -1,8 +1,9 @@
 "use client"
 
+import type { JSX } from "react"
 import Image from "next/image"
 import Link from "next/link"
-import { motion, AnimatePresence, useReducedMotion, useScroll, useTransform } from "framer-motion"
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion"
 import { useState, useEffect, useRef, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { useHapticFeedback } from "@/hooks/use-haptic-feedback"
@@ -40,20 +41,12 @@ const images = [
   }
 ]
 
-export function HeroSection() {
+export function HeroSection(): JSX.Element {
   const [currentImage, setCurrentImage] = useState(0)
   const [direction, setDirection] = useState(0)
   const intervalRef = useRef<NodeJS.Timeout | null>(null)
-  const sectionRef = useRef<HTMLElement>(null)
   const { trigger } = useHapticFeedback()
   const prefersReducedMotion = useReducedMotion() ?? false
-
-  // Parallax wave animation
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start start", "end start"]
-  })
-  const waveY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"])
 
   // Function to start the auto-advance timer
   const startAutoAdvance = useCallback(() => {
@@ -96,13 +89,8 @@ export function HeroSection() {
   }
 
   return (
-    <section ref={sectionRef} className="relative w-full py-12 md:py-20 lg:py-24 overflow-hidden">
-      {/* Subtle Parallax Wave Background */}
-      <motion.div
-        style={prefersReducedMotion ? undefined : { y: waveY }}
-        className="absolute inset-0 -z-10 pointer-events-none"
-        {...getPageRevealProps(prefersReducedMotion, { distance: 0, duration: 0.3 })}
-      >
+    <section className="relative isolate w-full overflow-hidden pb-12 pt-4 sm:pb-16 sm:pt-6 lg:pb-20 lg:pt-10">
+      <div className="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
         <svg
           viewBox="0 0 1200 120"
           className="absolute bottom-0 w-full h-32 opacity-10"
@@ -125,36 +113,33 @@ export function HeroSection() {
             className="text-primary/30"
           />
         </svg>
-      </motion.div>
+      </div>
 
       <div className="container px-4 md:px-6">
-        <motion.div
-          className="flex flex-col items-center justify-center space-y-6 text-center"
-          {...getPageRevealProps(prefersReducedMotion)}
-        >
-          {/* Logo */}
+        <div className="mx-auto grid max-w-6xl items-center gap-y-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(380px,0.95fr)] lg:gap-x-14 lg:gap-y-6">
           <motion.div
-            className="w-full max-w-[533px]"
-            {...getScaleInProps(prefersReducedMotion, { duration: 0.26, scale: 0.96 })}
+            className="lg:col-start-1 lg:row-start-1"
+            {...getPageRevealProps(prefersReducedMotion, { distance: 10, duration: 0.24 })}
           >
             <div
-              className="relative mx-auto w-full max-w-[600px] min-h-[160px] sm:min-h-[220px] md:min-h-[280px]"
-              style={{ aspectRatio: "3 / 2" }}
+              className="relative mx-auto aspect-[5971/2238] w-full max-w-[640px] lg:mx-0 lg:max-w-[620px]"
             >
               <Image
                 src="/Nate-the-great-logo.png"
                 alt="Nate the Great Title Logo"
                 fill
                 className="object-contain"
-                sizes="(max-width: 768px) 100vw, 533px"
+                sizes="(max-width: 768px) 100vw, 620px"
                 priority
               />
             </div>
           </motion.div>
 
-          {/* Enhanced Photo Carousel with Smooth Animations - MOVED UP */}
-          <motion.div className="relative w-full max-w-md mx-auto" {...getScaleInProps(prefersReducedMotion, { delay: 0.04, scale: 0.98 })}>
-            <div className="relative aspect-square overflow-hidden rounded-2xl shadow-lg">
+          <motion.div
+            className="relative mx-auto w-full max-w-md lg:col-start-2 lg:row-span-3 lg:row-start-1 lg:max-w-[520px] lg:justify-self-end"
+            {...getScaleInProps(prefersReducedMotion, { delay: 0.05, duration: 0.26, scale: 0.98 })}
+          >
+            <div className="relative aspect-square overflow-hidden rounded-[28px] border border-white/10 shadow-[0_24px_70px_rgba(12,28,44,0.28)]">
               <AnimatePresence initial={false} custom={direction}>
                 <motion.div
                   key={currentImage}
@@ -183,7 +168,6 @@ export function HeroSection() {
                     }
                   }}
                   className="absolute inset-0 cursor-grab active:cursor-grabbing"
-                  whileTap={prefersReducedMotion ? undefined : { scale: 0.99 }}
                 >
                   <Image
                     src={images[currentImage].src}
@@ -192,92 +176,80 @@ export function HeroSection() {
                     alt={images[currentImage].alt}
                     className="w-full h-full object-cover object-center"
                     quality={85}
-                    sizes="(max-width: 768px) 100vw, 400px"
+                    sizes="(max-width: 768px) 100vw, 520px"
                     priority={currentImage === 0}
                   />
                 </motion.div>
               </AnimatePresence>
-              
-              {/* Peeking Shark Mascot */}
-              <motion.div className="absolute -bottom-2 -right-2 z-10" {...getPageRevealProps(prefersReducedMotion, { delay: 0.18, distance: 12 })}>
+              <motion.div
+                className="absolute -bottom-2 -right-2 z-10"
+                {...getPageRevealProps(prefersReducedMotion, { delay: 0.18, distance: 12 })}
+              >
                 <Image
                   src="/nate shark.png"
                   width={80}
                   height={80}
                   alt="Nate's Shark Mascot"
-                  className="drop-shadow-lg"
-                  style={{ width: "auto", height: "auto" }}
+                  className="h-20 w-20 drop-shadow-lg sm:h-24 sm:w-24"
                 />
               </motion.div>
             </div>
-            
-            {/* Enhanced Carousel Indicators */}
-            <div className="flex justify-center space-x-2 mt-4">
+
+            <div className="mt-3 flex justify-center gap-1">
               {images.map((_, index) => (
-                <motion.button
+                <button
                   key={index}
                   onClick={() => handleImageClick(index)}
-                  className={`w-2 h-2 rounded-full transition-colors duration-200 ${
-                    index === currentImage ? 'bg-primary' : 'bg-gray-300'
-                  }`}
+                  className="flex h-8 w-8 items-center justify-center rounded-full transition-transform duration-150 ease-snappy-out active:scale-[0.96] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                   aria-label={`Go to image ${index + 1}`}
-                  whileTap={prefersReducedMotion ? undefined : { scale: 0.92 }}
-                  animate={{
-                    scale: index === currentImage ? 1.12 : 1,
-                    opacity: index === currentImage ? 1 : 0.7
-                  }}
-                  transition={CAROUSEL_TRANSITION}
-                />
+                  aria-current={index === currentImage ? "true" : undefined}
+                >
+                  <span
+                    className={`h-2 w-2 rounded-full transition-[background-color,opacity,transform] duration-200 ease-snappy-out motion-reduce:scale-100 motion-reduce:transition-[background-color,opacity] ${
+                      index === currentImage
+                        ? "scale-125 bg-primary opacity-100"
+                        : "bg-white/55 opacity-70"
+                    }`}
+                  />
+                </button>
               ))}
             </div>
           </motion.div>
 
-          <div className="space-y-4">
-            {/* Powerful Headline */}
-            <motion.h1
-              className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl text-foreground"
-              {...getPageRevealProps(prefersReducedMotion, { delay: 0.08 })}
-            >
+          <motion.div
+            className="space-y-4 text-center lg:col-start-1 lg:row-start-2 lg:text-left"
+            {...getPageRevealProps(prefersReducedMotion, { delay: 0.1, distance: 14, duration: 0.26 })}
+          >
+            <h1 className="text-balance text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
               Help Nate Fight Childhood Cancer
-            </motion.h1>
-            
-            {/* Sub-headline */}
-            <motion.p
-              className="max-w-[700px] mx-auto text-muted-foreground text-lg md:text-xl leading-relaxed"
-              {...getPageRevealProps(prefersReducedMotion, { delay: 0.12 })}
-            >
+            </h1>
+
+            <p className="mx-auto max-w-[700px] text-base leading-relaxed text-muted-foreground sm:text-lg lg:mx-0 lg:max-w-[640px]">
               Born in May 2025, Nate&apos;s world changed at just eight weeks old. Vomiting and extreme sleepiness led to a
               terrifying diagnosis at CHOP: a rare choroid plexus tumor causing hydrocephalus. Emergency surgeries saved his
               life, and after months of fighting, surgeons removed the tumor entirely. Today, he&apos;s home, crawling, smiling, and
               here because of the extraordinary team at CHOP.
-            </motion.p>
-          </div>
+            </p>
+          </motion.div>
 
-          {/* Call-to-Action Buttons */}
           <motion.div
-            className="flex flex-col gap-4 w-full max-w-sm sm:max-w-md"
-            {...getPageRevealProps(prefersReducedMotion, { delay: 0.16 })}
+            className="mx-auto flex w-full max-w-md flex-col gap-3 sm:flex-row lg:col-start-1 lg:row-start-3 lg:mx-0 lg:max-w-xl"
+            {...getPageRevealProps(prefersReducedMotion, { delay: 0.15, distance: 14, duration: 0.26 })}
           >
-            {/* Primary CTA - Donate Now */}
             <Button
               asChild
               size="lg"
-              className="h-14 text-xl font-bold shadow-lg transition-[box-shadow,transform] duration-150 ease-snappy-out hover:shadow-xl"
+              className="h-14 rounded-[18px] text-lg font-bold shadow-lg transition-[box-shadow,transform] duration-150 ease-snappy-out hover:shadow-xl sm:flex-1 sm:text-xl"
             >
-              <Link
-                href="/donate"
-              >
-                Donate Now
-              </Link>
+              <Link href="/donate">Donate Now</Link>
             </Button>
-            
-            {/* Secondary CTA - Shop Now */}
+
             <Button
               asChild
               variant="outline"
               size="lg"
               haptic="light"
-              className="h-14 border-2 border-primary bg-transparent text-xl font-bold text-primary shadow-xs transition-[background-color,color,border-color,box-shadow,transform] duration-150 ease-snappy-out hover:bg-primary hover:text-primary-foreground"
+              className="h-14 rounded-[18px] border-2 border-primary bg-transparent text-lg font-bold text-primary shadow-xs transition-[background-color,color,border-color,box-shadow,transform] duration-150 ease-snappy-out hover:bg-primary hover:text-primary-foreground sm:flex-1 sm:text-xl"
             >
               <Link
                 href="https://shop.gonatego.com"
@@ -289,7 +261,7 @@ export function HeroSection() {
               </Link>
             </Button>
           </motion.div>
-        </motion.div>
+        </div>
       </div>
     </section>
   )

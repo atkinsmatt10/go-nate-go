@@ -31,8 +31,8 @@ export function getRevealProps(
         transition: { duration: 0.18, delay },
       }
     : {
-        initial: { opacity: 0, y: distance },
-        whileInView: { opacity: 1, y: 0 },
+        initial: { opacity: 0, transform: `translate3d(0, ${distance}px, 0)` },
+        whileInView: { opacity: 1, transform: "translate3d(0, 0, 0)" },
         viewport: { once: true, margin },
         transition: { duration, delay, ease: MOTION_EASE_OUT },
       }
@@ -51,8 +51,8 @@ export function getPageRevealProps(
         transition: { duration: 0.18, delay },
       }
     : {
-        initial: { opacity: 0, y: distance },
-        animate: { opacity: 1, y: 0 },
+        initial: { opacity: 0, transform: `translate3d(0, ${distance}px, 0)` },
+        animate: { opacity: 1, transform: "translate3d(0, 0, 0)" },
         transition: { duration, delay, ease: MOTION_EASE_OUT },
       }
 }
@@ -70,8 +70,8 @@ export function getScaleInProps(
         transition: { duration: 0.18, delay },
       }
     : {
-        initial: { opacity: 0, scale },
-        animate: { opacity: 1, scale: 1 },
+        initial: { opacity: 0, transform: `scale(${scale})` },
+        animate: { opacity: 1, transform: "scale(1)" },
         transition: { duration, delay, ease: MOTION_EASE_OUT },
       }
 }
