@@ -188,7 +188,7 @@ export function FundraisingProgress(): JSX.Element {
             size="lg"
             className="mt-10 h-16 rounded-[18px] px-10 text-lg font-bold shadow-[0_16px_32px_rgb(20_43_64_/_20%)] transition-[box-shadow,transform] duration-150 ease-snappy-out hover:shadow-[0_20px_38px_rgb(20_43_64_/_28%)] active:scale-[0.98] sm:text-xl"
           >
-            <Link href="/donate">Donate Directly</Link>
+            <Link href="https://chop.donordrive.com/teams/nate-the-great" prefetch={false}>Donate Directly</Link>
           </Button>
         </div>
       </div>
