@@ -241,7 +241,7 @@ export function HeroSection(): JSX.Element {
               size="lg"
               className="h-14 rounded-[18px] text-lg font-bold shadow-lg transition-[box-shadow,transform] duration-150 ease-snappy-out hover:shadow-xl sm:flex-1 sm:text-xl"
             >
-              <Link href="/donate">Donate Now</Link>
+              <Link href="https://chop.donordrive.com/teams/nate-the-great" prefetch={false}>Donate Now</Link>
             </Button>
 
             <Button
