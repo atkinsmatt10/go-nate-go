@@ -117,7 +117,7 @@ export function HeroSection(): JSX.Element {
       </div>
 
       <div className="container px-4 md:px-6">
-        <div className="mx-auto grid max-w-6xl items-center gap-y-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(380px,0.95fr)] lg:gap-x-14 lg:gap-y-6">
+        <div className="mx-auto grid max-w-6xl items-center gap-y-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(380px,0.95fr)] lg:gap-x-20 lg:gap-y-6">
           <motion.div
             className="lg:col-start-1 lg:row-start-1"
             {...getPageRevealProps(prefersReducedMotion, { distance: 10, duration: 0.24 })}
