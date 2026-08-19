@@ -3,10 +3,11 @@
 import type { JSX } from "react"
 import Image from "next/image"
 import Link from "next/link"
-import { motion, AnimatePresence, useReducedMotion } from "framer-motion"
+import { motion, AnimatePresence } from "framer-motion"
 import { useState, useEffect, useRef, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { useHapticFeedback } from "@/hooks/use-haptic-feedback"
+import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion"
 import {
   CAROUSEL_TRANSITION,
   getCarouselSlideVariants,
@@ -46,7 +47,7 @@ export function HeroSection(): JSX.Element {
   const [direction, setDirection] = useState(0)
   const intervalRef = useRef<NodeJS.Timeout | null>(null)
   const { trigger } = useHapticFeedback()
-  const prefersReducedMotion = useReducedMotion() ?? false
+  const prefersReducedMotion = usePrefersReducedMotion()
 
   // Function to start the auto-advance timer
   const startAutoAdvance = useCallback(() => {
@@ -130,7 +131,7 @@ export function HeroSection(): JSX.Element {
                 fill
                 className="object-contain"
                 sizes="(max-width: 768px) 100vw, 620px"
-                priority
+                preload
               />
             </div>
           </motion.div>
@@ -177,7 +178,7 @@ export function HeroSection(): JSX.Element {
                     className="w-full h-full object-cover object-center"
                     quality={85}
                     sizes="(max-width: 768px) 100vw, 520px"
-                    priority={currentImage === 0}
+                    loading="eager"
                   />
                 </motion.div>
               </AnimatePresence>

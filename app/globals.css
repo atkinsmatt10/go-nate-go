@@ -184,6 +184,65 @@
   }
 }
 
+::view-transition {
+  pointer-events: none;
+}
+
+::view-transition-old(.nav-forward) {
+  --page-transition-offset: -32px;
+  animation:
+    140ms ease-in both page-transition-fade reverse,
+    240ms ease-in-out both page-transition-slide reverse;
+}
+
+::view-transition-new(.nav-forward) {
+  --page-transition-offset: 32px;
+  animation:
+    180ms ease-out 90ms both page-transition-fade,
+    240ms ease-in-out both page-transition-slide;
+}
+
+::view-transition-old(.nav-back) {
+  --page-transition-offset: 32px;
+  animation:
+    140ms ease-in both page-transition-fade reverse,
+    240ms ease-in-out both page-transition-slide reverse;
+}
+
+::view-transition-new(.nav-back) {
+  --page-transition-offset: -32px;
+  animation:
+    180ms ease-out 90ms both page-transition-fade,
+    240ms ease-in-out both page-transition-slide;
+}
+
+@keyframes page-transition-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes page-transition-slide {
+  from {
+    translate: var(--page-transition-offset);
+  }
+  to {
+    translate: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(*),
+  ::view-transition-new(*),
+  ::view-transition-group(*) {
+    animation-delay: 0s !important;
+    animation-duration: 0s !important;
+  }
+}
+
 @layer base {
   :root {
     --background: 212 33% 25%; /* #2a3f54 */

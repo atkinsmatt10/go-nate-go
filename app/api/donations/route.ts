@@ -1,12 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(request: NextRequest) {
+  const ifNoneMatch = request.headers.get('if-none-match') || ''
+
   try {
     // The alias currently resolves to team 16431 and survives annual event ID changes.
     const url = 'https://chop.donordrive.com/api/1.6/teams/nate-the-great'
-    
-    // Get If-None-Match header for efficient caching
-    const ifNoneMatch = request.headers.get('if-none-match') || ''
     
     const response = await fetch(url, {
       headers: {

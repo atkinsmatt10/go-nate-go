@@ -2,14 +2,17 @@
 
 import Image from "next/image"
 import Link from "next/link"
-import { motion, useReducedMotion } from "framer-motion"
+import { motion } from "framer-motion"
+import { PageTransition } from "@/components/page-transition"
+import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion"
 import { getPageRevealProps, getScaleInProps } from "@/lib/motion"
 
 export default function NotFound() {
-  const prefersReducedMotion = useReducedMotion() ?? false
+  const prefersReducedMotion = usePrefersReducedMotion()
 
   return (
-    <div className="flex flex-col min-h-dvh bg-background text-foreground">
+    <PageTransition>
+      <div className="flex flex-col min-h-dvh bg-background text-foreground">
       <main className="flex-1 flex items-center justify-center">
         <div className="container px-4 md:px-6">
           <motion.div
@@ -57,6 +60,7 @@ export default function NotFound() {
               {/* Go Home Button */}
               <Link
                 href="/"
+                transitionTypes={["nav-back"]}
                 className="inline-flex h-14 items-center justify-center rounded-lg bg-primary px-8 text-xl font-bold text-primary-foreground shadow-lg transition-[background-color,box-shadow,transform] duration-150 ease-snappy-out active:scale-[0.98] hover:bg-primary/90 hover:shadow-xl focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               >
                 Go Home
@@ -65,6 +69,7 @@ export default function NotFound() {
               {/* Donate Button */}
               <Link
                 href="/donate"
+                transitionTypes={["nav-forward"]}
                 className="inline-flex h-14 items-center justify-center rounded-lg border-2 border-primary bg-transparent px-8 text-xl font-bold text-primary shadow-xs transition-[background-color,color,border-color,box-shadow,transform] duration-150 ease-snappy-out active:scale-[0.98] hover:bg-primary hover:text-primary-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               >
                 Support Nate Instead
@@ -92,6 +97,7 @@ export default function NotFound() {
           </motion.div>
         </div>
       </main>
-    </div>
+      </div>
+    </PageTransition>
   )
 } 

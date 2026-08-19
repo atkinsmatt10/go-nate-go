@@ -1,7 +1,8 @@
 "use client"
 
-import { motion, useReducedMotion } from "motion/react"
+import { motion } from "motion/react"
 import { useEffect, useRef, useState } from "react"
+import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion"
 import { cn } from "@/lib/utils"
 
 const FLAP_CHARS = " 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$()-+&=;:'\"%,./?"
@@ -58,7 +59,7 @@ export function SplitFlapCell({
   className,
   characterClassName,
 }: SplitFlapCellProps) {
-  const prefersReducedMotion = useReducedMotion() ?? false
+  const prefersReducedMotion = usePrefersReducedMotion()
   const [current, setCurrent] = useState(" ")
   const [previous, setPrevious] = useState(" ")
   const [flipId, setFlipId] = useState(0)

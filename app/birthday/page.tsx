@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import { BirthdayRsvpPage } from "@/components/birthday-rsvp-page"
+import { PageTransition } from "@/components/page-transition"
 
 const birthdayOgImage = "/birthday-og-one-tough-cookie.png"
 
@@ -32,5 +33,9 @@ export const metadata: Metadata = {
 }
 
 export default function BirthdayPage() {
-  return <BirthdayRsvpPage />
+  return (
+    <PageTransition>
+      <BirthdayRsvpPage />
+    </PageTransition>
+  )
 }

@@ -2,10 +2,10 @@
 
 import { useEffect, useState, useRef, useCallback } from "react"
 import Image from "next/image"
-import Link from "next/link"
-import { motion, AnimatePresence, useReducedMotion } from "framer-motion"
+import { motion, AnimatePresence } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { useHapticFeedback } from "@/hooks/use-haptic-feedback"
+import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion"
 import {
   CAROUSEL_TRANSITION,
   getCarouselSlideVariants,
@@ -45,7 +45,7 @@ export function ShirtSection() {
   const [direction, setDirection] = useState(0)
   const intervalRef = useRef<NodeJS.Timeout | null>(null)
   const { trigger } = useHapticFeedback()
-  const prefersReducedMotion = useReducedMotion() ?? false
+  const prefersReducedMotion = usePrefersReducedMotion()
 
   // Function to start the auto-advance timer
   const startAutoAdvance = useCallback(() => {
@@ -128,7 +128,7 @@ export function ShirtSection() {
                     className="absolute inset-0 cursor-grab active:cursor-grabbing"
                     whileTap={prefersReducedMotion ? undefined : { scale: 0.99 }}
                   >
-                    <Link
+                    <a
                       href={merchandiseItems[currentImage].productUrl}
                       target="_blank"
                       rel="noopener noreferrer"
@@ -142,7 +142,6 @@ export function ShirtSection() {
                         className="w-full h-full object-contain object-center transition-transform duration-200 ease-snappy-out group-hover:scale-[1.02]"
                         quality={85}
                         sizes="(max-width: 768px) 100vw, 500px"
-                        priority={currentImage === 0}
                       />
                       {/* Click indicator */}
                       <div className="absolute inset-0 rounded-2xl bg-black/0 opacity-0 transition-[background-color,opacity] duration-200 ease-snappy-out group-hover:bg-black/20 group-hover:opacity-100 flex items-center justify-center">
@@ -155,7 +154,7 @@ export function ShirtSection() {
                           </div>
                         </div>
                       </div>
-                    </Link>
+                    </a>
                   </motion.div>
                 </AnimatePresence>
               </div>
@@ -232,14 +231,13 @@ export function ShirtSection() {
                 size="lg"
                 className="h-14 text-xl font-bold shadow-lg transition-[box-shadow,transform] duration-150 ease-snappy-out hover:shadow-xl"
               >
-                <Link
+                <a
                   href="https://shop.gonatego.com"
                   target="_blank"
                   rel="noopener noreferrer"
-                  prefetch={false}
                 >
                   Buy Now
-                </Link>
+                </a>
               </Button>
             </div>
           </motion.div>

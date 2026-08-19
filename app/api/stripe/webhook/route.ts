@@ -4,8 +4,6 @@ import { getCustomDonationReceiptConfigStatus } from "@/lib/donation-receipts"
 import { sendDonationReceiptEmail } from "@/lib/email/send-donation-receipt"
 import { constructStripeEvent, getStripeClient } from "@/lib/stripe"
 
-export const runtime = "nodejs"
-
 const SUPPORTED_WEBHOOK_EVENTS = new Set<Stripe.Event.Type>([
   "checkout.session.async_payment_succeeded",
   "checkout.session.completed",

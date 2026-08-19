@@ -1,6 +1,8 @@
 import Image from "next/image"
 import Link from "next/link"
-import { CheckCircle2, Clock3, ShieldAlert, XCircle } from "lucide-react"
+import { Suspense } from "react"
+import { CheckCircle2, Clock3, LoaderCircle, ShieldAlert, XCircle } from "lucide-react"
+import { PageTransition } from "@/components/page-transition"
 import { Button } from "@/components/ui/button"
 import { getStripeClient } from "@/lib/stripe"
 
@@ -141,7 +143,45 @@ async function buildPaymentIntentState(paymentIntentId: string): Promise<ReturnP
   }
 }
 
-export default async function DonateReturnPage({ searchParams }: DonateReturnPageProps) {
+function DonateReturnLoading() {
+  return (
+    <main
+      className="relative min-h-dvh overflow-hidden text-foreground"
+      style={{
+        background:
+          "linear-gradient(140deg, #4bb8ba 0%, #345576 34%, #223b54 66%, #15283a 100%)",
+      }}
+    >
+      <div className="relative mx-auto flex min-h-dvh w-full max-w-3xl items-center px-4 py-12 sm:px-6">
+        <div
+          className="w-full rounded-3xl border border-border bg-secondary p-6 shadow-2xl md:p-8"
+          role="status"
+        >
+          <LoaderCircle
+            aria-hidden="true"
+            className="h-10 w-10 animate-spin text-primary motion-reduce:animate-none"
+          />
+          <h1 className="mt-6 text-3xl md:text-4xl">Checking Donation Status</h1>
+          <p className="mt-3 text-base text-muted-foreground">
+            Securely confirming the latest payment details with Stripe.
+          </p>
+        </div>
+      </div>
+    </main>
+  )
+}
+
+export default function DonateReturnPage({ searchParams }: DonateReturnPageProps) {
+  return (
+    <PageTransition>
+      <Suspense fallback={<DonateReturnLoading />}>
+        <DonationReturnStatus searchParams={searchParams} />
+      </Suspense>
+    </PageTransition>
+  )
+}
+
+async function DonationReturnStatus({ searchParams }: DonateReturnPageProps) {
   const resolvedParams = await searchParams
   const sessionId = getFirstQueryValue(resolvedParams.session_id)
   const paymentIntentId = getFirstQueryValue(resolvedParams.payment_intent)
@@ -226,7 +266,9 @@ export default async function DonateReturnPage({ searchParams }: DonateReturnPag
               size="lg"
               className="h-11 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90"
             >
-              <Link href="/donate">Back to Donation Page</Link>
+              <Link href="/donate" transitionTypes={["nav-back"]}>
+                Back to Donation Page
+              </Link>
             </Button>
             <Button
               asChild
@@ -234,7 +276,9 @@ export default async function DonateReturnPage({ searchParams }: DonateReturnPag
               variant="outline"
               className="h-11 rounded-xl border-border bg-background/40 hover:bg-background/70"
             >
-              <Link href="/">Back to Home</Link>
+              <Link href="/" transitionTypes={["nav-back"]}>
+                Back to Home
+              </Link>
             </Button>
           </div>
         </div>
