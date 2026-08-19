@@ -1,8 +1,9 @@
 "use client"
 
-import { motion, useReducedMotion } from "motion/react"
+import { motion } from "motion/react"
 import { useEffect, useRef, useState } from "react"
 import { SplitFlapCell } from "@/components/ui/text-flipping-board"
+import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion"
 import { cn } from "@/lib/utils"
 
 interface CountdownParts {
@@ -16,6 +17,17 @@ interface CountdownSnapshot {
   hourBucket: number
   isBirthday: boolean
   parts: CountdownParts
+}
+
+const INITIAL_COUNTDOWN: CountdownSnapshot = {
+  hourBucket: 0,
+  isBirthday: false,
+  parts: {
+    days: "000",
+    hours: "00",
+    minutes: "00",
+    seconds: "00",
+  },
 }
 
 interface CountdownFlippingBoardProps {
@@ -70,8 +82,8 @@ function getSegments(parts: CountdownParts): readonly CountdownSegment[] {
 }
 
 export function CountdownFlippingBoard({ className }: CountdownFlippingBoardProps) {
-  const prefersReducedMotion = useReducedMotion() ?? false
-  const [countdown, setCountdown] = useState<CountdownSnapshot>(() => getBirthdayCountdown(new Date()))
+  const prefersReducedMotion = usePrefersReducedMotion()
+  const [countdown, setCountdown] = useState<CountdownSnapshot>(INITIAL_COUNTDOWN)
   const [pulseKey, setPulseKey] = useState(0)
   const [chaosMode, setChaosMode] = useState(false)
   const previousHourBucketRef = useRef<number | null>(null)

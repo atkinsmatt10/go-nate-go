@@ -1,7 +1,16 @@
+import { dirname } from "node:path"
+import { fileURLToPath } from "node:url"
+
+const repoRoot = dirname(fileURLToPath(import.meta.url))
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  typescript: {
-    ignoreBuildErrors: true,
+  cacheComponents: true,
+  partialPrefetching: true,
+  typedRoutes: true,
+  outputFileTracingRoot: repoRoot,
+  turbopack: {
+    root: repoRoot,
   },
   images: {
     formats: ['image/webp', 'image/avif'],

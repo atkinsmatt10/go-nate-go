@@ -15,9 +15,11 @@ import {
   type StripeCheckoutPaymentElementOptions,
   type StripeExpressCheckoutElementConfirmEvent,
 } from "@stripe/stripe-js"
-import { motion, useReducedMotion, type Variants } from "framer-motion"
+import { motion, type Variants } from "framer-motion"
 import { ArrowLeft, Gift, Heart, Mail, Sparkles, Stethoscope } from "lucide-react"
+import { PageTransition } from "@/components/page-transition"
 import { Button } from "@/components/ui/button"
+import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion"
 import { MOTION_EASE_OUT } from "@/lib/motion"
 import { cn } from "@/lib/utils"
 
@@ -416,7 +418,7 @@ export default function DonatePage() {
   const receiptEmailInputRef = useRef<HTMLInputElement>(null)
   const checkoutContainerRef = useRef<HTMLDivElement>(null)
   const sessionRequestKeyRef = useRef<string | null>(null)
-  const prefersReducedMotion = useReducedMotion()
+  const prefersReducedMotion = usePrefersReducedMotion()
 
   const donationAmountInDollars = getDonationAmountInDollars(
     amountSelectionMode,
@@ -626,7 +628,8 @@ export default function DonatePage() {
   ])
 
   return (
-    <main className="relative min-h-dvh overflow-hidden bg-[#f4fbff] text-[#1f3147]">
+    <PageTransition>
+      <main className="relative min-h-dvh overflow-hidden bg-[#f4fbff] text-[#1f3147]">
       <a
         href="#donation-form"
         className="sr-only absolute left-3 top-3 z-30 rounded-md bg-white px-3 py-2 text-sm font-semibold text-[#1d344d] focus:not-sr-only focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#2f6272] focus-visible:ring-offset-2"
@@ -663,6 +666,7 @@ export default function DonatePage() {
         >
           <Link
             href="/"
+            transitionTypes={["nav-back"]}
             className="inline-flex items-center gap-2 rounded-full border border-[#a6c0d4] bg-white/85 px-4 py-2 text-sm font-semibold text-[#223b54] shadow-xs transition-[background-color,border-color,color,transform,box-shadow] duration-150 ease-snappy-out active:scale-[0.98] hover:-translate-y-0.5 hover:border-[#42a8a9] hover:bg-white focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#2f6272] focus-visible:ring-offset-2"
           >
             <ArrowLeft className="h-4 w-4" aria-hidden="true" />
@@ -675,7 +679,7 @@ export default function DonatePage() {
             width={170}
             height={90}
             className="h-auto w-[126px] sm:w-[164px]"
-            priority
+            preload
           />
         </motion.header>
 
@@ -948,6 +952,7 @@ export default function DonatePage() {
           </motion.section>
         </div>
       </motion.div>
-    </main>
+      </main>
+    </PageTransition>
   )
 }

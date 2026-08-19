@@ -1,11 +1,12 @@
 "use client"
 
 import { useState } from "react"
-import { motion, useReducedMotion } from "framer-motion"
+import { motion } from "framer-motion"
 import Image from "next/image"
 import dynamic from "next/dynamic"
 import Script from "next/script"
 import { getRevealProps } from "@/lib/motion"
+import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion"
 import { getXRuntime, XPostEmbed, type XScriptStatus } from "@/components/x-post-embed"
 
 const InstagramPostEmbed = dynamic(
@@ -204,7 +205,7 @@ function LinkedInEmbed({ url }: { url: string }) {
 }
 
 export function SharingNatesStory() {
-  const prefersReducedMotion = useReducedMotion() ?? false
+  const prefersReducedMotion = usePrefersReducedMotion()
   const [xScriptStatus, setXScriptStatus] = useState<XScriptStatus>("loading")
 
   function handleXScriptReady(): void {

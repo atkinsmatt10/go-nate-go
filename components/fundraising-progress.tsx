@@ -3,22 +3,19 @@
 import type { JSX } from "react"
 import { useRef, useSyncExternalStore } from "react"
 import NumberFlow, { type Format } from "@number-flow/react"
-import { motion, useInView, useReducedMotion } from "framer-motion"
+import { motion, useInView } from "framer-motion"
 import Image from "next/image"
 import Link from "next/link"
 import useSWR from "swr"
 
 import { Button } from "@/components/ui/button"
+import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion"
+import { FALLBACK_DONATION_PROGRESS, type DonationProgressData } from "@/lib/donation-progress"
 
-interface DonationProgressData {
-  readonly goal: number
-  readonly numDonations: number
-  readonly total: number
+interface FundraisingProgressProps {
+  initialData?: DonationProgressData
 }
 
-const FALLBACK_AMOUNT = 16250
-const FALLBACK_DONATIONS = 62
-const FALLBACK_GOAL = 25000
 const NUMBER_FORMAT: Format = {
   maximumFractionDigits: 0,
   useGrouping: true,
@@ -63,24 +60,28 @@ function getDonationStatusMessage(hasError: boolean, isLoading: boolean): string
   return "Live fundraising total updated."
 }
 
-export function FundraisingProgress(): JSX.Element {
+export function FundraisingProgress({ initialData }: FundraisingProgressProps = {}): JSX.Element {
   const sectionRef = useRef<HTMLElement | null>(null)
   const hasHydrated = useSyncExternalStore(subscribeToHydration, () => true, () => false)
   const isInView = useInView(sectionRef, { amount: 0.25, once: true })
-  const prefersReducedMotion = useReducedMotion() ?? false
+  const prefersReducedMotion = usePrefersReducedMotion()
   const { data, error, isLoading } = useSWR<DonationProgressData, Error>(
     "/api/donations",
     fetchDonationProgress,
     {
+      fallbackData: initialData,
       refreshInterval: 15000,
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
     },
   )
 
-  const raised = Math.max(Math.round(data?.total ?? FALLBACK_AMOUNT), 0)
-  const goal = Math.max(Math.round(data?.goal ?? FALLBACK_GOAL), 0)
-  const numDonations = Math.max(Math.round(data?.numDonations ?? FALLBACK_DONATIONS), 0)
+  const raised = Math.max(Math.round(data?.total ?? FALLBACK_DONATION_PROGRESS.total), 0)
+  const goal = Math.max(Math.round(data?.goal ?? FALLBACK_DONATION_PROGRESS.goal), 0)
+  const numDonations = Math.max(
+    Math.round(data?.numDonations ?? FALLBACK_DONATION_PROGRESS.numDonations),
+    0,
+  )
   const hasError = error !== undefined
   const progressPercentage = getProgressPercentage(raised, goal)
   const shouldShowProgress = hasHydrated && isInView

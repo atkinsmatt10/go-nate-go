@@ -2,8 +2,6 @@ import { NextResponse } from "next/server"
 import { getCustomDonationReceiptConfigStatus } from "@/lib/donation-receipts"
 import { getStripeClient } from "@/lib/stripe"
 
-export const runtime = "nodejs"
-
 const DONATION_DESCRIPTION =
   "Supports Team Nate the Great and CHOP childhood cancer care and research."
 const RECEIPT_TEMPLATE_VERSION = "2026-03-21"

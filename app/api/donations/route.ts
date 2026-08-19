@@ -1,11 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(request: NextRequest) {
+  const ifNoneMatch = request.headers.get('if-none-match') || ''
+
   try {
     const url = 'https://chop.donordrive.com/api/teams/15164'
-    
-    // Get If-None-Match header for efficient caching
-    const ifNoneMatch = request.headers.get('if-none-match') || ''
     
     const response = await fetch(url, {
       headers: {
@@ -67,4 +66,4 @@ export async function GET(request: NextRequest) {
       { status: 500 }
     )
   }
-} 
+}

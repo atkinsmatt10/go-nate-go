@@ -3,7 +3,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import { type FormEvent, type MouseEvent, type ReactNode, useEffect, useState } from "react"
-import { motion, useMotionTemplate, useReducedMotion, useSpring } from "framer-motion"
+import { motion, useMotionTemplate, useSpring } from "framer-motion"
 import {
   ArrowLeft,
   ArrowRight,
@@ -16,6 +16,7 @@ import {
   type LucideIcon,
 } from "lucide-react"
 import { Footer } from "@/components/footer"
+import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Carousel, type CarouselApi, CarouselContent, CarouselItem } from "@/components/ui/carousel"
@@ -194,7 +195,7 @@ function BirthdayCalendarActions() {
 }
 
 export function BirthdayRsvpPage() {
-  const prefersReducedMotion = useReducedMotion() ?? false
+  const prefersReducedMotion = usePrefersReducedMotion()
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
   const [attendeeCount, setAttendeeCount] = useState("1")
@@ -358,7 +359,7 @@ export function BirthdayRsvpPage() {
                         fill
                         className="object-contain drop-shadow-[0_36px_60px_rgba(15,34,47,0.38)]"
                         sizes="(max-width: 640px) 70vw, (max-width: 1024px) 45vw, 420px"
-                        priority
+                        preload
                       />
                     </div>
                   </motion.div>
@@ -552,7 +553,11 @@ export function BirthdayRsvpPage() {
                     </p>
                     <p className="mt-2 text-sm leading-6 text-[#3f5d81]">
                       If you&apos;d like to celebrate with a gift, please consider a{" "}
-                      <Link href="/donate" className="font-bold text-[#2f6272] underline decoration-[#42a8a9]/50 underline-offset-4">
+                      <Link
+                        href="/donate"
+                        transitionTypes={["nav-forward"]}
+                        className="font-bold text-[#2f6272] underline decoration-[#42a8a9]/50 underline-offset-4"
+                      >
                         donation to CHOP Neurosurgery & Neuro-Oncology
                       </Link>
                       .
@@ -822,7 +827,7 @@ function BirthdayPhotoCarousel() {
 }
 
 function BirthdaySignature() {
-  const prefersReducedMotion = useReducedMotion() ?? false
+  const prefersReducedMotion = usePrefersReducedMotion()
 
   return (
     <motion.svg

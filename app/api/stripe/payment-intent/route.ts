@@ -1,8 +1,6 @@
 import { NextResponse } from "next/server"
 import { getStripeClient } from "@/lib/stripe"
 
-export const runtime = "nodejs"
-
 interface PaymentIntentRequestBody {
   amountInCents?: unknown
 }
