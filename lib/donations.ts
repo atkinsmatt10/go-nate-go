@@ -13,7 +13,7 @@ interface DonorDriveTeam {
 const donorDriveTeamUrl = "https://chop.donordrive.com/api/1.6/teams/nate-the-great"
 
 export async function getDonationProgress(): Promise<DonationProgressData> {
-  "use cache"
+  "use cache: remote"
   cacheLife({ stale: 15, revalidate: 15, expire: 60 })
 
   try {
