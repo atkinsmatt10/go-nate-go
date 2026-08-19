@@ -5,7 +5,7 @@ export interface DonationProgressData {
 }
 
 export const FALLBACK_DONATION_PROGRESS: DonationProgressData = {
-  goal: 25_000,
-  numDonations: 62,
-  total: 16_250,
+  goal: 30_000,
+  numDonations: 53,
+  total: 5_845,
 }

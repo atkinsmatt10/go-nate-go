@@ -9,7 +9,8 @@ interface DonorDriveTeam {
   sumDonations?: unknown
 }
 
-const donorDriveTeamUrl = "https://chop.donordrive.com/api/teams/15164"
+// The alias currently resolves to team 16431 and survives annual event ID changes.
+const donorDriveTeamUrl = "https://chop.donordrive.com/api/1.6/teams/nate-the-great"
 
 export async function getDonationProgress(): Promise<DonationProgressData> {
   "use cache"
@@ -32,7 +33,10 @@ export async function getDonationProgress(): Promise<DonationProgressData> {
     }
 
     return {
-      goal: typeof team.fundraisingGoal === "number" ? team.fundraisingGoal : 25_000,
+      goal:
+        typeof team.fundraisingGoal === "number"
+          ? team.fundraisingGoal
+          : FALLBACK_DONATION_PROGRESS.goal,
       numDonations: typeof team.numDonations === "number" ? team.numDonations : 0,
       total: team.sumDonations,
     }
