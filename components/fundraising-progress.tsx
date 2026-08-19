@@ -16,9 +16,9 @@ interface DonationProgressData {
   readonly total: number
 }
 
-const FALLBACK_AMOUNT = 16250
-const FALLBACK_DONATIONS = 62
-const FALLBACK_GOAL = 25000
+const FALLBACK_AMOUNT = 5845
+const FALLBACK_DONATIONS = 53
+const FALLBACK_GOAL = 30000
 const NUMBER_FORMAT: Format = {
   maximumFractionDigits: 0,
   useGrouping: true,

@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(request: NextRequest) {
   try {
-    const url = 'https://chop.donordrive.com/api/teams/15164'
+    // The alias currently resolves to team 16431 and survives annual event ID changes.
+    const url = 'https://chop.donordrive.com/api/1.6/teams/nate-the-great'
     
     // Get If-None-Match header for efficient caching
     const ifNoneMatch = request.headers.get('if-none-match') || ''
@@ -52,7 +53,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(
       { 
         total: team.sumDonations,
-        goal: team.fundraisingGoal || 25000,
+        goal: team.fundraisingGoal || 30000,
         numDonations: team.numDonations || 0,
         teamName: team.name || 'Team Nate the Great',
         lastUpdated: new Date().toISOString()
@@ -67,4 +68,4 @@ export async function GET(request: NextRequest) {
       { status: 500 }
     )
   }
-} 
+}
