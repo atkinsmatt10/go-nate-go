@@ -1,3 +1,30 @@
+# Homepage Video Hero
+
+- [x] Reframe the approved slice in [tasks/context/homepage-video-hero.md](/Users/Matt.Atkins/Code/go-nate-go-1/tasks/context/homepage-video-hero.md)
+- [x] Capture the implementation boundary in [tasks/architecture/homepage-video-hero.md](/Users/Matt.Atkins/Code/go-nate-go-1/tasks/architecture/homepage-video-hero.md)
+- [x] Record the approved pre-build UI review in [tasks/design/homepage-video-hero.md](/Users/Matt.Atkins/Code/go-nate-go-1/tasks/design/homepage-video-hero.md)
+- [x] Reuse the existing Mux asset and create a public playback ID
+- [x] Install the official Mux React player and implement the responsive hero
+- [x] Verify desktop, `390x844`, player controls, accessibility, and reduced motion
+- [x] Complete screenshot refinement, pre-merge review, deslop, and documentation notes
+- [x] Run `pnpm lint`, `pnpm exec tsc --noEmit`, and `git diff --check`
+
+### Video Hero Verification Notes
+
+- Reused the ready `720p` Mux asset for the supplied `3:39.9` source and attached one public playback ID; no duplicate upload was created.
+- Browser geometry at `390x844` matched document width to viewport width and kept content/CTAs before the `6:5` player, followed by the existing diagonal ribbon.
+- The pre-play accessibility snapshot exposed one `video player` region and exactly one Play button; the player had no autoplay attribute.
+- Enter started playback, Space paused it, and the seek value stayed fixed after pausing.
+- Reduced-motion emulation disabled fish animation and transform completely and preserved the existing static ribbon fallback.
+- Framer Motion now owns the six independent fish drifts; live Browser samples changed over time while reduced-motion samples remained at `transform: none`.
+- The desktop screenshot confirmed a two-line campaign heading, dominant right-side video, sparse fish, restrained crop, and existing wave/shark transition.
+- A full-duration contact-sheet crop audit found that 6:5 `cover` playback clipped broadcast marks and source labels, so the poster remains cropped while moving footage uses `contain` against navy.
+- Live Browser playback confirmed the 1280×720 stream advances in the contained frame with the 6abc corner mark intact.
+- The visible player title is omitted while Mux analytics metadata is retained; the controls backdrop uses 58% navy for contrast.
+- Reconciled the release onto current production main while preserving the shared reduced-motion hook, Next.js 16.3 image API, and current direct CHOP Donate destination.
+- Vercel lists encrypted `MUX_TOKEN_ID` and `MUX_TOKEN_SECRET` variables for Production and Preview; a temporary Production-scoped pull authenticated to Mux and returned the ready asset with the expected public playback ID.
+- `pnpm lint`, `pnpm exec tsc --noEmit`, `pnpm build`, and `git diff --check` passed; the existing unrelated workspace-root warning remains non-blocking.
+
 # Birthday Page Celebration Plan
 
 ## Homepage Campaign Marquee
