@@ -108,6 +108,41 @@
 }
 
 @layer components {
+  .hero-video-player {
+    --media-object-size: contain;
+    --media-object-fit: contain;
+    --media-object-position: 50% 50%;
+    --controls-backdrop-color: rgb(13 41 66 / 58%);
+    background: #0d2942;
+  }
+
+  .hero-video-player::part(poster) {
+    object-fit: cover;
+    object-position: 50% 50%;
+  }
+
+  .hero-video-player::part(video) {
+    object-fit: contain;
+    object-position: 50% 50%;
+    background: #0d2942;
+  }
+
+  .hero-video-player::part(center play button) {
+    width: clamp(5rem, 9vw, 7.25rem);
+    height: clamp(5rem, 9vw, 7.25rem);
+    padding: clamp(1.35rem, 2.5vw, 2rem);
+    color: #f7fbff;
+    background: linear-gradient(145deg, #55bfc0, #42a8a9);
+    border: 1px solid rgb(247 251 255 / 45%);
+    border-radius: 9999px;
+    box-shadow: 0 18px 40px rgb(5 24 39 / 32%);
+  }
+
+  .hero-video-player::part(center play button):focus-visible {
+    outline: 3px solid #f7fbff;
+    outline-offset: 4px;
+  }
+
   .campaign-marquee__ribbon {
     overflow: hidden;
     color: #223b54;

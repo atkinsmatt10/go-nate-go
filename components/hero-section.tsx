@@ -3,264 +3,240 @@
 import type { JSX } from "react"
 import Image from "next/image"
 import Link from "next/link"
-import { motion, AnimatePresence } from "framer-motion"
-import { useState, useEffect, useRef, useCallback } from "react"
-import { Button } from "@/components/ui/button"
-import { useHapticFeedback } from "@/hooks/use-haptic-feedback"
-import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion"
-import {
-  CAROUSEL_TRANSITION,
-  getCarouselSlideVariants,
-  getPageRevealProps,
-  getScaleInProps,
-} from "@/lib/motion"
+import MuxPlayer from "@mux/mux-player-react"
+import { motion } from "framer-motion"
 
-const images = [
+import { Button } from "@/components/ui/button"
+import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion"
+import { getPageRevealProps, getScaleInProps } from "@/lib/motion"
+
+const NATE_STORY_PLAYBACK_ID = "U6gmORHKl2wiwnTKeMoLSNa8Tro5RHP0000vNOLl7hfdA"
+
+interface DecorativeFish {
+  readonly className: string
+  readonly delay: number
+  readonly driftX: number
+  readonly driftY: number
+  readonly duration: number
+  readonly flip?: boolean
+}
+
+interface FishSilhouetteProps extends DecorativeFish {
+  readonly prefersReducedMotion: boolean
+}
+
+const decorativeFish = [
   {
-    src: "/IMG_9843.png",
-    alt: "Nate's precious moment"
+    className: "left-[5%] top-[9%] hidden w-14 sm:block lg:w-16",
+    delay: -4.2,
+    driftX: 10,
+    driftY: -6,
+    duration: 12.4,
   },
   {
-    src: "/IMG_9908.png",
-    alt: "Nate's beautiful moment"
+    className: "right-[7%] top-[6%] w-12 lg:w-16",
+    delay: -8.1,
+    driftX: -9,
+    driftY: 7,
+    duration: 15.2,
+    flip: true,
   },
   {
-    src: "/Nate-image.png",
-    alt: "Nate - Our Little Fighter"
+    className: "left-[2%] top-[51%] w-10 sm:w-12",
+    delay: -1.7,
+    driftX: 8,
+    driftY: 5,
+    duration: 10.8,
   },
   {
-    src: "/Nicole baby park.png",
-    alt: "Nicole with baby Nate in the park"
+    className: "right-[3%] top-[43%] w-11 sm:w-14",
+    delay: -6.3,
+    driftX: -12,
+    driftY: -4,
+    duration: 13.7,
+    flip: true,
   },
   {
-    src: "/IMG_9684.png",
-    alt: "Nate's special moment"
+    className: "bottom-[15%] left-[34%] hidden w-12 md:block",
+    delay: -10.4,
+    driftX: 11,
+    driftY: 6,
+    duration: 16,
   },
   {
-    src: "/IMG_9609.png",
-    alt: "Another precious moment with Nate"
-  }
-]
+    className: "bottom-[8%] right-[26%] hidden w-10 lg:block",
+    delay: -3.6,
+    driftX: -8,
+    driftY: -7,
+    duration: 11.6,
+    flip: true,
+  },
+] satisfies readonly DecorativeFish[]
+
+function FishSilhouette({
+  className,
+  delay,
+  driftX,
+  driftY,
+  duration,
+  flip = false,
+  prefersReducedMotion,
+}: FishSilhouetteProps): JSX.Element {
+  return (
+    <motion.span
+      className={`absolute ${className}`}
+      initial={{ x: 0, y: 0 }}
+      animate={prefersReducedMotion ? { x: 0, y: 0 } : { x: driftX, y: driftY }}
+      transition={
+        prefersReducedMotion
+          ? { duration: 0 }
+          : {
+              delay,
+              duration,
+              ease: "easeInOut",
+              repeat: Number.POSITIVE_INFINITY,
+              repeatType: "reverse",
+            }
+      }
+      style={{ opacity: 0.09 }}
+    >
+      <svg
+        viewBox="0 0 64 32"
+        className={`h-auto w-full ${flip ? "-scale-x-100" : ""}`}
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M5 16C14.5 5.5 28 4.25 42 10.25L57 3L53.25 16L57 29L42 21.75C28 27.75 14.5 26.5 5 16Z"
+          fill="currentColor"
+        />
+      </svg>
+    </motion.span>
+  )
+}
 
 export function HeroSection(): JSX.Element {
-  const [currentImage, setCurrentImage] = useState(0)
-  const [direction, setDirection] = useState(0)
-  const intervalRef = useRef<NodeJS.Timeout | null>(null)
-  const { trigger } = useHapticFeedback()
   const prefersReducedMotion = usePrefersReducedMotion()
 
-  // Function to start the auto-advance timer
-  const startAutoAdvance = useCallback(() => {
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current)
-    }
-    intervalRef.current = setInterval(() => {
-      setDirection(1)
-      setCurrentImage((prev) => (prev + 1) % images.length)
-    }, 4000) // Change image every 4 seconds
-  }, [])
-
-  // Function to reset the timer (used when user manually navigates)
-  const resetTimer = useCallback(() => {
-    startAutoAdvance()
-  }, [startAutoAdvance])
-
-  useEffect(() => {
-    startAutoAdvance()
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current)
-      }
-    }
-  }, [startAutoAdvance])
-
-  const handleImageClick = (index: number) => {
-    setDirection(index > currentImage ? 1 : -1)
-    setCurrentImage(index)
-    trigger("selection")
-    resetTimer() // Reset the auto-advance timer
-  }
-
-  // Animation variants for the carousel
-  const slideVariants = getCarouselSlideVariants(prefersReducedMotion)
-
-  const swipeConfidenceThreshold = 10000
-  const swipePower = (offset: number, velocity: number) => {
-    return Math.abs(offset) * velocity
-  }
-
   return (
-    <section className="relative isolate w-full overflow-hidden pb-12 pt-4 sm:pb-16 sm:pt-6 lg:pb-20 lg:pt-10">
-      <div className="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
+    <section className="relative isolate w-full overflow-hidden bg-[radial-gradient(circle_at_72%_18%,#173f60_0%,#102f4a_42%,#0d2942_100%)] pb-20 pt-5 sm:pb-28 sm:pt-8 lg:pb-32 lg:pt-12">
+      <div className="pointer-events-none absolute inset-0 z-0 text-[#9fc5d8]" aria-hidden="true">
+        {decorativeFish.map((fish) => (
+          <FishSilhouette
+            key={`${fish.className}-${fish.duration}`}
+            className={fish.className}
+            delay={fish.delay}
+            driftX={fish.driftX}
+            driftY={fish.driftY}
+            duration={fish.duration}
+            flip={fish.flip}
+            prefersReducedMotion={prefersReducedMotion}
+          />
+        ))}
+
         <svg
           viewBox="0 0 1200 120"
-          className="absolute bottom-0 w-full h-32 opacity-10"
+          className="absolute bottom-0 h-28 w-full text-[#3f5d81]/45 sm:h-32"
           preserveAspectRatio="none"
         >
-          <path
-            d="M0,60 C300,100 900,20 1200,60 L1200,120 L0,120 Z"
-            fill="currentColor"
-            className="text-primary/20"
-          />
+          <path d="M0 68C280 114 612 32 1200 70V120H0Z" fill="currentColor" />
         </svg>
         <svg
           viewBox="0 0 1200 120"
-          className="absolute bottom-0 w-full h-40 opacity-5"
+          className="absolute bottom-0 h-20 w-full text-[#42a8a9]/22 sm:h-24"
           preserveAspectRatio="none"
         >
-          <path
-            d="M0,80 C400,120 800,40 1200,80 L1200,120 L0,120 Z"
-            fill="currentColor"
-            className="text-primary/30"
-          />
+          <path d="M0 82C340 118 760 46 1200 76V120H0Z" fill="currentColor" />
         </svg>
+        <Image
+          src="/nate shark.png"
+          width={132}
+          height={128}
+          alt=""
+          loading="eager"
+          className="absolute -bottom-3 right-3 h-auto w-24 drop-shadow-[0_12px_20px_rgb(7_27_43_/_26%)] sm:right-8 sm:w-28 lg:right-[5%] lg:w-32"
+        />
       </div>
 
-      <div className="container px-4 md:px-6">
-        <div className="mx-auto grid max-w-6xl items-center gap-y-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(380px,0.95fr)] lg:gap-x-20 lg:gap-y-6">
-          <motion.div
-            className="lg:col-start-1 lg:row-start-1"
-            {...getPageRevealProps(prefersReducedMotion, { distance: 10, duration: 0.24 })}
-          >
-            <div
-              className="relative mx-auto aspect-[5971/2238] w-full max-w-[640px] lg:mx-0 lg:max-w-[620px]"
+      <div className="relative z-10 w-full px-4 md:px-6">
+        <div className="mx-auto grid max-w-[1440px] items-center gap-4 sm:gap-9 lg:grid-cols-[minmax(360px,0.76fr)_minmax(560px,1.24fr)] lg:gap-12 xl:gap-16">
+          <div className="mx-auto flex w-full max-w-xl flex-col lg:mx-0">
+            <motion.div
+              className="relative aspect-[5971/2238] w-full max-w-[270px] self-center sm:max-w-[310px] lg:max-w-[540px] lg:self-start"
+              {...getPageRevealProps(prefersReducedMotion, { distance: 10, duration: 0.24 })}
             >
               <Image
                 src="/Nate-the-great-logo.png"
-                alt="Nate the Great Title Logo"
+                alt="Nate the Great"
                 fill
                 className="object-contain"
-                sizes="(max-width: 768px) 100vw, 620px"
+                sizes="(max-width: 1023px) 310px, 540px"
                 preload
               />
-            </div>
-          </motion.div>
+            </motion.div>
 
-          <motion.div
-            className="relative mx-auto w-full max-w-md lg:col-start-2 lg:row-span-3 lg:row-start-1 lg:max-w-[520px] lg:justify-self-end"
-            {...getScaleInProps(prefersReducedMotion, { delay: 0.05, duration: 0.26, scale: 0.98 })}
-          >
-            <div className="relative aspect-square overflow-hidden rounded-[28px] border border-white/10 shadow-[0_24px_70px_rgba(12,28,44,0.28)]">
-              <AnimatePresence initial={false} custom={direction}>
-                <motion.div
-                  key={currentImage}
-                  custom={direction}
-                  variants={slideVariants}
-                  initial="enter"
-                  animate="center"
-                  exit="exit"
-                  transition={CAROUSEL_TRANSITION}
-                  drag="x"
-                  dragConstraints={{ left: 0, right: 0 }}
-                  dragElastic={prefersReducedMotion ? 0.05 : 0.18}
-                  onDragEnd={(e, { offset, velocity }) => {
-                    const swipe = swipePower(offset.x, velocity.x)
-
-                    if (swipe < -swipeConfidenceThreshold) {
-                      setDirection(1)
-                      setCurrentImage((prev) => (prev + 1) % images.length)
-                      trigger("selection")
-                      resetTimer() // Reset the auto-advance timer
-                    } else if (swipe > swipeConfidenceThreshold) {
-                      setDirection(-1)
-                      setCurrentImage((prev) => (prev - 1 + images.length) % images.length)
-                      trigger("selection")
-                      resetTimer() // Reset the auto-advance timer
-                    }
-                  }}
-                  className="absolute inset-0 cursor-grab active:cursor-grabbing"
-                >
-                  <Image
-                    src={images[currentImage].src}
-                    width={400}
-                    height={400}
-                    alt={images[currentImage].alt}
-                    className="w-full h-full object-cover object-center"
-                    quality={85}
-                    sizes="(max-width: 768px) 100vw, 520px"
-                    loading="eager"
-                  />
-                </motion.div>
-              </AnimatePresence>
-              <motion.div
-                className="absolute -bottom-2 -right-2 z-10"
-                {...getPageRevealProps(prefersReducedMotion, { delay: 0.18, distance: 12 })}
-              >
-                <Image
-                  src="/nate shark.png"
-                  width={80}
-                  height={80}
-                  alt="Nate's Shark Mascot"
-                  className="h-20 w-20 drop-shadow-lg sm:h-24 sm:w-24"
-                />
-              </motion.div>
-            </div>
-
-            <div className="mt-3 flex justify-center gap-1">
-              {images.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => handleImageClick(index)}
-                  className="flex h-8 w-8 items-center justify-center rounded-full transition-transform duration-150 ease-snappy-out active:scale-[0.96] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-                  aria-label={`Go to image ${index + 1}`}
-                  aria-current={index === currentImage ? "true" : undefined}
-                >
-                  <span
-                    className={`h-2 w-2 rounded-full transition-[background-color,opacity,transform] duration-200 ease-snappy-out motion-reduce:scale-100 motion-reduce:transition-[background-color,opacity] ${
-                      index === currentImage
-                        ? "scale-125 bg-primary opacity-100"
-                        : "bg-white/55 opacity-70"
-                    }`}
-                  />
-                </button>
-              ))}
-            </div>
-          </motion.div>
-
-          <motion.div
-            className="space-y-4 text-center lg:col-start-1 lg:row-start-2 lg:text-left"
-            {...getPageRevealProps(prefersReducedMotion, { delay: 0.1, distance: 14, duration: 0.26 })}
-          >
-            <h1 className="text-balance text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
-              Help Nate Fight Childhood Cancer
-            </h1>
-
-            <p className="mx-auto max-w-[700px] text-base leading-relaxed text-muted-foreground sm:text-lg lg:mx-0 lg:max-w-[640px]">
-              Born in May 2025, Nate&apos;s world changed at just eight weeks old. Vomiting and extreme sleepiness led to a
-              terrifying diagnosis at CHOP: a rare choroid plexus tumor causing hydrocephalus. Emergency surgeries saved his
-              life, and after months of fighting, surgeons removed the tumor entirely. Today, he&apos;s home, crawling, smiling, and
-              here because of the extraordinary team at CHOP.
-            </p>
-          </motion.div>
-
-          <motion.div
-            className="mx-auto flex w-full max-w-md flex-col gap-3 sm:flex-row lg:col-start-1 lg:row-start-3 lg:mx-0 lg:max-w-xl"
-            {...getPageRevealProps(prefersReducedMotion, { delay: 0.15, distance: 14, duration: 0.26 })}
-          >
-            <Button
-              asChild
-              size="lg"
-              className="h-14 rounded-[18px] text-lg font-bold shadow-lg transition-[box-shadow,transform] duration-150 ease-snappy-out hover:shadow-xl sm:flex-1 sm:text-xl"
+            <motion.div
+              className="mt-5 text-center lg:mt-7 lg:text-left"
+              {...getPageRevealProps(prefersReducedMotion, { delay: 0.06, distance: 12, duration: 0.26 })}
             >
-              <Link href="https://chop.donordrive.com/teams/nate-the-great" prefetch={false}>Donate Now</Link>
-            </Button>
+              <h1 className="mx-auto max-w-[340px] text-balance text-[2.35rem] font-bold leading-[0.98] tracking-tight text-[#f7fbff] sm:max-w-none sm:text-5xl lg:mx-0 lg:text-[3.75rem]">
+                Help Nate Fight
+                <span className="block">Childhood Cancer</span>
+              </h1>
 
-            <Button
-              asChild
-              variant="outline"
-              size="lg"
-              haptic="light"
-              className="h-14 rounded-[18px] border-2 border-primary bg-transparent text-lg font-bold text-primary shadow-xs transition-[background-color,color,border-color,box-shadow,transform] duration-150 ease-snappy-out hover:bg-primary hover:text-primary-foreground sm:flex-1 sm:text-xl"
+              <p className="mx-auto mt-4 max-w-[330px] text-base leading-6 text-[#eef5fb] sm:mt-5 sm:max-w-[34rem] sm:text-lg sm:leading-8 lg:mx-0 lg:mt-6 lg:max-w-[31rem]">
+                At just eight weeks old, Nate was diagnosed at CHOP with a rare brain tumor. Today he&apos;s home,
+                thriving, and inspiring a community to fight for every child.
+              </p>
+            </motion.div>
+
+            <motion.div
+              className="mx-auto mt-5 grid w-full max-w-[330px] grid-cols-2 gap-4 sm:mt-8 sm:max-w-lg lg:mx-0 lg:mt-9"
+              {...getPageRevealProps(prefersReducedMotion, { delay: 0.12, distance: 12, duration: 0.26 })}
             >
-              <Link
-                href="https://shop.gonatego.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                prefetch={false}
+              <Button
+                asChild
+                size="lg"
+                className="h-12 rounded-[18px] px-4 text-sm font-bold shadow-[0_14px_30px_rgb(5_24_39_/_28%)] transition-[box-shadow,transform] duration-150 ease-snappy-out hover:shadow-[0_18px_36px_rgb(5_24_39_/_34%)] sm:h-14 sm:text-xl"
               >
-                Shop Now
-              </Link>
-            </Button>
+                <Link href="https://chop.donordrive.com/teams/nate-the-great" prefetch={false}>
+                  Donate Now
+                </Link>
+              </Button>
+
+              <Button
+                asChild
+                variant="outline"
+                size="lg"
+                haptic="light"
+                className="h-12 rounded-[18px] border-2 border-primary bg-transparent px-4 text-sm font-bold text-primary shadow-xs transition-[background-color,color,border-color,box-shadow,transform] duration-150 ease-snappy-out hover:bg-primary hover:text-primary-foreground sm:h-14 sm:text-xl"
+              >
+                <Link href="https://shop.gonatego.com" target="_blank" rel="noopener noreferrer" prefetch={false}>
+                  Shop Now
+                </Link>
+              </Button>
+            </motion.div>
+          </div>
+
+          <motion.div
+            className="relative mx-auto aspect-[6/5] w-full max-w-[330px] overflow-hidden rounded-[28px] border-[3px] border-primary shadow-[0_28px_80px_rgb(5_24_39_/_38%)] sm:max-w-[780px] sm:rounded-[32px] lg:max-w-none lg:justify-self-end"
+            {...getScaleInProps(prefersReducedMotion, { delay: 0.08, duration: 0.28, scale: 0.985 })}
+          >
+            <MuxPlayer
+              playbackId={NATE_STORY_PLAYBACK_ID}
+              streamType="on-demand"
+              thumbnailTime={18}
+              preload="metadata"
+              playsInline
+              accentColor="#42a8a9"
+              primaryColor="#f7fbff"
+              secondaryColor="#102f4a"
+              metadata={{
+                video_id: "nate-family-chop-6abc-2026",
+                video_title: "Nate's story",
+              }}
+              className="hero-video-player absolute inset-0 h-full w-full"
+            />
           </motion.div>
         </div>
       </div>
