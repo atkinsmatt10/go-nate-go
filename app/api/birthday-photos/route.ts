@@ -64,12 +64,8 @@ export async function GET() {
   })
 
   try {
-    if (process.env.NODE_ENV === "development") {
-      // Local Node in this workspace does not trust Google's chain, but production should keep TLS verification enabled.
-      process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0"
-    }
-
     const response = await fetch(birthdayPhotoFolderUrl, {
+      signal: AbortSignal.timeout(5_000),
       headers: {
         "User-Agent": "Mozilla/5.0",
       },
@@ -80,7 +76,7 @@ export async function GET() {
 
     if (!response.ok) {
       console.error("Birthday photo folder request failed.", response.status, response.statusText)
-      return NextResponse.json({ photos: emptyBirthdayPhotos }, { headers })
+      return NextResponse.json({ photos: emptyBirthdayPhotos }, { status: 502, headers: { "Cache-Control": "no-store" } })
     }
 
     const html = await response.text()
@@ -89,6 +85,6 @@ export async function GET() {
     return NextResponse.json({ photos }, { headers })
   } catch (error) {
     console.error("Birthday photo folder parsing failed.", error)
-    return NextResponse.json({ photos: emptyBirthdayPhotos }, { headers })
+    return NextResponse.json({ photos: emptyBirthdayPhotos }, { status: 502, headers: { "Cache-Control": "no-store" } })
   }
 }

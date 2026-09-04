@@ -1,42 +1,23 @@
 import { NextResponse } from "next/server"
+import { paymentIntentRequestSchema } from "@/lib/donation-request"
 import { getStripeClient } from "@/lib/stripe"
 
-interface PaymentIntentRequestBody {
-  amountInCents?: unknown
-}
-
-function parseDonationAmount(amountInCents: unknown): number | null {
-  if (typeof amountInCents !== "number") {
-    return null
-  }
-
-  if (!Number.isSafeInteger(amountInCents)) {
-    return null
-  }
-
-  if (amountInCents < 100 || amountInCents > 1_000_000) {
-    return null
-  }
-
-  return amountInCents
-}
-
 export async function POST(request: Request) {
-  let body: PaymentIntentRequestBody
-
+  let body: unknown
   try {
-    body = (await request.json()) as PaymentIntentRequestBody
+    body = await request.json()
   } catch {
     return NextResponse.json({ error: "Invalid request body" }, { status: 400 })
   }
 
-  const amountInCents = parseDonationAmount(body.amountInCents)
-  if (amountInCents === null) {
+  const parsed = paymentIntentRequestSchema.safeParse(body)
+  if (!parsed.success) {
     return NextResponse.json(
-      { error: "Donation amount must be between $1 and $10,000" },
+      { error: "Enter a donation between $1 and $10,000." },
       { status: 400 },
     )
   }
+  const { amountInCents } = parsed.data
 
   try {
     const stripe = getStripeClient()

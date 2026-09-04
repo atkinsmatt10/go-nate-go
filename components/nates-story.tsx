@@ -46,7 +46,7 @@ export function NatesStory(): JSX.Element {
       <div className="container px-4 md:px-6">
         <div className="mx-auto max-w-5xl">
           <header className="text-center">
-            <p className="text-sm font-bold uppercase tracking-[0.24em] text-primary">
+            <p className="text-sm font-bold uppercase tracking-[0.24em] text-[#9fe1de]">
               Nate&apos;s Journey
             </p>
             <h2 className="mt-5 text-5xl font-bold tracking-tight text-foreground sm:text-6xl lg:text-7xl">
@@ -108,7 +108,7 @@ export function NatesStory(): JSX.Element {
                 One very tough cookie.
               </p>
             </blockquote>
-            <figcaption className="mt-5 text-xs font-bold uppercase tracking-[0.24em] text-primary md:text-sm">
+            <figcaption className="mt-5 text-xs font-bold uppercase tracking-[0.24em] text-[#9fe1de] md:text-sm">
               — Nate&apos;s parents
             </figcaption>
           </figure>

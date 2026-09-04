@@ -1,7 +1,7 @@
 "use client"
 
-import { useState } from "react"
-import { motion } from "framer-motion"
+import { useEffect, useRef, useState } from "react"
+import { motion, useInView } from "framer-motion"
 import Image from "next/image"
 import dynamic from "next/dynamic"
 import Script from "next/script"
@@ -35,8 +35,6 @@ function SubstackCard({
   image, 
   author,
   date,
-  likes = 6,
-  replies = 1
 }: { 
   url: string; 
   title: string;
@@ -45,8 +43,6 @@ function SubstackCard({
   image?: string;
   author?: string;
   date?: string;
-  likes?: number;
-  replies?: number;
 }) {
   return (
     <div className="w-full rounded-lg overflow-hidden border border-gray-200 bg-white shadow-xs hover:shadow-md transition-shadow">
@@ -95,37 +91,6 @@ function SubstackCard({
           </div>
         )}
 
-        {/* Interaction Bar */}
-        <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-          <div className="flex items-center gap-6">
-            {/* Like Button */}
-            <button className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-              </svg>
-              <span className="text-sm">{likes}</span>
-            </button>
-
-            {/* Reply Button */}
-            <button className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
-              </svg>
-              <span className="text-sm">{replies} {replies === 1 ? 'reply' : 'replies'}</span>
-            </button>
-
-            {/* Share Button */}
-            <button className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
-                <polyline points="16 6 12 2 8 6"></polyline>
-                <line x1="12" y1="2" x2="12" y2="15"></line>
-              </svg>
-              <span className="text-sm">Share</span>
-            </button>
-          </div>
-        </div>
-
         {/* Date */}
         {date && (
           <div className="text-sm text-gray-500">
@@ -141,11 +106,11 @@ function SubstackCard({
             rel="noopener noreferrer"
             className="inline-flex items-center justify-center gap-2 w-full px-4 py-3 rounded-md font-medium text-sm transition-colors"
             style={{ 
-              backgroundColor: '#FF6719',
+              backgroundColor: '#b83e00',
               color: '#FFFFFF'
             }}
-            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#E85D15'}
-            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#FF6719'}
+            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#953300'}
+            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#b83e00'}
           >
             <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
               <path d="M0 0h16v16H0V0z" fill="none"/>
@@ -159,18 +124,30 @@ function SubstackCard({
   )
 }
 
-// Substack embed component using dangerouslySetInnerHTML
-function SubstackEmbed({ url, title, description }: { url: string; title: string; description?: string }) {
-  const embedHTML = `
-    <div class="substack-post-embed">
-      <p lang="en">${title}</p>
-      ${description ? `<p>${description}</p>` : ''}
-      <a data-post-link href="${url}">Read on Substack</a>
-    </div>
-  `
-
+// Instagram creates its iframe asynchronously. Label every replacement frame too.
+function AccessibleInstagramPost({ url, title, load }: { url: string; title: string; load: boolean }) {
+  const containerRef = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    const container = containerRef.current
+    if (!container) return
+    const labelFrames = () => {
+      container.querySelectorAll("iframe").forEach((frame) => {
+        if (frame.title !== title) frame.title = title
+      })
+    }
+    const observer = new MutationObserver(labelFrames)
+    observer.observe(container, { childList: true, subtree: true })
+    labelFrames()
+    return () => observer.disconnect()
+  }, [title])
   return (
-    <div className="w-full" dangerouslySetInnerHTML={{ __html: embedHTML }} />
+    <div ref={containerRef} className="overflow-hidden rounded-xl">
+      {load ? <InstagramPostEmbed url={url} width="100%" /> : (
+        <a href={url} target="_blank" rel="noopener noreferrer" className="flex h-[500px] items-center justify-center rounded-xl bg-white px-6 text-center text-[#223b54] underline">
+          {title}
+        </a>
+      )}
+    </div>
   )
 }
 
@@ -193,6 +170,7 @@ function LinkedInEmbed({ url }: { url: string }) {
     <div className="w-full">
       <iframe 
         src={embedUrl}
+        loading="lazy"
         height="584" 
         width="100%" 
         frameBorder="0" 
@@ -206,6 +184,8 @@ function LinkedInEmbed({ url }: { url: string }) {
 
 export function SharingNatesStory() {
   const prefersReducedMotion = usePrefersReducedMotion()
+  const sectionRef = useRef<HTMLElement>(null)
+  const loadEmbeds = useInView(sectionRef, { once: true, margin: "600px 0px" })
   const [xScriptStatus, setXScriptStatus] = useState<XScriptStatus>("loading")
 
   function handleXScriptReady(): void {
@@ -251,9 +231,9 @@ export function SharingNatesStory() {
       author: "Spike Eskin",
       image: "/24592c16-57c4-4073-816a-8bb97f89b491_3024x1684.jpg",
       date: "Jul 28",
-      likes: 6,
-      replies: 1,
-      useCard: true
+
+
+
     },
     {
       url: "https://www.fitlerfocus.com/p/fitler-square-rallies-behind-nate",
@@ -263,9 +243,9 @@ export function SharingNatesStory() {
       author: "David Aragon",
       image: "/74d33c63-44e5-459f-94d0-4bebc5f07995_6048x5356.jpg",
       date: "Sep 22",
-      likes: 7,
-      replies: 0,
-      useCard: true
+
+
+
     },
     {
       url: "https://www.notboring.co/p/weekly-dose-of-optimism-163",
@@ -275,21 +255,15 @@ export function SharingNatesStory() {
       author: "Packy McCormick",
       image: "/Weeklydose.png",
       date: "Sep 26",
-      likes: 93,
-      replies: 11,
-      useCard: true
+
+
+
     }
   ]
 
   return (
     <>
-      {/* Load Substack embed script */}
-      <Script
-        src="https://substack.com/embedjs/embed.js"
-        strategy="lazyOnload"
-        async
-        charSet="utf-8"
-      />
+      {loadEmbeds && (
       <Script
         id="x-widgets-script"
         src="https://platform.twitter.com/widgets.js"
@@ -297,7 +271,8 @@ export function SharingNatesStory() {
         onReady={handleXScriptReady}
         onError={() => setXScriptStatus("error")}
       />
-    <section id="social-media" className="w-full relative bg-background">
+      )}
+    <section ref={sectionRef} id="social-media" className="w-full relative bg-background">
       {/* Wave Shape at the top */}
       <div className="absolute top-0 left-0 w-full overflow-hidden leading-none">
         <svg
@@ -325,7 +300,7 @@ export function SharingNatesStory() {
               className="text-center space-y-4"
               {...getRevealProps(prefersReducedMotion, { delay: 0.04, margin: "-50px" })}
             >
-              <div className="inline-block rounded-lg bg-primary/20 px-4 py-2 text-sm font-medium text-primary border border-primary/30 backdrop-blur-xs">
+              <div className="inline-block rounded-lg bg-primary/20 px-4 py-2 text-sm font-medium text-[#9fe1de] border border-primary/30 backdrop-blur-xs">
                 Social Media
               </div>
               <h2 className="text-4xl font-bold tracking-tighter sm:text-5xl text-foreground">
@@ -358,13 +333,13 @@ export function SharingNatesStory() {
               {/* Instagram Posts */}
               {instagramUrls.map((url, index) => (
                 <motion.div
-                  key={`instagram-${index}`}
+                  key={url}
                   className="break-inside-avoid mb-6"
                   {...getRevealProps(prefersReducedMotion, { delay: 0.16 + index * 0.04 })}
                 >
                   <div className="w-full">
                     <div className="rounded-xl overflow-hidden">
-                      <InstagramPostEmbed url={url} width="100%" />
+                      <AccessibleInstagramPost url={url} title={`Instagram post about Nate ${index + 1}`} load={loadEmbeds} />
                     </div>
                   </div>
                 </motion.div>
@@ -388,7 +363,6 @@ export function SharingNatesStory() {
                   className="break-inside-avoid mb-6"
                   {...getRevealProps(prefersReducedMotion, { delay: 0.18 + index * 0.04 })}
                 >
-                  {post.useCard ? (
                     <SubstackCard 
                       url={post.url}
                       title={post.title}
@@ -397,16 +371,8 @@ export function SharingNatesStory() {
                       image={post.image}
                       author={post.author}
                       date={post.date}
-                      likes={post.likes}
-                      replies={post.replies}
                     />
-                  ) : (
-                    <SubstackEmbed 
-                      url={post.url}
-                      title={post.title}
-                      description={post.description}
-                    />
-                  )}
+
                 </motion.div>
               ))}
             </motion.div>
