@@ -6,6 +6,24 @@ body:has(.home-page) {
   background-color: #102f4a;
 }
 
+.home-page .hero-section {
+  --hero-gradient: radial-gradient(circle at 72% 18%, #173f60 0%, #102f4a 42%, #0d2942 100%);
+  background-image: var(--hero-gradient);
+}
+
+@media (max-width: 1023px) {
+  .home-page .hero-section {
+    /* Safari paints a solid canvas above the page: the hero's top edge must match it. */
+    background-image:
+      linear-gradient(
+        to bottom,
+        #102f4a calc(env(safe-area-inset-top, 0px) + 1rem),
+        rgb(16 47 74 / 0) calc(env(safe-area-inset-top, 0px) + 8rem)
+      ),
+      var(--hero-gradient);
+  }
+}
+
 .home-page :is(.hero-content, main .container) {
   padding-left: max(1rem, env(safe-area-inset-left, 0px));
   padding-right: max(1rem, env(safe-area-inset-right, 0px));
