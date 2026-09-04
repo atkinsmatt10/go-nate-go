@@ -1,4 +1,5 @@
 import { Suspense, type JSX } from "react"
+import type { Viewport } from "next"
 import { connection } from "next/server"
 
 import { CampaignMarquee } from "@/components/campaign-marquee"
@@ -11,6 +12,11 @@ import { Footer } from "@/components/footer"
 import { PageTransition } from "@/components/page-transition"
 import { getDonationProgress } from "@/lib/donations"
 
+export const viewport: Viewport = {
+  viewportFit: "cover",
+  themeColor: "#102f4a",
+}
+
 async function LiveFundraisingProgress(): Promise<JSX.Element> {
   await connection()
   const initialData = await getDonationProgress()
@@ -20,7 +26,7 @@ async function LiveFundraisingProgress(): Promise<JSX.Element> {
 export default function Component(): JSX.Element {
   return (
     <PageTransition>
-      <div className="flex min-h-dvh flex-col bg-background text-foreground">
+      <div className="home-page flex min-h-dvh flex-col bg-background text-foreground">
         <main className="flex-1">
           <HeroSection />
           <CampaignMarquee />
