@@ -47,11 +47,11 @@ const MAX_DONATION_AMOUNT_IN_CENTS = 1_000_000
 const publishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
 const stripePromise = publishableKey ? loadStripe(publishableKey) : null
 const donationCtaClassName =
-  "h-12 w-full rounded-2xl border border-[#2f6272] bg-[#42a8a9] text-base font-bold text-white shadow-[0_16px_26px_rgba(34,59,84,0.28)] transition-[background-color,transform,box-shadow] duration-150 ease-snappy-out active:scale-[0.98] hover:-translate-y-0.5 hover:bg-[#369799]"
+  "h-12 w-full rounded-2xl border border-[#2f6272] bg-[#42a8a9] text-base font-bold text-[#102f4a] shadow-[0_16px_26px_rgba(34,59,84,0.28)] transition-[background-color,transform,box-shadow] duration-150 ease-snappy-out active:scale-[0.98] hover:-translate-y-0.5 hover:bg-[#369799]"
 const amountOptionBaseClass =
   "h-11 rounded-2xl border text-sm font-bold touch-manipulation transition-[background-color,border-color,color,transform,box-shadow,opacity] duration-150 ease-snappy-out active:scale-[0.98] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#2f6272] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60 sm:text-base"
 const amountOptionSelectedClass =
-  "border-[#2f6272] bg-[#42a8a9] text-white shadow-[0_12px_20px_rgba(34,59,84,0.22)]"
+  "border-[#2f6272] bg-[#42a8a9] text-[#102f4a] shadow-[0_12px_20px_rgba(34,59,84,0.22)]"
 const amountOptionDefaultClass =
   "border-[#a8c4d8] bg-white/90 text-[#223b54] hover:-translate-y-0.5 hover:border-[#42a8a9] hover:bg-white"
 const paymentElementOptions: StripeCheckoutPaymentElementOptions = {
@@ -418,6 +418,7 @@ export default function DonatePage() {
   const receiptEmailInputRef = useRef<HTMLInputElement>(null)
   const checkoutContainerRef = useRef<HTMLDivElement>(null)
   const sessionRequestKeyRef = useRef<string | null>(null)
+  const sessionAbortControllerRef = useRef<AbortController | null>(null)
   const prefersReducedMotion = usePrefersReducedMotion()
 
   const donationAmountInDollars = getDonationAmountInDollars(
@@ -489,11 +490,16 @@ export default function DonatePage() {
   })
 
   function resetCheckoutState(): void {
+    sessionAbortControllerRef.current?.abort()
+    sessionAbortControllerRef.current = null
+    setIsCreatingSession(false)
     setCheckoutClientSecret("")
     setErrorMessage("")
     setIsIntentionalNavigationPending(false)
     sessionRequestKeyRef.current = null
   }
+
+  useEffect(() => () => sessionAbortControllerRef.current?.abort(), [])
 
   useEffect(() => {
     if (isIntentionalNavigationPending) {
@@ -528,10 +534,10 @@ export default function DonatePage() {
   }, [checkoutClientSecret, prefersReducedMotion])
 
   const initializeCheckoutSession = useCallback(
-    async (amountInCents: number, email: string): Promise<void> => {
+    async (amountInCents: number, email: string, retry = false): Promise<void> => {
       const requestKey = `${amountInCents}:${email}`
 
-      if (isCheckoutActive || isCreatingSession || sessionRequestKeyRef.current === requestKey) {
+      if (isCheckoutActive || isCreatingSession || (!retry && sessionRequestKeyRef.current === requestKey)) {
         return
       }
 
@@ -559,12 +565,15 @@ export default function DonatePage() {
       }
 
       sessionRequestKeyRef.current = requestKey
+      const controller = new AbortController()
+      sessionAbortControllerRef.current = controller
       setIsCreatingSession(true)
       setErrorMessage("")
 
       try {
         const response = await fetch("/api/stripe/checkout-session", {
           method: "POST",
+          signal: AbortSignal.any([controller.signal, AbortSignal.timeout(20_000)]),
           headers: {
             "Content-Type": "application/json",
           },
@@ -576,13 +585,12 @@ export default function DonatePage() {
 
         const payload = (await response.json()) as CheckoutSessionResponse
 
-        if (sessionRequestKeyRef.current !== requestKey) {
+        if (controller.signal.aborted || sessionAbortControllerRef.current !== controller) {
           return
         }
 
         if (!response.ok || !payload.clientSecret) {
           setErrorMessage(payload.error ?? "Unable to initialize checkout. Please try again.")
-          sessionRequestKeyRef.current = null
           setIsCreatingSession(false)
           return
         }
@@ -590,12 +598,11 @@ export default function DonatePage() {
         setCheckoutClientSecret(payload.clientSecret)
         setIsCreatingSession(false)
       } catch {
-        if (sessionRequestKeyRef.current !== requestKey) {
+        if (controller.signal.aborted || sessionAbortControllerRef.current !== controller) {
           return
         }
 
         setErrorMessage("Unable to initialize checkout. Please try again.")
-        sessionRequestKeyRef.current = null
         setIsCreatingSession(false)
       }
     },
@@ -657,8 +664,8 @@ export default function DonatePage() {
       <motion.div
         className="relative mx-auto w-full max-w-6xl px-4 pb-10 pt-4 sm:px-6 sm:pt-6 lg:pb-16 lg:pt-8"
         variants={prefersReducedMotion ? undefined : staggerParentVariants}
-        initial={prefersReducedMotion ? undefined : "hidden"}
-        animate={prefersReducedMotion ? undefined : "show"}
+        initial={false}
+        animate="show"
       >
         <motion.header
           className="mb-6 flex items-center justify-between lg:mb-8"
@@ -795,6 +802,7 @@ export default function DonatePage() {
                       <button
                         key={amount}
                         type="button"
+                        aria-pressed={isSelected}
                         onClick={() => {
                           setAmountSelectionMode("preset")
                           setSelectedPreset(amount)
@@ -938,6 +946,18 @@ export default function DonatePage() {
                       Change Donation Amount
                     </button>
                   </div>
+                ) : errorMessage && canPrepareCheckout ? (
+                  <Button
+                    type="button"
+                    className="w-full"
+                    onClick={() => {
+                      if (donationAmountInCents !== null) {
+                        void initializeCheckoutSession(donationAmountInCents, normalizedReceiptEmail, true)
+                      }
+                    }}
+                  >
+                    Retry secure checkout
+                  </Button>
                 ) : canPrepareCheckout ? (
                   <div className="rounded-2xl border border-[#c8dae6] bg-[#f5fbff] px-4 py-6 text-center text-sm font-medium text-[#36546c]">
                     {isCreatingSession ? "Preparing secure checkout…" : "Loading secure checkout…"}

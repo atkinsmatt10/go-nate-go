@@ -1,4 +1,5 @@
 import { Suspense, type JSX } from "react"
+import { connection } from "next/server"
 
 import { CampaignMarquee } from "@/components/campaign-marquee"
 import { HeroSection } from "@/components/hero-section"
@@ -11,6 +12,7 @@ import { PageTransition } from "@/components/page-transition"
 import { getDonationProgress } from "@/lib/donations"
 
 async function LiveFundraisingProgress(): Promise<JSX.Element> {
+  await connection()
   const initialData = await getDonationProgress()
   return <FundraisingProgress initialData={initialData} />
 }

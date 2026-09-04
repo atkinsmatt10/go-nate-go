@@ -1,46 +1,32 @@
 import "server-only"
 
-import { cacheLife } from "next/cache"
-import { FALLBACK_DONATION_PROGRESS, type DonationProgressData } from "@/lib/donation-progress"
+import { unstable_cache } from "next/cache"
+import { DONATION_STALE_AFTER_MS, fetchDonationSnapshot } from "@/lib/donordrive"
+import type { DonationProgressData } from "@/lib/donation-progress"
 
-interface DonorDriveTeam {
-  fundraisingGoal?: unknown
-  numDonations?: unknown
-  sumDonations?: unknown
+// Use the persistent Data Cache deliberately: unsuccessful revalidation retains the
+// last validated snapshot. Never cache a fabricated total or an error as a success.
+// This shared entry serves both the homepage and the API across server instances.
+const getCachedDonationSnapshot = unstable_cache(
+  fetchDonationSnapshot,
+  ["donordrive-nate-the-great-v2"],
+  { revalidate: 15 },
+)
+
+export async function getDonationSnapshot() {
+  const snapshot = await getCachedDonationSnapshot()
+  return {
+    ...snapshot,
+    stale: Date.now() - Date.parse(snapshot.lastUpdated) > DONATION_STALE_AFTER_MS,
+  }
 }
 
-// The alias currently resolves to team 16431 and survives annual event ID changes.
-const donorDriveTeamUrl = "https://chop.donordrive.com/api/1.6/teams/nate-the-great"
-
-export async function getDonationProgress(): Promise<DonationProgressData> {
-  "use cache: remote"
-  cacheLife({ stale: 15, revalidate: 15, expire: 60 })
-
+export async function getDonationProgress(): Promise<DonationProgressData | undefined> {
   try {
-    const response = await fetch(donorDriveTeamUrl, {
-      signal: AbortSignal.timeout(5_000),
-    })
-
-    if (!response.ok) {
-      return FALLBACK_DONATION_PROGRESS
-    }
-
-    const payload: unknown = await response.json()
-    const team = (Array.isArray(payload) ? payload[0] : payload) as DonorDriveTeam | undefined
-
-    if (!team || typeof team.sumDonations !== "number") {
-      return FALLBACK_DONATION_PROGRESS
-    }
-
-    return {
-      goal:
-        typeof team.fundraisingGoal === "number"
-          ? team.fundraisingGoal
-          : FALLBACK_DONATION_PROGRESS.goal,
-      numDonations: typeof team.numDonations === "number" ? team.numDonations : 0,
-      total: team.sumDonations,
-    }
+    const { total, goal, numDonations, lastUpdated, stale } = await getDonationSnapshot()
+    return { total, goal, numDonations, lastUpdated, stale }
   } catch {
-    return FALLBACK_DONATION_PROGRESS
+    console.error("Donation progress unavailable: no validated snapshot in the cache")
+    return undefined
   }
 }

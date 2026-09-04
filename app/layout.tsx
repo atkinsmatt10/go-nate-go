@@ -47,7 +47,6 @@ export const metadata: Metadata = {
 
   alternates: {
     canonical: "/",
-    languages: { "en-US": "/", "es-419": "/es" }, // future-proof i18n
   },
 
   openGraph: {
@@ -81,17 +80,11 @@ export const metadata: Metadata = {
 
   icons: {
     icon: [
-      { url: "/favicon.ico", sizes: "any" },
       { url: "/favicon-32x32.png", type: "image/png" },
       { url: "/favicon-16x16.png", type: "image/png" },
     ],
     apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
-    other: [
-      {
-        rel: "manifest",
-        url: "/site.webmanifest",
-      },
-    ],
+
   },
 
   manifest: "/site.webmanifest",

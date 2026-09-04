@@ -1,16 +1,10 @@
-"use client"
-
-import type { JSX } from "react"
+import type { CSSProperties, JSX } from "react"
 import Image from "next/image"
 import Link from "next/link"
-import MuxPlayer from "@mux/mux-player-react"
-import { motion } from "framer-motion"
+import { HeroStoryVideo } from "@/components/hero-story-video"
+import storyPoster from "@/public/nate-story-poster.webp"
 
 import { Button } from "@/components/ui/button"
-import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion"
-import { getPageRevealProps, getScaleInProps } from "@/lib/motion"
-
-const NATE_STORY_PLAYBACK_ID = "U6gmORHKl2wiwnTKeMoLSNa8Tro5RHP0000vNOLl7hfdA"
 
 interface DecorativeFish {
   readonly className: string
@@ -21,9 +15,6 @@ interface DecorativeFish {
   readonly flip?: boolean
 }
 
-interface FishSilhouetteProps extends DecorativeFish {
-  readonly prefersReducedMotion: boolean
-}
 
 const decorativeFish = [
   {
@@ -80,25 +71,17 @@ function FishSilhouette({
   driftY,
   duration,
   flip = false,
-  prefersReducedMotion,
-}: FishSilhouetteProps): JSX.Element {
+}: DecorativeFish): JSX.Element {
   return (
-    <motion.span
-      className={`absolute ${className}`}
-      initial={{ x: 0, y: 0 }}
-      animate={prefersReducedMotion ? { x: 0, y: 0 } : { x: driftX, y: driftY }}
-      transition={
-        prefersReducedMotion
-          ? { duration: 0 }
-          : {
-              delay,
-              duration,
-              ease: "easeInOut",
-              repeat: Number.POSITIVE_INFINITY,
-              repeatType: "reverse",
-            }
-      }
-      style={{ opacity: 0.09 }}
+    <span
+      className={`hero-fish absolute ${className}`}
+      style={{
+        opacity: 0.09,
+        animationDelay: `${delay}s`,
+        animationDuration: `${duration}s`,
+        "--fish-x": `${driftX}px`,
+        "--fish-y": `${driftY}px`,
+      } as CSSProperties}
     >
       <svg
         viewBox="0 0 64 32"
@@ -111,13 +94,11 @@ function FishSilhouette({
           fill="currentColor"
         />
       </svg>
-    </motion.span>
+    </span>
   )
 }
 
 export function HeroSection(): JSX.Element {
-  const prefersReducedMotion = usePrefersReducedMotion()
-
   return (
     <section className="relative isolate w-full overflow-hidden bg-[radial-gradient(circle_at_72%_18%,#173f60_0%,#102f4a_42%,#0d2942_100%)] pb-20 pt-5 sm:pb-28 sm:pt-8 lg:pb-32 lg:pt-12">
       <div className="pointer-events-none absolute inset-0 z-0 text-[#9fc5d8]" aria-hidden="true">
@@ -130,7 +111,6 @@ export function HeroSection(): JSX.Element {
             driftY={fish.driftY}
             duration={fish.duration}
             flip={fish.flip}
-            prefersReducedMotion={prefersReducedMotion}
           />
         ))}
 
@@ -161,9 +141,9 @@ export function HeroSection(): JSX.Element {
       <div className="relative z-10 w-full px-4 md:px-6">
         <div className="mx-auto grid max-w-[1440px] items-center gap-4 sm:gap-9 lg:grid-cols-[minmax(360px,0.76fr)_minmax(560px,1.24fr)] lg:gap-12 xl:gap-16">
           <div className="mx-auto flex w-full max-w-xl flex-col lg:mx-0">
-            <motion.div
+            <div
               className="relative aspect-[5971/2238] w-full max-w-[270px] self-center sm:max-w-[310px] lg:max-w-[540px] lg:self-start"
-              {...getPageRevealProps(prefersReducedMotion, { distance: 10, duration: 0.24 })}
+
             >
               <Image
                 src="/Nate-the-great-logo.png"
@@ -173,11 +153,11 @@ export function HeroSection(): JSX.Element {
                 sizes="(max-width: 1023px) 310px, 540px"
                 preload
               />
-            </motion.div>
+            </div>
 
-            <motion.div
+            <div
               className="mt-5 text-center lg:mt-7 lg:text-left"
-              {...getPageRevealProps(prefersReducedMotion, { delay: 0.06, distance: 12, duration: 0.26 })}
+
             >
               <h1 className="mx-auto max-w-[340px] text-balance text-[2.35rem] font-bold leading-[0.98] tracking-tight text-[#f7fbff] sm:max-w-none sm:text-5xl lg:mx-0 lg:text-[3.75rem]">
                 Help Nate Fight
@@ -188,11 +168,11 @@ export function HeroSection(): JSX.Element {
                 At just eight weeks old, Nate was diagnosed at CHOP with a rare brain tumor. Today he&apos;s home,
                 thriving, and inspiring a community to fight for every child.
               </p>
-            </motion.div>
+            </div>
 
-            <motion.div
+            <div
               className="mx-auto mt-5 grid w-full max-w-[330px] grid-cols-2 gap-4 sm:mt-8 sm:max-w-lg lg:mx-0 lg:mt-9"
-              {...getPageRevealProps(prefersReducedMotion, { delay: 0.12, distance: 12, duration: 0.26 })}
+
             >
               <Button
                 asChild
@@ -215,29 +195,24 @@ export function HeroSection(): JSX.Element {
                   Shop Now
                 </Link>
               </Button>
-            </motion.div>
+            </div>
           </div>
 
-          <motion.div
+          <div
             className="relative mx-auto aspect-[6/5] w-full max-w-[330px] overflow-hidden rounded-[28px] border-[3px] border-primary shadow-[0_28px_80px_rgb(5_24_39_/_38%)] sm:max-w-[780px] sm:rounded-[32px] lg:max-w-none lg:justify-self-end"
-            {...getScaleInProps(prefersReducedMotion, { delay: 0.08, duration: 0.28, scale: 0.985 })}
+
           >
-            <MuxPlayer
-              playbackId={NATE_STORY_PLAYBACK_ID}
-              streamType="on-demand"
-              thumbnailTime={18}
-              preload="metadata"
-              playsInline
-              accentColor="#42a8a9"
-              primaryColor="#f7fbff"
-              secondaryColor="#102f4a"
-              metadata={{
-                video_id: "nate-family-chop-6abc-2026",
-                video_title: "Nate's story",
-              }}
-              className="hero-video-player absolute inset-0 h-full w-full"
-            />
-          </motion.div>
+            <HeroStoryVideo>
+              <Image
+                src={storyPoster}
+                alt="Nate with his family in the story video"
+                fill
+                preload
+                sizes="(max-width: 639px) 330px, (max-width: 1023px) 780px, 860px"
+                className="object-cover"
+              />
+            </HeroStoryVideo>
+          </div>
         </div>
       </div>
     </section>

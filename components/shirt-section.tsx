@@ -1,8 +1,8 @@
 "use client"
 
-import { useEffect, useState, useRef, useCallback } from "react"
+import { useEffect, useState, useRef } from "react"
 import Image from "next/image"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion, AnimatePresence, useInView } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { useHapticFeedback } from "@/hooks/use-haptic-feedback"
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion"
@@ -43,34 +43,36 @@ const merchandiseItems = [
 export function ShirtSection() {
   const [currentImage, setCurrentImage] = useState(0)
   const [direction, setDirection] = useState(0)
-  const intervalRef = useRef<NodeJS.Timeout | null>(null)
+  const sectionRef = useRef<HTMLElement>(null)
+  const isInView = useInView(sectionRef, { amount: 0.25 })
+  const [isPaused, setIsPaused] = useState(false)
+  const [isHovered, setIsHovered] = useState(false)
+  const [hasFocus, setHasFocus] = useState(false)
+  const [timerRevision, setTimerRevision] = useState(0)
   const { trigger } = useHapticFeedback()
   const prefersReducedMotion = usePrefersReducedMotion()
 
-  // Function to start the auto-advance timer
-  const startAutoAdvance = useCallback(() => {
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current)
-    }
-    intervalRef.current = setInterval(() => {
+  useEffect(() => {
+    if (prefersReducedMotion || !isInView || isPaused || isHovered || hasFocus) return
+    const timeout = window.setTimeout(() => {
+      if (document.visibilityState !== "visible") return
       setDirection(1)
       setCurrentImage((prev) => (prev + 1) % merchandiseItems.length)
-    }, 5000) // Change image every 5 seconds
-  }, [])
-
-  // Function to reset the timer (used when user manually navigates)
-  const resetTimer = useCallback(() => {
-    startAutoAdvance()
-  }, [startAutoAdvance])
+    }, 5_000)
+    return () => window.clearTimeout(timeout)
+  }, [prefersReducedMotion, isInView, isPaused, isHovered, hasFocus, currentImage, timerRevision])
 
   useEffect(() => {
-    startAutoAdvance()
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current)
-      }
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") setTimerRevision((previous) => previous + 1)
     }
-  }, [startAutoAdvance])
+    document.addEventListener("visibilitychange", handleVisibilityChange)
+    return () => document.removeEventListener("visibilitychange", handleVisibilityChange)
+  }, [])
+
+  function resetTimer() {
+    setTimerRevision((previous) => previous + 1)
+  }
 
   const handleImageClick = (index: number) => {
     setDirection(index > currentImage ? 1 : -1)
@@ -88,7 +90,7 @@ export function ShirtSection() {
   }
 
   return (
-    <section id="shirt" className="w-full py-16 md:py-24 lg:py-32 bg-secondary">
+    <section ref={sectionRef} id="shirt" className="w-full py-16 md:py-24 lg:py-32 bg-secondary">
       <div className="container px-4 md:px-6">
         <div className="grid items-center gap-6 lg:grid-cols-2 lg:gap-12">
           <motion.div
@@ -96,7 +98,15 @@ export function ShirtSection() {
             {...getRevealProps(prefersReducedMotion, { distance: 12 })}
           >
             {/* Merchandise Carousel */}
-            <div className="relative w-full max-w-lg mx-auto">
+            <div
+              className="relative w-full max-w-lg mx-auto"
+              onPointerEnter={() => setIsHovered(true)}
+              onPointerLeave={() => setIsHovered(false)}
+              onFocusCapture={() => setHasFocus(true)}
+              onBlurCapture={(event) => {
+                if (!event.currentTarget.contains(event.relatedTarget)) setHasFocus(false)
+              }}
+            >
               <div className="relative aspect-square overflow-hidden rounded-2xl shadow-lg">
                 <AnimatePresence initial={false} custom={direction}>
                   <motion.div
@@ -106,7 +116,7 @@ export function ShirtSection() {
                     initial="enter"
                     animate="center"
                     exit="exit"
-                    transition={CAROUSEL_TRANSITION}
+                    transition={prefersReducedMotion ? { duration: 0 } : CAROUSEL_TRANSITION}
                     drag="x"
                     dragConstraints={{ left: 0, right: 0 }}
                     dragElastic={prefersReducedMotion ? 0.05 : 0.18}
@@ -179,15 +189,25 @@ export function ShirtSection() {
                       index === currentImage ? 'bg-primary' : 'bg-gray-300'
                     }`}
                     aria-label={`Go to ${merchandiseItems[index].alt}`}
+                    aria-pressed={index === currentImage}
                     whileTap={prefersReducedMotion ? undefined : { scale: 0.92 }}
                     animate={{
                       scale: index === currentImage ? 1.12 : 1,
                       opacity: index === currentImage ? 1 : 0.7
                     }}
-                    transition={CAROUSEL_TRANSITION}
+                    transition={prefersReducedMotion ? { duration: 0 } : CAROUSEL_TRANSITION}
                   />
                 ))}
               </div>
+              {!prefersReducedMotion && (
+                <button
+                  type="button"
+                  onClick={() => setIsPaused((paused) => !paused)}
+                  className="mx-auto mt-4 block rounded-full border border-white/40 px-4 py-2 text-sm text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+                >
+                  {isPaused ? "Resume slideshow" : "Pause slideshow"}
+                </button>
+              )}
             </div>
           </motion.div>
           

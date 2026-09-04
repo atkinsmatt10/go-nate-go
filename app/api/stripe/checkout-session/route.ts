@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server"
+import { checkoutSessionRequestSchema } from "@/lib/donation-request"
 import { getCustomDonationReceiptConfigStatus } from "@/lib/donation-receipts"
 import { getStripeClient } from "@/lib/stripe"
 
@@ -6,65 +7,22 @@ const DONATION_DESCRIPTION =
   "Supports Team Nate the Great and CHOP childhood cancer care and research."
 const RECEIPT_TEMPLATE_VERSION = "2026-03-21"
 
-interface CheckoutSessionRequestBody {
-  amountInCents?: unknown
-  email?: unknown
-}
-
-function parseDonationAmount(amountInCents: unknown): number | null {
-  if (typeof amountInCents !== "number") {
-    return null
-  }
-
-  if (!Number.isSafeInteger(amountInCents)) {
-    return null
-  }
-
-  if (amountInCents < 100 || amountInCents > 1_000_000) {
-    return null
-  }
-
-  return amountInCents
-}
-
-function parseDonorEmail(email: unknown): string | null {
-  if (typeof email !== "string") {
-    return null
-  }
-
-  const normalizedEmail = email.trim().toLowerCase()
-  if (!normalizedEmail) {
-    return null
-  }
-
-  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-  return emailPattern.test(normalizedEmail) ? normalizedEmail : null
-}
-
 export async function POST(request: Request) {
-  let body: CheckoutSessionRequestBody
-
+  let body: unknown
   try {
-    body = (await request.json()) as CheckoutSessionRequestBody
+    body = await request.json()
   } catch {
     return NextResponse.json({ error: "Invalid request body" }, { status: 400 })
   }
 
-  const amountInCents = parseDonationAmount(body.amountInCents)
-  if (amountInCents === null) {
+  const parsed = checkoutSessionRequestSchema.safeParse(body)
+  if (!parsed.success) {
     return NextResponse.json(
-      { error: "Donation amount must be between $1 and $10,000" },
+      { error: "Enter a donation between $1 and $10,000 and a valid email address." },
       { status: 400 },
     )
   }
-
-  const donorEmail = parseDonorEmail(body.email)
-  if (donorEmail === null) {
-    return NextResponse.json(
-      { error: "Enter a valid email address to continue to secure checkout" },
-      { status: 400 },
-    )
-  }
+  const { amountInCents, email: donorEmail } = parsed.data
 
   try {
     const stripe = getStripeClient()

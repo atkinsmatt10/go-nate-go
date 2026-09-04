@@ -1,7 +1,7 @@
 "use client"
 
 import type { JSX } from "react"
-import { useRef, useSyncExternalStore } from "react"
+import { useEffect, useRef } from "react"
 import NumberFlow, { type Format } from "@number-flow/react"
 import { motion, useInView } from "framer-motion"
 import Image from "next/image"
@@ -10,7 +10,7 @@ import useSWR from "swr"
 
 import { Button } from "@/components/ui/button"
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion"
-import { FALLBACK_DONATION_PROGRESS, type DonationProgressData } from "@/lib/donation-progress"
+import { type DonationProgressData } from "@/lib/donation-progress"
 
 interface FundraisingProgressProps {
   initialData?: DonationProgressData
@@ -26,12 +26,8 @@ const CURRENCY_FORMATTER = new Intl.NumberFormat("en-US", {
   style: "currency",
 })
 
-function subscribeToHydration(): () => void {
-  return () => undefined
-}
-
 async function fetchDonationProgress(url: string): Promise<DonationProgressData> {
-  const response = await fetch(url)
+  const response = await fetch(url, { signal: AbortSignal.timeout(8_000) })
 
   if (!response.ok) {
     throw new Error(`Donation API request failed with status ${response.status}`)
@@ -48,51 +44,54 @@ function getProgressPercentage(raised: number, goal: number): number {
   return Math.min(Math.max((raised / goal) * 100, 0), 100)
 }
 
-function getDonationStatusMessage(hasError: boolean, isLoading: boolean): string {
-  if (hasError) {
-    return "Live total unavailable — showing recent campaign values."
+function getDonationStatusMessage(hasError: boolean, isLoading: boolean, data?: DonationProgressData): string {
+  if (!data) return "Live total temporarily unavailable. You can still donate directly to CHOP."
+  if (hasError || data.stale) {
+    const updated = new Intl.DateTimeFormat("en-US", {
+      month: "short", day: "numeric", hour: "numeric", minute: "2-digit",
+      timeZone: "America/New_York", timeZoneName: "short",
+    }).format(new Date(data.lastUpdated))
+    return `Showing the last confirmed total, updated ${updated}. Live updates are temporarily unavailable.`
   }
-
-  if (isLoading) {
-    return "Updating the live fundraising total."
-  }
-
-  return "Live fundraising total updated."
+  return isLoading ? "Updating the live fundraising total." : "Live fundraising total updated."
 }
 
 export function FundraisingProgress({ initialData }: FundraisingProgressProps = {}): JSX.Element {
   const sectionRef = useRef<HTMLElement | null>(null)
-  const hasHydrated = useSyncExternalStore(subscribeToHydration, () => true, () => false)
-  const isInView = useInView(sectionRef, { amount: 0.25, once: true })
+  const isInView = useInView(sectionRef, { amount: 0.25 })
   const prefersReducedMotion = usePrefersReducedMotion()
-  const { data, error, isLoading } = useSWR<DonationProgressData, Error>(
+  const { data, error, isLoading, mutate } = useSWR<DonationProgressData, Error>(
     "/api/donations",
     fetchDonationProgress,
     {
       fallbackData: initialData,
-      refreshInterval: 15000,
+      refreshInterval: isInView ? 15_000 : 0,
+      revalidateOnMount: false,
+      isPaused: () => !isInView,
+      errorRetryCount: 2,
+      errorRetryInterval: 15_000,
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
     },
   )
 
-  const raised = Math.max(Math.round(data?.total ?? FALLBACK_DONATION_PROGRESS.total), 0)
-  const goal = Math.max(Math.round(data?.goal ?? FALLBACK_DONATION_PROGRESS.goal), 0)
-  const numDonations = Math.max(
-    Math.round(data?.numDonations ?? FALLBACK_DONATION_PROGRESS.numDonations),
-    0,
-  )
+  useEffect(() => {
+    if (isInView) void mutate()
+  }, [isInView, mutate])
+
+  const raised = Math.max(Math.round(data?.total ?? 0), 0)
+  const goal = Math.max(Math.round(data?.goal ?? 30_000), 0)
+  const numDonations = Math.max(Math.round(data?.numDonations ?? 0), 0)
   const hasError = error !== undefined
   const progressPercentage = getProgressPercentage(raised, goal)
-  const shouldShowProgress = hasHydrated && isInView
-  const displayedRaised = shouldShowProgress ? raised : 0
-  const displayedDonations = shouldShowProgress ? numDonations : 0
-  const displayedProgress = shouldShowProgress ? progressPercentage : 0
+  const displayedRaised = raised
+  const displayedDonations = numDonations
+  const displayedProgress = progressPercentage
   const sharkPosition = Math.min(Math.max(displayedProgress, 4), 96)
   const progressTransition = prefersReducedMotion
     ? { duration: 0 }
     : { duration: 0.9, ease: [0.23, 1, 0.32, 1] as const }
-  const donationStatusMessage = getDonationStatusMessage(hasError, isLoading)
+  const donationStatusMessage = getDonationStatusMessage(hasError, isLoading, data)
 
   return (
     <section ref={sectionRef} id="donate" className="w-full bg-background py-24 sm:py-28 lg:py-36">
@@ -112,7 +111,7 @@ export function FundraisingProgress({ initialData }: FundraisingProgressProps = 
           </header>
 
           <div className="mt-14 flex w-full flex-col items-center justify-center gap-4 lg:mt-16 lg:flex-row lg:items-end lg:gap-8">
-            <NumberFlow
+            {data ? <NumberFlow
               aria-label={`${CURRENCY_FORMATTER.format(displayedRaised)} raised`}
               className="font-[family-name:var(--font-lilita-one)] text-[clamp(3.8rem,17vw,8rem)] leading-[0.85] tracking-[-0.035em] text-primary tabular-nums [--number-flow-mask-height:0.14em]"
               format={NUMBER_FORMAT}
@@ -122,7 +121,8 @@ export function FundraisingProgress({ initialData }: FundraisingProgressProps = 
               spinTiming={{ duration: 700, easing: "cubic-bezier(0.23, 1, 0.32, 1)" }}
               transformTiming={{ duration: 700, easing: "cubic-bezier(0.23, 1, 0.32, 1)" }}
               value={displayedRaised}
-            />
+              animated={!prefersReducedMotion}
+            /> : <span className="text-7xl text-primary" aria-label="Total unavailable">—</span>}
             <p className="text-xl font-bold text-foreground sm:text-2xl lg:pb-3 lg:text-3xl">
               raised of {CURRENCY_FORMATTER.format(goal)}
             </p>
@@ -145,8 +145,8 @@ export function FundraisingProgress({ initialData }: FundraisingProgressProps = 
                 aria-label="Fundraising progress"
                 aria-valuemax={goal}
                 aria-valuemin={0}
-                aria-valuenow={Math.min(raised, goal)}
-                aria-valuetext={`${CURRENCY_FORMATTER.format(raised)} raised of ${CURRENCY_FORMATTER.format(goal)}`}
+                aria-valuenow={data ? Math.min(raised, goal) : undefined}
+                aria-valuetext={data ? `${CURRENCY_FORMATTER.format(raised)} raised of ${CURRENCY_FORMATTER.format(goal)}` : "Total temporarily unavailable"}
                 className="relative h-6 overflow-hidden rounded-full border border-white/25 bg-secondary/65 shadow-inner"
               >
                 <motion.div
@@ -170,17 +170,18 @@ export function FundraisingProgress({ initialData }: FundraisingProgressProps = 
 
           <div className="mt-10 inline-flex flex-wrap items-baseline justify-center gap-x-2 rounded-full border border-white/20 bg-background/20 px-6 py-3 text-base text-muted-foreground shadow-[0_12px_30px_rgb(20_43_64_/_10%)] sm:text-lg">
             <span className="font-bold text-primary">
-              <NumberFlow
+              {data ? <NumberFlow
                 aria-label={`${displayedDonations} donations`}
                 format={NUMBER_FORMAT}
                 value={displayedDonations}
-              />
-              <span aria-hidden="true">donations</span>
+                animated={!prefersReducedMotion}
+              /> : "— "}
+              <span aria-hidden="true"> donations</span>
             </span>
             <span>from amazing supporters</span>
           </div>
 
-          <p className={hasError ? "mt-4 text-sm text-muted-foreground" : "sr-only"} role="status">
+          <p className={hasError || data?.stale || !data ? "mt-4 text-sm text-muted-foreground" : "sr-only"} role="status">
             {donationStatusMessage}
           </p>
 

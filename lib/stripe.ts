@@ -1,3 +1,5 @@
+import "server-only"
+
 import Stripe from "stripe"
 
 const API_VERSION: Stripe.LatestApiVersion = "2026-02-25.clover"
