@@ -100,7 +100,7 @@ function FishSilhouette({
 
 export function HeroSection(): JSX.Element {
   return (
-    <section className="relative isolate w-full overflow-hidden bg-[radial-gradient(circle_at_72%_18%,#173f60_0%,#102f4a_42%,#0d2942_100%)] pb-20 pt-[calc(1.25rem+env(safe-area-inset-top,0px))] sm:pb-28 sm:pt-[calc(2rem+env(safe-area-inset-top,0px))] lg:pb-32 lg:pt-[calc(3rem+env(safe-area-inset-top,0px))]">
+    <section className="hero-section relative isolate w-full overflow-hidden pb-20 pt-[calc(1.25rem+env(safe-area-inset-top,0px))] sm:pb-28 sm:pt-[calc(2rem+env(safe-area-inset-top,0px))] lg:pb-32 lg:pt-[calc(3rem+env(safe-area-inset-top,0px))]">
       <div className="pointer-events-none absolute inset-0 z-0 text-[#9fc5d8]" aria-hidden="true">
         {decorativeFish.map((fish) => (
           <FishSilhouette
