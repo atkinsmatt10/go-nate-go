@@ -53,14 +53,15 @@ test("hero loads a poster but no video or social provider requests before Play",
   await expect.poll(() => requests.some((url) => url.includes("stream.mux.com"))).toBe(true)
 })
 
-test("hero and primary donation links remain visible without JavaScript", async ({ browser }) => {
-  const context = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 390, height: 844 } })
-  const page = await context.newPage()
-  await page.goto("http://127.0.0.1:3100/")
-  await expect(page.getByRole("heading", { level: 1 })).toBeVisible()
-  await expect(page.getByRole("link", { name: "Donate Now", exact: true })).toBeVisible()
-  await expect(page.getByAltText("Nate with his family in the story video")).toBeVisible()
-  await context.close()
+test.describe("without JavaScript", () => {
+  test.use({ javaScriptEnabled: false, viewport: { width: 390, height: 844 } })
+
+  test("hero and primary donation links remain visible", async ({ page }) => {
+    await page.goto("/")
+    await expect(page.getByRole("heading", { level: 1 })).toBeVisible()
+    await expect(page.getByRole("link", { name: "Donate Now", exact: true })).toBeVisible()
+    await expect(page.getByAltText("Nate with his family in the story video")).toBeVisible()
+  })
 })
 
 test("reduced motion keeps the merchandise carousel still", async ({ page }) => {
@@ -76,14 +77,13 @@ test("reduced motion keeps the merchandise carousel still", async ({ page }) => 
 
 test("polling pauses offscreen and failures retain the last confirmed total", async ({ page }) => {
   test.setTimeout(50_000)
-  const responses = [
-    { status: 200, json: { total: 7_543, goal: 30_000, numDonations: 66, stale: false, lastUpdated: "2026-09-04T12:00:00.000Z" } },
-    { status: 502, json: { error: "Test upstream unavailable" } },
-  ]
-  let requests = 0
+  let failRequests: boolean = false
+  let requests: number = 0
   await page.route("**/api/donations", async (route) => {
-    const response = responses[Math.min(requests++, 1)]
-    await route.fulfill(response)
+    requests++
+    await route.fulfill(failRequests
+      ? { status: 502, json: { error: "Test upstream unavailable" } }
+      : { status: 200, json: { total: 7_543, goal: 30_000, numDonations: 66, stale: false, lastUpdated: "2026-09-04T12:00:00.000Z" } })
   })
   await page.goto("/")
   // Wait for the streamed Server Component to replace its Suspense fallback.
@@ -93,16 +93,21 @@ test("polling pauses offscreen and failures retain the last confirmed total", as
   await expect(page.getByLabel("$7,543 raised", { exact: true })).toBeVisible()
   await page.waitForTimeout(15_500)
   await expect.poll(() => requests).toBe(2)
-  await expect(page.getByText(/Showing the last confirmed total/)).toBeVisible()
-  await expect(page.getByLabel("$7,543 raised", { exact: true })).toBeVisible()
   await page.evaluate(() => window.scrollTo(0, 0))
+  await expect(page.locator("#donate")).not.toBeInViewport()
   await page.waitForTimeout(15_500)
   expect(requests).toBe(2)
+
+  failRequests = true
+  await page.locator("#donate").scrollIntoViewIfNeeded()
+  await expect.poll(() => requests).toBe(3)
+  await expect(page.getByText(/Showing the last confirmed total/)).toBeVisible()
+  await expect(page.getByLabel("$7,543 raised", { exact: true })).toBeVisible()
 })
 
 test("payment routes reject malformed values and the birthday RSVP is closed", async ({ request }) => {
   for (const path of ["checkout-session", "payment-intent"]) {
-    for (const body of ["null", "[]", "{}", '{"amountInCents":-1}', '{"amountInCents":1000001}']) {
+    for (const body of ["null", "[]", "{}", '{"amountInCents":-1,"email":"donor@example.com"}', '{"amountInCents":1000001,"email":"donor@example.com"}']) {
       const response = await request.post(`/api/stripe/${path}`, { data: body, headers: { "Content-Type": "application/json" } })
       expect(response.status()).toBe(400)
     }
