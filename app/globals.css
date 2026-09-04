@@ -1,5 +1,27 @@
 @import 'tailwindcss';
 
+/* Let the hero reach behind Safari's status bar while keeping content in the safe area. */
+html:has(.home-page),
+body:has(.home-page) {
+  background-color: #102f4a;
+}
+
+.home-page :is(.hero-content, main .container) {
+  padding-left: max(1rem, env(safe-area-inset-left, 0px));
+  padding-right: max(1rem, env(safe-area-inset-right, 0px));
+}
+
+.home-page > footer {
+  padding-bottom: calc(2rem + env(safe-area-inset-bottom, 0px));
+}
+
+@media (min-width: 768px) {
+  .home-page :is(.hero-content, main .container) {
+    padding-left: max(1.5rem, env(safe-area-inset-left, 0px));
+    padding-right: max(1.5rem, env(safe-area-inset-right, 0px));
+  }
+}
+
 @keyframes hero-fish-drift {
   to { transform: translate(var(--fish-x), var(--fish-y)); }
 }
