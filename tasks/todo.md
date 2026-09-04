@@ -205,3 +205,26 @@
 - Reviewed `README.md`, `AGENTS.md`, the active context, architecture, design, plan, and review artifacts.
 - No README or contributor-guide update is needed because routes, setup, APIs, environment variables, and operational behavior are unchanged.
 - Updated the plan index and task records with the completed behavior and verification evidence.
+
+## Slop Audit — September 4, 2026
+
+- [x] Record [context](context/slop-audit.md) and [cleanup boundary](architecture/slop-audit.md); baseline lint and TypeScript pass.
+- [x] Audit import reachability, wrappers, and all 13 tests.
+- [x] Remove confirmed retired campaign code and duplicate/unused helpers.
+- [x] Strengthen the polling assertion and simplify test setup, including a fresh server on a selectable localhost port.
+- [x] Review the diff, run simplification/deslop passes, and verify lint, TypeScript, build, and tests: all 13 regressions pass; the polling mutation was caught and restored.
+- [x] Document findings and remaining candidates in [the audit report](../docs/slop-audit-2026-09-04.md), including development console messages and verification limits.
+
+### Slop Audit Review
+
+- Scope: six unreachable files deleted, three fundraising aliases and two unused constants removed, existing tests strengthened, and test-server configuration corrected after verification exposed unrelated-server reuse and blocked dev resources.
+- Structural review found no dangling imports, lost callers, changed payment contracts, or migration requirements. The duplicate toast store matched the retained canonical hook byte for byte.
+- Simplification/deslop passes retained useful haptic, rendering, caching, validation, and accessibility boundaries. No new production abstractions or defensive wrappers were added.
+- Mutation check: disabling both offscreen polling guards made the improved test fail at the intended assertion (expected two requests, received three). The exact source was restored afterward.
+
+### Slop Audit Documentation Release
+
+- Reviewed: README, AGENTS, current context/architecture, test configuration, and TODOs.
+- Updated: README birthday archive and local test instructions; current context/architecture, audit report, and TODOs.
+- Corrected facts: RSVP is closed with HTTP 410; browser tests start a fresh localhost server and accept `PLAYWRIGHT_PORT`.
+- Follow-ups: shared UI catalog and dependency pruning, gallery captions, hover handlers, and stale contributor instructions are recorded in the audit report.

@@ -84,10 +84,7 @@ export function FundraisingProgress({ initialData }: FundraisingProgressProps = 
   const numDonations = Math.max(Math.round(data?.numDonations ?? 0), 0)
   const hasError = error !== undefined
   const progressPercentage = getProgressPercentage(raised, goal)
-  const displayedRaised = raised
-  const displayedDonations = numDonations
-  const displayedProgress = progressPercentage
-  const sharkPosition = Math.min(Math.max(displayedProgress, 4), 96)
+  const sharkPosition = Math.min(Math.max(progressPercentage, 4), 96)
   const progressTransition = prefersReducedMotion
     ? { duration: 0 }
     : { duration: 0.9, ease: [0.23, 1, 0.32, 1] as const }
@@ -112,7 +109,7 @@ export function FundraisingProgress({ initialData }: FundraisingProgressProps = 
 
           <div className="mt-14 flex w-full flex-col items-center justify-center gap-4 lg:mt-16 lg:flex-row lg:items-end lg:gap-8">
             {data ? <NumberFlow
-              aria-label={`${CURRENCY_FORMATTER.format(displayedRaised)} raised`}
+              aria-label={`${CURRENCY_FORMATTER.format(raised)} raised`}
               className="font-[family-name:var(--font-lilita-one)] text-[clamp(3.8rem,17vw,8rem)] leading-[0.85] tracking-[-0.035em] text-primary tabular-nums [--number-flow-mask-height:0.14em]"
               format={NUMBER_FORMAT}
               isolate
@@ -120,7 +117,7 @@ export function FundraisingProgress({ initialData }: FundraisingProgressProps = 
               prefix="$"
               spinTiming={{ duration: 700, easing: "cubic-bezier(0.23, 1, 0.32, 1)" }}
               transformTiming={{ duration: 700, easing: "cubic-bezier(0.23, 1, 0.32, 1)" }}
-              value={displayedRaised}
+              value={raised}
               animated={!prefersReducedMotion}
             /> : <span className="text-7xl text-primary" aria-label="Total unavailable">—</span>}
             <p className="text-xl font-bold text-foreground sm:text-2xl lg:pb-3 lg:text-3xl">
@@ -150,7 +147,7 @@ export function FundraisingProgress({ initialData }: FundraisingProgressProps = 
                 className="relative h-6 overflow-hidden rounded-full border border-white/25 bg-secondary/65 shadow-inner"
               >
                 <motion.div
-                  animate={{ width: `${displayedProgress}%` }}
+                  animate={{ width: `${progressPercentage}%` }}
                   className="h-full rounded-full bg-primary"
                   initial={false}
                   style={{
@@ -171,9 +168,9 @@ export function FundraisingProgress({ initialData }: FundraisingProgressProps = 
           <div className="mt-10 inline-flex flex-wrap items-baseline justify-center gap-x-2 rounded-full border border-white/20 bg-background/20 px-6 py-3 text-base text-muted-foreground shadow-[0_12px_30px_rgb(20_43_64_/_10%)] sm:text-lg">
             <span className="font-bold text-primary">
               {data ? <NumberFlow
-                aria-label={`${displayedDonations} donations`}
+                aria-label={`${numDonations} donations`}
                 format={NUMBER_FORMAT}
-                value={displayedDonations}
+                value={numDonations}
                 animated={!prefersReducedMotion}
               /> : "— "}
               <span aria-hidden="true"> donations</span>

@@ -35,6 +35,12 @@ While Nate still has a long road ahead, he is doing well, and we're so proud of 
 
 This is an open source fundraising website built to support Team Nate the Great and the Children's Hospital of Philadelphia. The site is built with modern web technologies and deployed on Vercel.
 
+## Local Checks
+
+Run `pnpm lint`, `pnpm exec tsc --noEmit`, and `pnpm test`. Browser tests start their own server at `http://localhost:3100` with test checkout configuration. If that port is occupied, run `PLAYWRIGHT_PORT=3194 pnpm test`.
+
+For `PLAYWRIGHT_USE_PRODUCTION=1`, first build with `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_site_review`; Next.js embeds that public value during the build.
+
 ## Donation Receipt Emails
 
 The donation flow can now send a branded Nate the Great receipt email through Resend after Stripe confirms payment via webhook.
@@ -70,19 +76,11 @@ resend domains list --json
 
 `RESEND_FROM_EMAIL` must use a sender on a verified Resend domain. The currently verified sending domain is `gonatego.com`, so a `nicolematt.com` sender will be rejected by Resend.
 
-## Birthday RSVP
+## Birthday Archive
 
-The site now includes a birthday RSVP landing page at `/birthday` with a form that emails the organizers through Resend, supports an optional attendee email field, sends a confirmation email after RSVP, and schedules a reminder email for guests who RSVP `yes`.
+The `/birthday` page preserves Nate's first birthday celebration and photo gallery. The celebration has ended, RSVPs are closed, and `/api/birthday-rsvp` returns HTTP 410. The retired countdown and RSVP email code has been removed.
 
-The `/birthday` photo carousel now prefers images from the shared Google Drive birthday folder configured in [app/api/birthday-photos/route.ts](/Users/Matt.Atkins/Code/go-nate-go-1/app/api/birthday-photos/route.ts). To add new carousel photos, drop image files into that folder. The page keeps the bundled local photos as fallback if Drive is unavailable.
-
-Recommended environment variable:
-
-```bash
-BIRTHDAY_RSVP_TO_EMAIL=
-```
-
-If `BIRTHDAY_RSVP_TO_EMAIL` is unset, the app falls back to `support@gonatego.com`, then `RESEND_REPLY_TO_EMAIL`, then the address inside `RESEND_FROM_EMAIL`.
+The birthday photo carousel prefers images from the shared Google Drive folder configured in [app/api/birthday-photos/route.ts](app/api/birthday-photos/route.ts). To add carousel photos, drop image files into that folder. The page keeps the bundled local photos as fallback if Drive is unavailable.
 
 ### Local webhook testing
 
