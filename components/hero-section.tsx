@@ -165,8 +165,7 @@ export function HeroSection(): JSX.Element {
               </h1>
 
               <p className="mx-auto mt-4 max-w-[330px] text-base leading-6 text-[#eef5fb] sm:mt-5 sm:max-w-[34rem] sm:text-lg sm:leading-8 lg:mx-0 lg:mt-6 lg:max-w-[31rem]">
-                At just eight weeks old, Nate was diagnosed at CHOP with a rare brain tumor. Today he&apos;s home,
-                thriving, and inspiring a community to fight for every child.
+                At eight weeks old, Nate was diagnosed at CHOP with a rare brain tumor. Today he&apos;s home and thriving.
               </p>
             </div>
 
@@ -180,7 +179,7 @@ export function HeroSection(): JSX.Element {
                 className="h-12 rounded-[18px] px-4 text-sm font-bold shadow-[0_14px_30px_rgb(5_24_39_/_28%)] transition-[box-shadow,transform] duration-150 ease-snappy-out hover:shadow-[0_18px_36px_rgb(5_24_39_/_34%)] sm:h-14 sm:text-xl"
               >
                 <Link href="https://chop.donordrive.com/teams/nate-the-great" prefetch={false}>
-                  Donate Now
+                  Donate to CHOP
                 </Link>
               </Button>
 
@@ -192,7 +191,7 @@ export function HeroSection(): JSX.Element {
                 className="h-12 rounded-[18px] border-2 border-primary bg-transparent px-4 text-sm font-bold text-primary shadow-xs transition-[background-color,color,border-color,box-shadow,transform] duration-150 ease-snappy-out hover:bg-primary hover:text-primary-foreground sm:h-14 sm:text-xl"
               >
                 <Link href="https://shop.gonatego.com" target="_blank" rel="noopener noreferrer" prefetch={false}>
-                  Shop Now
+                  Shop
                 </Link>
               </Button>
             </div>

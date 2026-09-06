@@ -116,7 +116,7 @@ function getEmailValidationMessage(normalizedEmail: string): string | null {
     return null
   }
 
-  return isValidEmail(normalizedEmail) ? null : "Enter a valid email address to load secure checkout."
+  return isValidEmail(normalizedEmail) ? null : "Enter a valid email address."
 }
 
 function getDonationAmountInDollars(
@@ -158,19 +158,19 @@ function getDonationAmountValidationMessage(
   }
 
   if (!customAmountInput.trim()) {
-    return "Enter a custom amount between $1 and $10,000."
+    return "Enter an amount between $1 and $10,000."
   }
 
   if (donationAmountInCents === null) {
-    return "Enter a valid dollar amount using numbers only."
+    return "Enter a dollar amount using numbers."
   }
 
   if (donationAmountInCents < MIN_DONATION_AMOUNT_IN_CENTS) {
-    return "Custom donations must be at least $1.00."
+    return "The minimum donation is $1.00."
   }
 
   if (donationAmountInCents > MAX_DONATION_AMOUNT_IN_CENTS) {
-    return "Custom donations are capped at $10,000 per checkout."
+    return "The maximum is $10,000 per checkout."
   }
 
   return null
@@ -185,11 +185,11 @@ function getPreCheckoutHelperMessage(params: {
   isStripeConfigured: boolean
 }): string {
   if (!params.isStripeConfigured) {
-    return "Secure checkout is not available right now. Please try again later."
+    return "Checkout is unavailable. Please try again later."
   }
 
   if (!params.hasReceiptEmail) {
-    return "Add your email so Stripe can prepare your receipt and secure checkout."
+    return "Enter your email to continue to checkout."
   }
 
   if (params.emailValidationMessage) {
@@ -201,18 +201,18 @@ function getPreCheckoutHelperMessage(params: {
   }
 
   if (params.isCreatingSession) {
-    return "Preparing secure checkout for this amount."
+    return "Preparing checkout…"
   }
 
   return params.checkoutReady
-    ? "Secure checkout is ready below."
-    : "Choose an amount above and secure checkout will load automatically."
+    ? "Checkout is ready below."
+    : "Choose an amount to load checkout."
 }
 
 function getStripeElementLoadErrorMessage(event: StripeCheckoutLoadErrorEvent): string {
   return (
     event.error.message ??
-    "Secure checkout could not load. Refresh and try again, or use a different payment method."
+    "Checkout could not load. Refresh and try again, or use a different payment method."
   )
 }
 
@@ -220,20 +220,20 @@ const impactHighlights = [
   {
     title: "Emergency Care",
     description:
-      "Supports the CHOP teams that relieved pressure and stabilized Nate when hydrocephalus was discovered.",
+      "Supports the CHOP teams that relieved pressure and stabilized Nate.",
     icon: Stethoscope,
     color: "#d9ecf8",
   },
   {
-    title: "Treatment Access",
-    description: "Funds research so treatment options exist for the next child who needs them.",
+    title: "Treatment Research",
+    description: "Funds research into better treatments for childhood cancer.",
     icon: Sparkles,
     color: "#d7f1f1",
   },
   {
     title: "Family Support",
     description:
-      "Honors the doctors, nurses, staff, family, and friends who carry families through hard moments.",
+      "Honors the care and support of doctors, nurses, staff, family, and friends.",
     icon: Heart,
     color: "#e4f3ff",
   },
@@ -341,14 +341,14 @@ function CheckoutForm({ amountLabel, onIntentionalNavigationChange }: CheckoutFo
   const helperMessage = combinedErrorMessage
     ? ""
     : isSubmitting
-      ? "Finalizing your donation. This can take a few seconds."
+      ? "Finalizing your donation…"
       : checkoutState.type === "loading" || isCheckoutUiLoading
-      ? "Secure checkout is loading below."
+      ? "Loading checkout…"
       : !hasCheckoutUiReady
-        ? "Secure checkout is preparing your payment options."
+        ? "Loading payment options…"
         : canSubmit
-          ? "Secure checkout is ready. Review your details and donate when you're ready."
-          : "Choose a wallet or card to finish your donation."
+          ? "Review your payment details, then donate."
+          : "Choose a wallet or card."
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
@@ -542,7 +542,7 @@ export default function DonatePage() {
       }
 
       if (!email) {
-        setErrorMessage("Add your email to continue to secure checkout.")
+        setErrorMessage("Enter your email to continue to checkout.")
         receiptEmailInputRef.current?.focus()
         return
       }
@@ -560,7 +560,7 @@ export default function DonatePage() {
       }
 
       if (!stripePromise) {
-        setErrorMessage("Secure checkout is not available right now. Please try again later.")
+        setErrorMessage("Checkout is unavailable. Please try again later.")
         return
       }
 
@@ -590,7 +590,7 @@ export default function DonatePage() {
         }
 
         if (!response.ok || !payload.clientSecret) {
-          setErrorMessage(payload.error ?? "Unable to initialize checkout. Please try again.")
+          setErrorMessage(payload.error ?? "Checkout could not load. Please try again.")
           setIsCreatingSession(false)
           return
         }
@@ -602,7 +602,7 @@ export default function DonatePage() {
           return
         }
 
-        setErrorMessage("Unable to initialize checkout. Please try again.")
+        setErrorMessage("Checkout could not load. Please try again.")
         setIsCreatingSession(false)
       }
     },
@@ -709,9 +709,9 @@ export default function DonatePage() {
               </h1>
 
               <p className="mt-4 max-w-xl text-base text-[#314c65] sm:text-lg">
-                Nate was born on May 2, 2025. In late June, vomiting and unusual sleepiness led to an emergency CHOP
-                visit, where doctors found hydrocephalus caused by a rare choroid plexus tumor. After multiple
-                surgeries, he underwent gross total resection on January 2, 2026.
+                Nate was born on May 2, 2025. In late June, vomiting and unusual sleepiness brought him to CHOP&apos;s
+                emergency department. Doctors found hydrocephalus caused by a rare choroid plexus tumor. After multiple
+                surgeries, he had a gross total resection on January 2, 2026.
               </p>
             </div>
 
@@ -760,9 +760,8 @@ export default function DonatePage() {
               <div className="min-w-0">
                 <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#2d7088]">From Our Family</p>
                 <p className="mt-1 text-sm text-[#314d66]">
-                  We can never fully thank CHOP&apos;s neurosurgery and neuro-oncology teams, or all of the doctors,
-                  nurses, and staff who cared for Nate and us. Sharing his story honors that care and helps fund
-                  research for the next child.
+                  We&apos;re grateful to CHOP&apos;s neurosurgery and neuro-oncology teams, and the doctors,
+                  nurses, and staff who cared for our family.
                 </p>
               </div>
             </div>
@@ -779,7 +778,7 @@ export default function DonatePage() {
             <div className="relative">
               <h2 className="text-balance text-3xl leading-tight text-[#1d344d] sm:text-4xl">Make a Donation</h2>
               <p className="mt-2 text-sm text-[#526a7f] sm:text-base">
-                Choose an amount and finish with the payment option that works best for you.
+                Choose an amount and payment method.
               </p>
 
               <fieldset className="mt-5 space-y-4" disabled={isCheckoutActive}>
@@ -789,7 +788,7 @@ export default function DonatePage() {
                   </p>
                   {isCheckoutActive ? (
                     <span className="rounded-full border border-[#a7c7d8] bg-white px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#46627a]">
-                      Locked for secure checkout
+                      Locked during checkout
                     </span>
                   ) : null}
                 </div>
@@ -889,7 +888,7 @@ export default function DonatePage() {
                     className="h-12 w-full rounded-2xl border border-[#a9c3d5] bg-white px-4 text-base text-[#223b54] shadow-xs outline-hidden transition-[border-color,box-shadow,opacity] duration-200 focus:border-[#42a8a9] focus:ring-4 focus:ring-[#d6ecec] disabled:cursor-not-allowed disabled:opacity-60"
                   />
                   <p className="text-sm text-[#526a7f]">
-                    Used for your receipt and to help Stripe prepare saved wallet options when available.
+                    Used for your receipt and saved wallet options, when available.
                   </p>
                 </div>
 
@@ -900,16 +899,6 @@ export default function DonatePage() {
                   <span className="text-sm font-medium text-[#4f667b]">Donation total</span>
                   <span className="text-3xl leading-none text-[#2b7d90]">{amountLabel}</span>
                 </div>
-                <ul className="mt-3 space-y-2 border-t border-[#c7d8e4] pt-3 text-left text-sm text-[#4f667b]">
-                  <li className="flex items-start gap-2">
-                    <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-[#42a8a9]" aria-hidden="true" />
-                    Mobile wallets and cards appear automatically when they&apos;re available.
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Mail className="mt-0.5 h-4 w-4 shrink-0 text-[#2f5c7b]" aria-hidden="true" />
-                    Add your email here so Stripe can prepare your receipt and checkout details up front.
-                  </li>
-                </ul>
               </div>
 
               <div
@@ -930,7 +919,7 @@ export default function DonatePage() {
                 {checkoutClientSecret ? (
                   <div ref={checkoutContainerRef} className="space-y-4">
                     <div className="rounded-2xl border border-[#c8dae6] bg-[#f5fbff] px-4 py-3 text-sm font-medium text-[#36546c]">
-                      Secure checkout is ready below. To change the amount, go back to donation details first.
+                      To change your amount or email, choose &ldquo;Edit Donation Details&rdquo; below.
                     </div>
                     <CheckoutProvider stripe={stripePromise} options={checkoutOptions}>
                       <CheckoutForm
@@ -943,7 +932,7 @@ export default function DonatePage() {
                       onClick={resetCheckoutState}
                       className="w-full text-center text-sm font-semibold text-[#4f667b] underline-offset-4 transition-colors duration-200 hover:text-[#223b54] hover:underline focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#2f6272] focus-visible:ring-offset-2"
                     >
-                      Change Donation Amount
+                      Edit Donation Details
                     </button>
                   </div>
                 ) : errorMessage && canPrepareCheckout ? (
@@ -958,15 +947,7 @@ export default function DonatePage() {
                   >
                     Retry secure checkout
                   </Button>
-                ) : canPrepareCheckout ? (
-                  <div className="rounded-2xl border border-[#c8dae6] bg-[#f5fbff] px-4 py-6 text-center text-sm font-medium text-[#36546c]">
-                    {isCreatingSession ? "Preparing secure checkout…" : "Loading secure checkout…"}
-                  </div>
-                ) : (
-                  <div className="rounded-2xl border border-dashed border-[#c8dae6] bg-white/75 px-4 py-6 text-center text-sm font-medium text-[#5f7689]">
-                    Enter your amount and email to load secure checkout.
-                  </div>
-                )}
+                ) : null}
               </div>
             </div>
           </motion.section>

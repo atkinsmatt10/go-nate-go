@@ -30,7 +30,7 @@ export default function NotFound() {
                 src="/nate shark.png"
                 width={120}
                 height={120}
-                alt="Nate's Shark - Looks like you're lost!"
+                alt="Nate's shark mascot"
                 className="drop-shadow-lg"
                 style={{ height: "auto" }}
               />
@@ -41,7 +41,7 @@ export default function NotFound() {
               className="text-3xl md:text-4xl font-bold text-foreground"
               {...getPageRevealProps(prefersReducedMotion, { delay: 0.1 })}
             >
-              Oops! Looks like you&apos;re swimming in uncharted waters
+              Page Not Found
             </motion.h2>
             
             {/* Description */}
@@ -49,7 +49,7 @@ export default function NotFound() {
               className="text-muted-foreground text-lg md:text-xl leading-relaxed max-w-md"
               {...getPageRevealProps(prefersReducedMotion, { delay: 0.14 })}
             >
-              The page you&apos;re looking for doesn&apos;t exist, but don&apos;t worry - Nate&apos;s shark friend will help guide you back to safety!
+              Head home to follow Nate&apos;s story.
             </motion.p>
 
             {/* Action Buttons */}
@@ -72,7 +72,7 @@ export default function NotFound() {
                 transitionTypes={["nav-forward"]}
                 className="inline-flex h-14 items-center justify-center rounded-lg border-2 border-primary bg-transparent px-8 text-xl font-bold text-primary shadow-xs transition-[background-color,color,border-color,box-shadow,transform] duration-150 ease-snappy-out active:scale-[0.98] hover:bg-primary hover:text-primary-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               >
-                Support Nate Instead
+                Donate
               </Link>
             </motion.div>
 
@@ -91,7 +91,7 @@ export default function NotFound() {
                 href="/#shirt" 
                 className="text-primary hover:text-primary/80 transition-colors underline"
               >
-                Shop Now
+                Shop
               </Link>
             </motion.div>
           </motion.div>

@@ -35,7 +35,7 @@ test("changing the amount cancels obsolete checkout work without getting stuck",
   await expect.poll(() => amounts).toEqual([5_000, 10_000])
   releaseFirst()
   await expect(page.getByRole("button", { name: "Retry secure checkout" })).toBeVisible()
-  await expect(page.getByText("Preparing secure checkout…", { exact: true })).toHaveCount(0)
+  await expect(page.getByText("Preparing checkout…", { exact: true })).toHaveCount(0)
 })
 
 test("hero loads a poster but no video or social provider requests before Play", async ({ page }) => {
@@ -59,7 +59,7 @@ test.describe("without JavaScript", () => {
   test("hero and primary donation links remain visible", async ({ page }) => {
     await page.goto("/")
     await expect(page.getByRole("heading", { level: 1 })).toBeVisible()
-    await expect(page.getByRole("link", { name: "Donate Now", exact: true })).toBeVisible()
+    await expect(page.locator(".hero-section").getByRole("link", { name: "Donate to CHOP", exact: true })).toBeVisible()
     await expect(page.getByAltText("Nate with his family in the story video")).toBeVisible()
   })
 })
@@ -119,7 +119,7 @@ test("published metadata links and archived birthday page are valid", async ({ p
   expect((await request.get("/robots.txt")).status()).toBe(200)
   expect((await request.get("/sitemap.xml")).status()).toBe(200)
   await page.goto("/birthday")
-  await expect(page.getByText("This celebration has ended. RSVPs are now closed.")).toBeVisible()
+  await expect(page.getByText("This celebration has ended. RSVPs are closed.")).toBeVisible()
   await expect(page.locator("form")).toHaveCount(0)
   await page.goto("/donate")
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", "https://gonatego.com/donate")

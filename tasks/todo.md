@@ -1,3 +1,29 @@
+# Site Copy — September 6, 2026
+
+- [x] Prepare an isolated release from current `origin/main`, excluding Three.js files, CSS, dependencies, and hero integration/spacing.
+- [x] Verify the isolated release with lint, TypeScript, build, regressions, and a source/bundle check for the experiment.
+- [ ] Commit, push, and merge the reviewed copy slice; confirm the production deployment and rendered homepage.
+
+- [x] Record [context](context/site-copy.md), [scope](architecture/site-copy.md), and [design review](design/site-copy.md).
+- [x] Tighten owned page copy and metadata while preserving facts, tone, and behavior.
+- [x] Review the final wording and diff; complete simplification and deslop passes.
+- [x] Verify lint, TypeScript, build, existing regressions, and desktop/mobile rendering.
+- [x] Record verification and review results.
+
+### Site Copy Review and Verification
+
+- Isolated production release: fresh frozen install with the pinned pnpm 10.34.5; lint, TypeScript, production build, and diff checks passed. Twelve regression tests passed in the full development run; the no-JavaScript check encountered the existing Next.js JSON parsing error and passed against the production build in 3.4 seconds. No source changes were needed.
+- Release source and generated bundles contain no ocean component, Three.js renderer, or Three.js dependency. CSS, package manifest, and lockfile match `origin/main`. Mobile review at 390×844 confirmed the original hero artwork and spacing, no horizontal overflow, and no canvas or ocean markers. Independent review approved the release scope; the original experiment remains intact in the working checkout.
+- Cut repeated mission statements, timeline previews, generic encouragement, and duplicate checkout instructions. Keep the medical timeline, family quote, recipient, amount limits, payment states, and external destinations.
+- Independent review found no factual drift or payment-state regressions. Retained the explicit “Back to Donation Page” label and removed the redundant lower checkout loading/empty panels while preserving accessible status and retry controls.
+- Simplification/deslop: no new abstractions, dependencies, styles, validation, or payment logic. Removed the unused article-description prop and presentation block. Existing local ocean work remains intact.
+- `pnpm lint`, `pnpm exec tsc --noEmit`, `pnpm exec next build --webpack`, and `git diff --check` passed. The build used the existing birthday-photo fallback when Google Drive DNS was unavailable.
+- All 13 existing regression checks passed across the full run and one isolated rerun. The first run passed 12; polling initially hit a transient Next.js JSON/rendering error before requests began. `pnpm exec playwright test tests/site-regressions.spec.ts --grep 'polling pauses'` passed in 41.2 seconds without source changes.
+- Browser review: desktop homepage at 1280×720; mobile hero, fundraising, merchandise, donation form, birthday, 404, and donation-return missing-details state at 390×844. Copy and action labels fit; third-party fallback links remain available.
+- Initially verified locally at `http://127.0.0.1:3106`. Successful external payments were not submitted; checkout requests in regression tests were intercepted.
+- On the user's follow-up request for remote access, deployed Vercel preview `dpl_8G6pYxmDf4MADbWynXYAm2yQrgKS`: [preview](https://nate-the-great-1c2lgjvso-atkinsmatt10s-projects.vercel.app). Vercel reported `READY` with target `null`; the cloud build and TypeScript checks passed. A temporary share link opened the revised homepage without a login prompt. Production was not promoted.
+- Reviewed README/AGENTS relevance: setup, APIs, release instructions, and operational contracts do not change. Updated only this task's context, scope, design, and verification records.
+
 # Homepage Video Hero
 
 - [x] Reframe the approved slice in [tasks/context/homepage-video-hero.md](/Users/Matt.Atkins/Code/go-nate-go-1/tasks/context/homepage-video-hero.md)

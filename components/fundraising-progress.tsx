@@ -51,9 +51,9 @@ function getDonationStatusMessage(hasError: boolean, isLoading: boolean, data?: 
       month: "short", day: "numeric", hour: "numeric", minute: "2-digit",
       timeZone: "America/New_York", timeZoneName: "short",
     }).format(new Date(data.lastUpdated))
-    return `Showing the last confirmed total, updated ${updated}. Live updates are temporarily unavailable.`
+    return `Showing the last confirmed total from ${updated}. Live updates are temporarily unavailable.`
   }
-  return isLoading ? "Updating the live fundraising total." : "Live fundraising total updated."
+  return isLoading ? "Updating fundraising total…" : "Fundraising total updated."
 }
 
 export function FundraisingProgress({ initialData }: FundraisingProgressProps = {}): JSX.Element {
@@ -99,11 +99,11 @@ export function FundraisingProgress({ initialData }: FundraisingProgressProps = 
               Fundraising for CHOP
             </p>
             <h2 className="mt-5 text-5xl leading-[0.95] tracking-tight text-foreground sm:text-6xl lg:text-7xl">
-              Every Dollar Is a Cheer
+              For the Next Child
             </h2>
             <p className="mx-auto mt-7 max-w-4xl text-lg leading-8 text-muted-foreground md:text-xl md:leading-9">
-              We&apos;re raising money to honor the care that saved Nate, help families spot concerning signs sooner,
-              and fund research so better treatments exist for the next child who needs them.
+              CHOP saved Nate&apos;s life. We&apos;re raising money for childhood cancer care and research
+              so more families can share our hope.
             </p>
           </header>
 
@@ -175,7 +175,6 @@ export function FundraisingProgress({ initialData }: FundraisingProgressProps = 
               /> : "— "}
               <span aria-hidden="true"> donations</span>
             </span>
-            <span>from amazing supporters</span>
           </div>
 
           <p className={hasError || data?.stale || !data ? "mt-4 text-sm text-muted-foreground" : "sr-only"} role="status">
@@ -187,7 +186,7 @@ export function FundraisingProgress({ initialData }: FundraisingProgressProps = 
             size="lg"
             className="mt-10 h-16 rounded-[18px] px-10 text-lg font-bold shadow-[0_16px_32px_rgb(20_43_64_/_20%)] transition-[box-shadow,transform] duration-150 ease-snappy-out hover:shadow-[0_20px_38px_rgb(20_43_64_/_28%)] active:scale-[0.98] sm:text-xl"
           >
-            <Link href="https://chop.donordrive.com/teams/nate-the-great" prefetch={false}>Donate Directly</Link>
+            <Link href="https://chop.donordrive.com/teams/nate-the-great" prefetch={false}>Donate to CHOP</Link>
           </Button>
         </div>
       </div>
