@@ -34,7 +34,7 @@ function getFirstQueryValue(value?: string | string[]): string | undefined {
 function getDefaultReturnPageState(): ReturnPageState {
   return {
     title: "Donation Status",
-    detail: "We couldn't determine your payment status yet.",
+    detail: "We couldn't confirm your payment status.",
     amountText: "",
     iconVariant: "warning",
   }
@@ -51,7 +51,7 @@ async function buildCheckoutSessionState(sessionId: string): Promise<ReturnPageS
   if (checkoutSession.status === "complete" && checkoutSession.payment_status === "paid") {
     return {
       title: "Donation Complete",
-      detail: "Thank you for your donation. Stripe marked this checkout session as paid.",
+      detail: "Thank you for your donation. Your payment is complete.",
       amountText,
       iconVariant: "success",
     }
@@ -60,7 +60,7 @@ async function buildCheckoutSessionState(sessionId: string): Promise<ReturnPageS
   if (checkoutSession.status === "complete") {
     return {
       title: "Donation Processing",
-      detail: "Your donation was submitted and Stripe is still finalizing payment.",
+      detail: "Your donation was submitted. Payment is still processing.",
       amountText,
       iconVariant: "processing",
     }
@@ -69,7 +69,7 @@ async function buildCheckoutSessionState(sessionId: string): Promise<ReturnPageS
   if (checkoutSession.status === "open") {
     return {
       title: "Donation Not Completed",
-      detail: "The checkout session is still open and payment has not been completed yet.",
+      detail: "Your payment has not been completed.",
       amountText,
       iconVariant: "failure",
     }
@@ -77,7 +77,7 @@ async function buildCheckoutSessionState(sessionId: string): Promise<ReturnPageS
 
   return {
     title: "Checkout Expired",
-    detail: "This checkout session expired before the donation was completed.",
+    detail: "Your checkout expired before payment was completed.",
     amountText,
     iconVariant: "failure",
   }
@@ -93,7 +93,7 @@ async function buildPaymentIntentState(paymentIntentId: string): Promise<ReturnP
   if (paymentIntent.status === "succeeded") {
     return {
       title: "Donation Complete",
-      detail: "Thank you for your donation. Your payment was successful.",
+      detail: "Thank you for your donation. Your payment is complete.",
       amountText,
       iconVariant: "success",
     }
@@ -102,7 +102,7 @@ async function buildPaymentIntentState(paymentIntentId: string): Promise<ReturnP
   if (paymentIntent.status === "processing") {
     return {
       title: "Donation Processing",
-      detail: "Your payment is processing. Stripe will finalize this shortly.",
+      detail: "Your payment is still processing.",
       amountText,
       iconVariant: "processing",
     }
@@ -110,8 +110,8 @@ async function buildPaymentIntentState(paymentIntentId: string): Promise<ReturnP
 
   if (paymentIntent.status === "requires_action") {
     return {
-      title: "Additional Authentication Required",
-      detail: "Stripe needs extra authentication to complete this donation.",
+      title: "Payment Verification Required",
+      detail: "Your payment needs additional verification.",
       amountText,
       iconVariant: "warning",
     }
@@ -120,7 +120,7 @@ async function buildPaymentIntentState(paymentIntentId: string): Promise<ReturnP
   if (paymentIntent.status === "requires_payment_method") {
     return {
       title: "Payment Not Completed",
-      detail: "A valid payment method is still required to complete this donation.",
+      detail: "A valid payment method is required to complete your donation.",
       amountText,
       iconVariant: "failure",
     }
@@ -129,7 +129,7 @@ async function buildPaymentIntentState(paymentIntentId: string): Promise<ReturnP
   if (paymentIntent.status === "canceled") {
     return {
       title: "Payment Canceled",
-      detail: "This donation payment intent was canceled.",
+      detail: "Your payment was canceled.",
       amountText,
       iconVariant: "failure",
     }
@@ -137,7 +137,7 @@ async function buildPaymentIntentState(paymentIntentId: string): Promise<ReturnP
 
   return {
     title: "Donation Status",
-    detail: "Stripe returned a payment state that still needs review.",
+    detail: "We couldn't confirm your payment status.",
     amountText,
     iconVariant: "warning",
   }
@@ -163,7 +163,7 @@ function DonateReturnLoading() {
           />
           <h1 className="mt-6 text-3xl md:text-4xl">Checking Donation Status</h1>
           <p className="mt-3 text-base text-muted-foreground">
-            Securely confirming the latest payment details with Stripe.
+            Confirming your payment status with Stripe.
           </p>
         </div>
       </div>
@@ -189,7 +189,7 @@ async function DonationReturnStatus({ searchParams }: DonateReturnPageProps) {
   let returnPageState = getDefaultReturnPageState()
 
   if (!sessionId && !paymentIntentId) {
-    returnPageState.detail = "Missing session_id or payment_intent in the return URL."
+    returnPageState.detail = "This link is missing the details needed to check your donation."
   } else {
     try {
       returnPageState = sessionId
@@ -277,7 +277,7 @@ async function DonationReturnStatus({ searchParams }: DonateReturnPageProps) {
               className="h-11 rounded-xl border-border bg-background/40 hover:bg-background/70"
             >
               <Link href="/" transitionTypes={["nav-back"]}>
-                Back to Home
+                Back Home
               </Link>
             </Button>
           </div>

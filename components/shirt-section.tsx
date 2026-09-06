@@ -148,7 +148,7 @@ export function ShirtSection() {
                         src={merchandiseItems[currentImage].src}
                         width={500}
                         height={500}
-                        alt={`${merchandiseItems[currentImage].alt} - Click to shop`}
+                        alt={`Shop ${merchandiseItems[currentImage].alt}`}
                         className="w-full h-full object-contain object-center transition-transform duration-200 ease-snappy-out group-hover:scale-[1.02]"
                         quality={85}
                         sizes="(max-width: 768px) 100vw, 500px"
@@ -159,7 +159,7 @@ export function ShirtSection() {
                           <div className="text-center">
                             <div className="text-primary text-lg font-bold">{merchandiseItems[currentImage].price}</div>
                             <div className="flex items-center gap-1 text-xs text-gray-600">
-                              🛒 Click to shop
+                              Shop this item
                             </div>
                           </div>
                         </div>
@@ -217,17 +217,17 @@ export function ShirtSection() {
           >
             <div className="space-y-3">
               <h2 className="text-4xl font-bold tracking-tighter sm:text-5xl text-foreground">
-                Join the Natey Shark Team
+                Team Natey Shark
               </h2>
               <div className="flex justify-start">
                 <div className="rounded-full border border-slate-300/30 bg-slate-700/90 px-3 py-1 text-sm font-medium text-white backdrop-blur-xs transition-[background-color,border-color] duration-200 ease-snappy-out hover:border-slate-300/50 hover:bg-slate-600/90">
-                  100+ shirts from amazing supporters
+                  100+ shirts supporting Nate
                 </div>
               </div>
             </div>
             
             <p className="text-muted-foreground md:text-lg/relaxed">
-              Inspired by his family nickname, &apos;Natey Shark,&apos; our merchandise collection represents our son&apos;s incredible strength and fun-loving spirit. By wearing any of these items, you become part of our team, spreading awareness and showing your support for Nate wherever you go. All proceeds help fund the vital cancer research at CHOP that gives our family so much hope.
+              Our nickname for Nate inspired this collection, celebrating his strength and playful spirit.
             </p>
             
             {/* CHOP logo highlight */}
@@ -241,7 +241,7 @@ export function ShirtSection() {
               />
               <div>
                 <p className="font-semibold text-primary text-sm sm:text-base">100% of proceeds</p>
-                <p className="text-xs sm:text-sm text-muted-foreground">go directly to childhood cancer research</p>
+                <p className="text-xs sm:text-sm text-muted-foreground">fund childhood cancer research at CHOP</p>
               </div>
             </div>
             
@@ -256,7 +256,7 @@ export function ShirtSection() {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  Buy Now
+                  Shop Natey Shark
                 </a>
               </Button>
             </div>
