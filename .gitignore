@@ -30,3 +30,6 @@ next-env.d.ts
 /test-results/
 /playwright-report/
 /.playwright-cli/
+
+# Reproducible modernization measurements and screenshots
+/output/modernization/

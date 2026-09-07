@@ -2,7 +2,8 @@
 
 import { useEffect, useState, useRef } from "react"
 import Image from "next/image"
-import { motion, AnimatePresence, useInView } from "framer-motion"
+import { AnimatePresence, useInView } from "motion/react"
+import * as m from "motion/react-m"
 import { Button } from "@/components/ui/button"
 import { useHapticFeedback } from "@/hooks/use-haptic-feedback"
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion"
@@ -44,6 +45,7 @@ export function ShirtSection() {
   const [currentImage, setCurrentImage] = useState(0)
   const [direction, setDirection] = useState(0)
   const sectionRef = useRef<HTMLElement>(null)
+  const hasDragged = useRef(false)
   const isInView = useInView(sectionRef, { amount: 0.25 })
   const [isPaused, setIsPaused] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
@@ -93,7 +95,7 @@ export function ShirtSection() {
     <section ref={sectionRef} id="shirt" className="w-full py-16 md:py-24 lg:py-32 bg-secondary">
       <div className="container px-4 md:px-6">
         <div className="grid items-center gap-6 lg:grid-cols-2 lg:gap-12">
-          <motion.div
+          <m.div
             className="relative"
             {...getRevealProps(prefersReducedMotion, { distance: 12 })}
           >
@@ -109,7 +111,8 @@ export function ShirtSection() {
             >
               <div className="relative aspect-square overflow-hidden rounded-2xl shadow-lg">
                 <AnimatePresence initial={false} custom={direction}>
-                  <motion.div
+                  <m.div
+                    data-motion-reveal
                     key={currentImage}
                     custom={direction}
                     variants={slideVariants}
@@ -120,6 +123,8 @@ export function ShirtSection() {
                     drag="x"
                     dragConstraints={{ left: 0, right: 0 }}
                     dragElastic={prefersReducedMotion ? 0.05 : 0.18}
+                    onPointerDownCapture={() => { hasDragged.current = false }}
+                    onDragStart={() => { hasDragged.current = true }}
                     onDragEnd={(e, { offset, velocity }) => {
                       const swipe = swipePower(offset.x, velocity.x)
 
@@ -140,12 +145,17 @@ export function ShirtSection() {
                   >
                     <a
                       href={merchandiseItems[currentImage].productUrl}
+                      draggable={false}
+                      onClick={(event) => {
+                        if (hasDragged.current && event.detail > 0) event.preventDefault()
+                      }}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="cursor-pointer group w-full h-full block"
                     >
                       <Image
                         src={merchandiseItems[currentImage].src}
+                        draggable={false}
                         width={500}
                         height={500}
                         alt={`Shop ${merchandiseItems[currentImage].alt}`}
@@ -165,7 +175,7 @@ export function ShirtSection() {
                         </div>
                       </div>
                     </a>
-                  </motion.div>
+                  </m.div>
                 </AnimatePresence>
               </div>
               
@@ -182,7 +192,7 @@ export function ShirtSection() {
               {/* Carousel Indicators */}
               <div className="flex justify-center space-x-2 mt-4">
                 {merchandiseItems.map((_, index) => (
-                  <motion.button
+                  <m.button
                     key={index}
                     onClick={() => handleImageClick(index)}
                     className={`w-2 h-2 rounded-full transition-colors duration-200 ${
@@ -209,9 +219,9 @@ export function ShirtSection() {
                 </button>
               )}
             </div>
-          </motion.div>
+          </m.div>
           
-          <motion.div
+          <m.div
             className="space-y-4"
             {...getRevealProps(prefersReducedMotion, { delay: 0.06 })}
           >
@@ -260,7 +270,7 @@ export function ShirtSection() {
                 </a>
               </Button>
             </div>
-          </motion.div>
+          </m.div>
         </div>
       </div>
     </section>

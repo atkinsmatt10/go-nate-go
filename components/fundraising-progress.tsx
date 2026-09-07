@@ -3,7 +3,7 @@
 import type { JSX } from "react"
 import { useEffect, useRef } from "react"
 import NumberFlow, { type Format } from "@number-flow/react"
-import { motion, useInView } from "framer-motion"
+import { useInView } from "motion/react"
 import Image from "next/image"
 import Link from "next/link"
 import useSWR from "swr"
@@ -85,9 +85,10 @@ export function FundraisingProgress({ initialData }: FundraisingProgressProps = 
   const hasError = error !== undefined
   const progressPercentage = getProgressPercentage(raised, goal)
   const sharkPosition = Math.min(Math.max(progressPercentage, 4), 96)
-  const progressTransition = prefersReducedMotion
-    ? { duration: 0 }
-    : { duration: 0.9, ease: [0.23, 1, 0.32, 1] as const }
+  const progressTransition = {
+    transitionDuration: prefersReducedMotion ? "0ms" : "900ms",
+    transitionTimingFunction: "cubic-bezier(0.23, 1, 0.32, 1)",
+  }
   const donationStatusMessage = getDonationStatusMessage(hasError, isLoading, data)
 
   return (
@@ -127,15 +128,13 @@ export function FundraisingProgress({ initialData }: FundraisingProgressProps = 
 
           <div className="mt-12 w-full max-w-4xl sm:mt-14">
             <div className="relative pt-16 sm:pt-20">
-              <motion.div
+              <div
                 aria-hidden="true"
-                animate={{ left: `${sharkPosition}%` }}
                 className="absolute top-0 z-10 h-20 w-20 -translate-x-1/2 drop-shadow-[0_12px_18px_rgb(20_43_64_/_28%)] sm:h-24 sm:w-24"
-                initial={false}
-                transition={progressTransition}
+                style={{ left: `${sharkPosition}%`, transitionProperty: "left", ...progressTransition }}
               >
                 <Image src="/nate shark.png" alt="" fill className="object-contain object-bottom" sizes="96px" />
-              </motion.div>
+              </div>
 
               <div
                 role="progressbar"
@@ -146,15 +145,15 @@ export function FundraisingProgress({ initialData }: FundraisingProgressProps = 
                 aria-valuetext={data ? `${CURRENCY_FORMATTER.format(raised)} raised of ${CURRENCY_FORMATTER.format(goal)}` : "Total temporarily unavailable"}
                 className="relative h-6 overflow-hidden rounded-full border border-white/25 bg-secondary/65 shadow-inner"
               >
-                <motion.div
-                  animate={{ width: `${progressPercentage}%` }}
+                <div
                   className="h-full rounded-full bg-primary"
-                  initial={false}
                   style={{
+                    width: `${progressPercentage}%`,
+                    transitionProperty: "width",
+                    ...progressTransition,
                     backgroundImage:
                       "repeating-linear-gradient(130deg, rgb(255 255 255 / 0.03) 0 18px, rgb(255 255 255 / 0.15) 18px 36px)",
                   }}
-                  transition={progressTransition}
                 />
               </div>
             </div>
