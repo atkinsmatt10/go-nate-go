@@ -1,4 +1,4 @@
-import type { MotionProps, Transition, Variants } from "framer-motion"
+import type { MotionProps, Transition, Variants } from "motion/react"
 
 export const MOTION_EASE_OUT = [0.23, 1, 0.32, 1] as const
 
@@ -18,17 +18,19 @@ interface ScaleInOptions {
 export function getRevealProps(
   prefersReducedMotion: boolean,
   options: RevealOptions = {}
-): Pick<MotionProps, "initial" | "whileInView" | "viewport" | "transition"> {
+): Pick<MotionProps, "initial" | "whileInView" | "viewport" | "transition"> & { "data-motion-reveal": true } {
   const { delay = 0, distance = 18, duration = 0.28, margin = "-72px" } = options
 
   return prefersReducedMotion
     ? {
+        "data-motion-reveal": true,
         initial: { opacity: 0 },
         whileInView: { opacity: 1 },
         viewport: { once: true, margin },
         transition: { duration: 0.18, delay },
       }
     : {
+        "data-motion-reveal": true,
         initial: { opacity: 0, transform: `translate3d(0, ${distance}px, 0)` },
         whileInView: { opacity: 1, transform: "translate3d(0, 0, 0)" },
         viewport: { once: true, margin },
@@ -39,16 +41,18 @@ export function getRevealProps(
 export function getPageRevealProps(
   prefersReducedMotion: boolean,
   options: RevealOptions = {}
-): Pick<MotionProps, "initial" | "animate" | "transition"> {
+): Pick<MotionProps, "initial" | "animate" | "transition"> & { "data-motion-reveal": true } {
   const { delay = 0, distance = 18, duration = 0.28 } = options
 
   return prefersReducedMotion
     ? {
+        "data-motion-reveal": true,
         initial: { opacity: 0 },
         animate: { opacity: 1 },
         transition: { duration: 0.18, delay },
       }
     : {
+        "data-motion-reveal": true,
         initial: { opacity: 0, transform: `translate3d(0, ${distance}px, 0)` },
         animate: { opacity: 1, transform: "translate3d(0, 0, 0)" },
         transition: { duration, delay, ease: MOTION_EASE_OUT },
@@ -58,16 +62,18 @@ export function getPageRevealProps(
 export function getScaleInProps(
   prefersReducedMotion: boolean,
   options: ScaleInOptions = {}
-): Pick<MotionProps, "initial" | "animate" | "transition"> {
+): Pick<MotionProps, "initial" | "animate" | "transition"> & { "data-motion-reveal": true } {
   const { delay = 0, duration = 0.24, scale = 0.97 } = options
 
   return prefersReducedMotion
     ? {
+        "data-motion-reveal": true,
         initial: { opacity: 0 },
         animate: { opacity: 1 },
         transition: { duration: 0.18, delay },
       }
     : {
+        "data-motion-reveal": true,
         initial: { opacity: 0, transform: `scale(${scale})` },
         animate: { opacity: 1, transform: "scale(1)" },
         transition: { duration, delay, ease: MOTION_EASE_OUT },

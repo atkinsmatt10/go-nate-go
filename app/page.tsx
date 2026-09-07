@@ -10,6 +10,7 @@ import { SharingNatesStory } from "@/components/sharing-nates-story"
 import { ShirtSection } from "@/components/shirt-section"
 import { Footer } from "@/components/footer"
 import { PageTransition } from "@/components/page-transition"
+import { MotionProvider } from "@/components/motion-provider"
 import { getDonationProgress } from "@/lib/donations"
 
 export const viewport: Viewport = {
@@ -31,11 +32,13 @@ export default function Component(): JSX.Element {
           <HeroSection />
           <CampaignMarquee />
           <NatesStory />
-          <Suspense fallback={<FundraisingProgress />}>
-            <LiveFundraisingProgress />
-          </Suspense>
-          <ShirtSection />
-          <SharingNatesStory />
+          <MotionProvider defer>
+            <Suspense fallback={<FundraisingProgress />}>
+              <LiveFundraisingProgress />
+            </Suspense>
+            <ShirtSection />
+            <SharingNatesStory />
+          </MotionProvider>
         </main>
         <Footer />
       </div>

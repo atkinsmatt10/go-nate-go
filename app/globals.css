@@ -1,5 +1,10 @@
 @import 'tailwindcss';
 
+[data-motion-state="failed"] [data-motion-reveal] {
+  opacity: 1 !important;
+  transform: none !important;
+}
+
 /* Let the hero reach behind Safari's status bar while keeping content in the safe area. */
 html:has(.home-page),
 body:has(.home-page) {

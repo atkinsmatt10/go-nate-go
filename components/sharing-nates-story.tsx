@@ -1,7 +1,8 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
-import { motion, useInView } from "framer-motion"
+import { useInView } from "motion/react"
+import * as m from "motion/react-m"
 import Image from "next/image"
 import dynamic from "next/dynamic"
 import Script from "next/script"
@@ -277,12 +278,12 @@ export function SharingNatesStory() {
       {/* Content with top padding to account for wave */}
       <div className="relative pt-[60px] md:pt-[80px] lg:pt-[100px] pb-16 md:pb-24 lg:pb-32">
         <div className="container px-4 md:px-6">
-          <motion.div
+          <m.div
             className="max-w-7xl mx-auto space-y-12"
             {...getRevealProps(prefersReducedMotion, { distance: 0, duration: 0.22, margin: "-100px" })}
           >
             {/* Section Header */}
-            <motion.div
+            <m.div
               className="text-center space-y-4"
               {...getRevealProps(prefersReducedMotion, { delay: 0.04, margin: "-50px" })}
             >
@@ -295,16 +296,16 @@ export function SharingNatesStory() {
               <p className="text-muted-foreground md:text-lg max-w-2xl mx-auto">
                 By sharing Nate&apos;s story, we hope to help other families recognize concerning signs sooner.
               </p>
-            </motion.div>
+            </m.div>
 
               {/* Social Media Grid */}
-              <motion.div
+              <m.div
                 className="columns-1 sm:columns-2 lg:columns-3 gap-6"
                 {...getRevealProps(prefersReducedMotion, { delay: 0.08, margin: "-50px" })}
               >
               {/* X/Twitter Posts */}
               {tweetIds.map((tweetId, index) => (
-                <motion.div
+                <m.div
                   key={`tweet-${tweetId}`}
                   className="break-inside-avoid mb-6"
                   {...getRevealProps(prefersReducedMotion, { delay: 0.1 + index * 0.04 })}
@@ -312,12 +313,12 @@ export function SharingNatesStory() {
                   <div className="w-full">
                     <XPostEmbed id={tweetId} scriptStatus={xScriptStatus} />
                   </div>
-                </motion.div>
+                </m.div>
               ))}
 
               {/* Instagram Posts */}
               {instagramUrls.map((url, index) => (
-                <motion.div
+                <m.div
                   key={url}
                   className="break-inside-avoid mb-6"
                   {...getRevealProps(prefersReducedMotion, { delay: 0.16 + index * 0.04 })}
@@ -327,23 +328,23 @@ export function SharingNatesStory() {
                       <AccessibleInstagramPost url={url} title={`Instagram post about Nate ${index + 1}`} load={loadEmbeds} />
                     </div>
                   </div>
-                </motion.div>
+                </m.div>
               ))}
 
               {/* LinkedIn Posts */}
               {linkedInUrls.map((url, index) => (
-                <motion.div
+                <m.div
                   key={`linkedin-${index}`}
                   className="break-inside-avoid mb-6"
                   {...getRevealProps(prefersReducedMotion, { delay: 0.22 + index * 0.04 })}
                 >
                   <LinkedInEmbed url={url} />
-                </motion.div>
+                </m.div>
               ))}
 
               {/* Substack Posts */}
               {substackPosts.map((post, index) => (
-                <motion.div
+                <m.div
                   key={`substack-${index}`}
                   className="break-inside-avoid mb-6"
                   {...getRevealProps(prefersReducedMotion, { delay: 0.18 + index * 0.04 })}
@@ -357,10 +358,10 @@ export function SharingNatesStory() {
                       date={post.date}
                     />
 
-                </motion.div>
+                </m.div>
               ))}
-            </motion.div>
-          </motion.div>
+            </m.div>
+          </m.div>
         </div>
       </div>
     </section>

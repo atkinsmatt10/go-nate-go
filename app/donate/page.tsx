@@ -15,9 +15,11 @@ import {
   type StripeCheckoutPaymentElementOptions,
   type StripeExpressCheckoutElementConfirmEvent,
 } from "@stripe/stripe-js"
-import { motion, type Variants } from "framer-motion"
+import type { Variants } from "motion/react"
+import * as m from "motion/react-m"
 import { ArrowLeft, Gift, Heart, Mail, Sparkles, Stethoscope } from "lucide-react"
 import { PageTransition } from "@/components/page-transition"
+import { MotionProvider } from "@/components/motion-provider"
 import { Button } from "@/components/ui/button"
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion"
 import { MOTION_EASE_OUT } from "@/lib/motion"
@@ -635,6 +637,7 @@ export default function DonatePage() {
   ])
 
   return (
+    <MotionProvider>
     <PageTransition>
       <main className="relative min-h-dvh overflow-hidden bg-[#f4fbff] text-[#1f3147]">
       <a
@@ -661,13 +664,13 @@ export default function DonatePage() {
         />
       </div>
 
-      <motion.div
+      <m.div
         className="relative mx-auto w-full max-w-6xl px-4 pb-10 pt-4 sm:px-6 sm:pt-6 lg:pb-16 lg:pt-8"
         variants={prefersReducedMotion ? undefined : staggerParentVariants}
         initial={false}
         animate="show"
       >
-        <motion.header
+        <m.header
           className="mb-6 flex items-center justify-between lg:mb-8"
           variants={prefersReducedMotion ? undefined : revealChildVariants}
         >
@@ -688,10 +691,10 @@ export default function DonatePage() {
             className="h-auto w-[126px] sm:w-[164px]"
             preload
           />
-        </motion.header>
+        </m.header>
 
         <div className="grid items-start gap-6 lg:grid-cols-[1.1fr_0.95fr] lg:gap-8">
-          <motion.section
+          <m.section
             className="order-2 relative overflow-hidden rounded-4xl border border-[#b6cfdf] bg-white/84 p-5 shadow-[0_24px_60px_rgba(34,59,84,0.2)] backdrop-blur-xs sm:p-7 lg:order-1"
             variants={prefersReducedMotion ? undefined : revealChildVariants}
           >
@@ -720,7 +723,7 @@ export default function DonatePage() {
                 const Icon = item.icon
 
                 return (
-                  <motion.article
+                  <m.article
                     key={item.title}
                     className="rounded-2xl border border-white/80 bg-white/85 p-3 shadow-[0_10px_24px_rgba(34,59,84,0.12)]"
                     style={{
@@ -743,7 +746,7 @@ export default function DonatePage() {
                     </span>
                     <h3 className="text-lg leading-tight text-[#20384f]">{item.title}</h3>
                     <p className="mt-1 text-sm text-[#4a637b]">{item.description}</p>
-                  </motion.article>
+                  </m.article>
                 )
               })}
             </div>
@@ -765,9 +768,9 @@ export default function DonatePage() {
                 </p>
               </div>
             </div>
-          </motion.section>
+          </m.section>
 
-          <motion.section
+          <m.section
             id="donation-form"
             className="order-1 relative scroll-mt-24 overflow-hidden rounded-4xl border border-[#aac6d9] bg-white/92 p-5 shadow-[0_24px_56px_rgba(34,59,84,0.22)] backdrop-blur-xs sm:p-6 lg:order-2"
             variants={prefersReducedMotion ? undefined : revealChildVariants}
@@ -950,10 +953,11 @@ export default function DonatePage() {
                 ) : null}
               </div>
             </div>
-          </motion.section>
+          </m.section>
         </div>
-      </motion.div>
+      </m.div>
       </main>
     </PageTransition>
+    </MotionProvider>
   )
 }

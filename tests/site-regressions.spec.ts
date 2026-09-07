@@ -56,11 +56,27 @@ test("hero loads a poster but no video or social provider requests before Play",
 test.describe("without JavaScript", () => {
   test.use({ javaScriptEnabled: false, viewport: { width: 390, height: 844 } })
 
-  test("hero and primary donation links remain visible", async ({ page }) => {
+  test("hero and fundraising donation links remain visible", async ({ page }) => {
     await page.goto("/")
     await expect(page.getByRole("heading", { level: 1 })).toBeVisible()
     await expect(page.locator(".hero-section").getByRole("link", { name: "Donate to CHOP", exact: true })).toBeVisible()
     await expect(page.getByAltText("Nate with his family in the story video")).toBeVisible()
+    const fundraisingSection = page.locator("#donate:visible")
+    await fundraisingSection.scrollIntoViewIfNeeded()
+    await expect(fundraisingSection.getByRole("heading", { name: "For the Next Child" })).toBeVisible()
+    await expect(fundraisingSection.getByRole("link", { name: "Donate to CHOP", exact: true })).toBeVisible()
+    await expect(fundraisingSection.getByRole("link", { name: "Donate to CHOP", exact: true }))
+      .toHaveAttribute("href", "https://chop.donordrive.com/teams/nate-the-great")
+    const merchandiseHeading = page.getByRole("heading", { name: "Team Natey Shark", exact: true })
+    await merchandiseHeading.scrollIntoViewIfNeeded()
+    const opacity = await merchandiseHeading.evaluate((element) => {
+      let visibleOpacity = 1
+      for (let parent: Element | null = element; parent; parent = parent.parentElement) {
+        visibleOpacity *= Number(getComputedStyle(parent).opacity)
+      }
+      return visibleOpacity
+    })
+    expect(opacity).toBe(1)
   })
 })
 
@@ -73,6 +89,107 @@ test("reduced motion keeps the merchandise carousel still", async ({ page }) => 
   await page.waitForTimeout(5_500)
   await expect(selected).toHaveAttribute("aria-label", label!)
   await expect(page.getByRole("button", { name: "Pause slideshow" })).toHaveCount(0)
+})
+
+test("merchandise selection works by keyboard with reduced motion", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" })
+  await page.goto("/")
+  const merchandise = page.locator("#shirt")
+  await merchandise.scrollIntoViewIfNeeded()
+
+  const beanie = merchandise.getByRole("button", { name: "Go to Nate the Great Thermal Waffle Beanie" })
+  await beanie.focus()
+  await beanie.press("Space")
+  await expect(beanie).toHaveAttribute("aria-pressed", "true")
+  await expect(merchandise.getByRole("heading", { name: "Nate the Great Thermal Waffle Beanie", exact: true })).toBeVisible()
+  await expect(merchandise.getByAltText("Shop Nate the Great Thermal Waffle Beanie")).toBeVisible()
+  await expect(merchandise.locator('a[href="https://shop.gonatego.com/products/waffle-beanie"]')).toBeVisible()
+
+  const shirt = merchandise.getByRole("button", { name: "Go to Nate the Great Heavyweight Tee" })
+  await shirt.focus()
+  await shirt.press("Enter")
+  await expect(shirt).toHaveAttribute("aria-pressed", "true")
+  await expect(merchandise.getByAltText("Shop Nate the Great Heavyweight Tee")).toBeVisible()
+  await expect(merchandise.locator('button[aria-pressed="true"]')).toHaveCount(1)
+})
+
+test("merchandise drag advances the product and a click opens its shop link", async ({ page }) => {
+  await page.context().route("https://shop.gonatego.com/**", (route) => route.fulfill({ body: "Test shop destination" }))
+  await page.goto("/")
+  const merchandise = page.locator("#shirt")
+  await merchandise.scrollIntoViewIfNeeded()
+  await merchandise.getByRole("button", { name: "Pause slideshow" }).click()
+  const firstProduct = merchandise.getByAltText("Shop Nate the Great Heavyweight Tee")
+  await firstProduct.scrollIntoViewIfNeeded()
+  await firstProduct.click({ trial: true }) // Wait for stable, actionable geometry without activating the link.
+  const box = await firstProduct.boundingBox()
+  if (!box) throw new Error("The merchandise image must be visible for the swipe interaction")
+
+  const startX = box.x + box.width * 0.8
+  const y = box.y + box.height * 0.5
+  const pagesBeforeDrag = page.context().pages().length
+  await page.mouse.move(startX, y)
+  await page.mouse.down()
+  for (let step = 1; step <= 8; step++) {
+    await page.mouse.move(startX - box.width * 0.65 * step / 8, y)
+    await page.waitForTimeout(16) // Frame-paced movement produces a realistic swipe velocity.
+  }
+  await page.mouse.up()
+
+  await expect(merchandise.getByRole("button", { name: "Go to Nate the Great Premium Midweight Crew" }))
+    .toHaveAttribute("aria-pressed", "true")
+  await expect(merchandise.getByRole("heading", { name: "Nate the Great Premium Midweight Crew", exact: true })).toBeVisible()
+  expect(page.context().pages()).toHaveLength(pagesBeforeDrag)
+
+  const productLink = merchandise.locator('a[href="https://shop.gonatego.com/products/unisex-premium-sweatshirt"]')
+  for (const activation of ["keyboard", "pointer"]) {
+    const shopPagePromise = page.waitForEvent("popup")
+    if (activation === "keyboard") {
+      // No new pointerdown: keyboard activation must work immediately after a drag.
+      await productLink.focus()
+      await productLink.press("Enter")
+    } else {
+      await productLink.click()
+    }
+    const shopPage = await shopPagePromise
+    await expect(shopPage).toHaveURL("https://shop.gonatego.com/products/unisex-premium-sweatshirt")
+    await shopPage.close()
+  }
+})
+
+test.describe("touchscreen merchandise", () => {
+  test.use({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true })
+
+  test("a horizontal touch swipe advances the product", async ({ page }) => {
+    await page.goto("/")
+    const merchandise = page.locator("#shirt")
+    await merchandise.scrollIntoViewIfNeeded()
+    await merchandise.getByRole("button", { name: "Pause slideshow" }).tap()
+    const firstProduct = merchandise.getByAltText("Shop Nate the Great Heavyweight Tee")
+    await firstProduct.scrollIntoViewIfNeeded()
+    await firstProduct.tap({ trial: true })
+    const box = await firstProduct.boundingBox()
+    if (!box) throw new Error("The merchandise image must be visible for the touch interaction")
+
+    const x = box.x + box.width * 0.8
+    const y = box.y + box.height * 0.5
+    // The Chrome test project uses trusted browser input, not dispatched DOM events.
+    const input = await page.context().newCDPSession(page)
+    await input.send("Input.dispatchTouchEvent", { type: "touchStart", touchPoints: [{ x, y }] })
+    for (let step = 1; step <= 8; step++) {
+      await input.send("Input.dispatchTouchEvent", {
+        type: "touchMove",
+        touchPoints: [{ x: x - box.width * 0.65 * step / 8, y }],
+      })
+      await page.waitForTimeout(16)
+    }
+    await input.send("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [] })
+    await input.detach()
+
+    await expect(merchandise.getByRole("button", { name: "Go to Nate the Great Premium Midweight Crew" }))
+      .toHaveAttribute("aria-pressed", "true")
+    await expect(merchandise.getByAltText("Shop Nate the Great Premium Midweight Crew")).toBeVisible()
+  })
 })
 
 test("polling pauses offscreen and failures retain the last confirmed total", async ({ page }) => {
