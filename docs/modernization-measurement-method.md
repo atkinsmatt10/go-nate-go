@@ -64,7 +64,7 @@ All external browser requests are aborted. `/api/donations` returns the same fix
 
 ## Preserved baseline
 
-Hardware: Apple M1, 8 logical CPUs, 16GiB memory, macOS/arm64; Node 26.8.1; Chrome 152.0.7977.83. The recorded baseline and provisional `after` files have identical hardware, browser version, and browser configuration. Baseline browser capture completed at `2026-09-07T21:15:16.921Z`.
+Hardware: Apple M1, 8 logical CPUs, 16GiB memory, macOS/arm64; Node 26.8.1; Chrome 152.0.7977.83. The recorded baseline, accepted `final`, and `compiler` files have identical hardware, browser version, and browser configuration. Baseline browser capture completed at `2026-09-07T21:15:16.921Z`.
 
 | Median metric | Home | Donate |
 | --- | ---: | ---: |
@@ -78,11 +78,11 @@ Hardware: Apple M1, 8 logical CPUs, 16GiB memory, macOS/arm64; Node 26.8.1; Chro
 | Lab input-to-second-frame latency | 46.3ms | 47.5ms |
 | Lab Event Timing maximum per tap | 40ms | 32ms |
 
-| Development timing | Baseline runs, seconds | Baseline median | Provisional `after` median |
+| Development timing | Baseline runs, seconds | Baseline median | Accepted `final` median |
 | --- | --- | ---: | ---: |
-| Clean webpack production build | 19.64 / 19.69 / 18.69 | 19.64s | 20.60s |
-| Cold standalone type check | 4.72 / 4.01 / 4.00 | 4.01s | 1.55s |
-| Warm standalone type check | 2.40 / 2.38 / 2.38 | 2.38s | 1.20s |
+| Clean webpack production build | 19.64 / 19.69 / 18.69 | 19.64s | 19.37s |
+| Cold standalone type check | 4.72 / 4.01 / 4.00 | 4.01s | 1.56s |
+| Warm standalone type check | 2.40 / 2.38 / 2.38 | 2.38s | 1.19s |
 
 ## Interpretation limits
 
