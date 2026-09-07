@@ -15,15 +15,23 @@ if (!["localhost", "127.0.0.1", "[::1]"].includes(baseUrl.hostname)) {
 const outDir = path.resolve(flags.out ?? path.join(projectRoot, "output", "modernization", "motion-loading"))
 const require = createRequire(path.join(projectRoot, "package.json"))
 const { chromium } = require("@playwright/test")
-const manifestKey = "components/motion-provider.tsx -> @/lib/motion-features"
+const featureManifestKeys = {
+  animation: "components/motion-provider.tsx -> @/lib/motion-features",
+  max: "components/motion-provider.tsx -> @/lib/motion-max-features",
+}
 const manifest = JSON.parse(await readFile(path.join(projectRoot, ".next", "react-loadable-manifest.json"), "utf8"))
-assert.ok(manifest[manifestKey], `Production loadable manifest must contain ${manifestKey}`)
-const featurePaths = manifest[manifestKey].files.filter((file) => file.endsWith(".js")).map((file) => `/_next/${file}`)
-assert.ok(featurePaths.length, "Manifest must identify at least one feature script")
+const featureBundles = Object.fromEntries(Object.entries(featureManifestKeys).map(([featureSet, manifestKey]) => {
+  assert.ok(manifest[manifestKey], `Production loadable manifest must contain ${manifestKey}`)
+  const featurePaths = manifest[manifestKey].files.filter((file) => file.endsWith(".js")).map((file) => `/_next/${file}`)
+  assert.ok(featurePaths.length, `Manifest must identify at least one ${featureSet} feature script`)
+  return [featureSet, { manifestKey, featurePaths }]
+}))
 await mkdir(outDir, { recursive: true })
 
 const routeAssets = {}
 for (const routePath of ["/", "/donate"]) {
+  const featureSet = routePath === "/" ? "max" : "animation"
+  const { manifestKey, featurePaths } = featureBundles[featureSet]
   const response = await fetch(new URL(routePath, baseUrl))
   assert.ok(response.ok, `Production document ${routePath} must load`)
   const html = await response.text()
@@ -32,7 +40,7 @@ for (const routePath of ["/", "/donate"]) {
   // A feature manifest can list a shared initial React/runtime chunk. Never gate it.
   const deferredFeaturePaths = featurePaths.filter((file) => !documentScriptPaths.includes(file))
   assert.ok(deferredFeaturePaths.length, `Route ${routePath} must have a genuinely deferred feature script`)
-  routeAssets[routePath] = { documentScriptPaths, deferredFeaturePaths }
+  routeAssets[routePath] = { featureSet, manifestKey, featurePaths, documentScriptPaths, deferredFeaturePaths }
 }
 
 function safeMessage(message) {
@@ -263,7 +271,7 @@ try {
 const report = {
   verifiedAt: new Date().toISOString(), baseUrl: baseUrl.origin, browserChannel: "chrome",
   description: "Functional production-build checks only; no CPU/network throttling or performance claims. External browser requests are blocked and all payment/write requests are locally intercepted.",
-  featureManifestKey: manifestKey, featurePaths, routeAssets,
+  featureBundles, routeAssets,
   expectedExternalError: "Failed to load Stripe.js is explicitly separated because external requests are intentionally blocked.",
   passed: results.every((result) => result.passed), scenarios: results,
 }

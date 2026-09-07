@@ -10,7 +10,7 @@ Remaining Motion elements use `motion/react-m`; hooks, feature bundles, and type
 
 On the homepage, the animation feature import starts when that subtree approaches within 200px of the viewport. Donation and 404 providers start after hydration. Each provider passes Motion one stable promise, resolved when the import succeeds. Children stay mounted throughout, preserving polling, form values, and checkout state. An effect cleanup prevents updates after unmount.
 
-The separate feature module exports `domMax`, which retains the carousel's constrained drag, swipe, exit animations, and gesture behavior. `domAnimation` would omit drag support. [Motion feature bundles](https://motion.dev/docs/react-reduce-bundle-size)
+The homepage feature module exports `domMax`, which retains the carousel's constrained drag, swipe, exit animations, and gesture behavior. Donation and 404 pages import the smaller `domAnimation` bundle, retaining their hover effects without downloading drag/layout features. [Motion feature bundles](https://motion.dev/docs/react-reduce-bundle-size)
 
 An initial provider in the root layout reduced critical JavaScript by about 19KiB but increased total JavaScript before interaction by about 9KiB, with unchanged LCP. The final provider placement defers actual homepage transfer and avoids starting animation features on unrelated routes.
 

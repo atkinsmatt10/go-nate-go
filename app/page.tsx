@@ -32,7 +32,7 @@ export default function Component(): JSX.Element {
           <HeroSection />
           <CampaignMarquee />
           <NatesStory />
-          <MotionProvider defer>
+          <MotionProvider defer featureSet="max">
             <Suspense fallback={<FundraisingProgress />}>
               <LiveFundraisingProgress />
             </Suspense>

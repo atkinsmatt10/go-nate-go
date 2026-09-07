@@ -3,7 +3,11 @@
 import { useEffect, useRef, useState, type ReactNode } from "react"
 import { LazyMotion, useInView, type FeatureBundle } from "motion/react"
 
-const loadFeatures = () => import("@/lib/motion-features").then((module) => module.default)
+type MotionFeatureSet = "animation" | "max"
+
+const loadFeatures = (featureSet: MotionFeatureSet) => featureSet === "max"
+  ? import("@/lib/motion-max-features").then((module) => module.default)
+  : import("@/lib/motion-features").then((module) => module.default)
 
 function createFeatureRequest() {
   let resolveFeatures: (features: FeatureBundle) => void = () => undefined
@@ -11,7 +15,11 @@ function createFeatureRequest() {
   return { load: () => promise, resolve: resolveFeatures }
 }
 
-export function MotionProvider({ children, defer = false }: { children: ReactNode; defer?: boolean }) {
+export function MotionProvider({ children, defer = false, featureSet = "animation" }: {
+  children: ReactNode
+  defer?: boolean
+  featureSet?: MotionFeatureSet
+}) {
   const scopeRef = useRef<HTMLDivElement>(null)
   const isNearViewport = useInView(scopeRef, { once: true, margin: "200px 0px", initial: !defer })
   const [request] = useState(createFeatureRequest)
@@ -20,7 +28,7 @@ export function MotionProvider({ children, defer = false }: { children: ReactNod
   useEffect(() => {
     if (!isNearViewport) return
     let isActive = true
-    void loadFeatures().then((features) => {
+    void loadFeatures(featureSet).then((features) => {
       if (!isActive) return
       request.resolve(features)
       setStatus("ready")
@@ -30,7 +38,7 @@ export function MotionProvider({ children, defer = false }: { children: ReactNod
       console.warn("Animations unavailable; keeping campaign content accessible.", error)
     })
     return () => { isActive = false }
-  }, [isNearViewport, request])
+  }, [featureSet, isNearViewport, request])
 
   return (
     <div ref={scopeRef} data-motion-state={status} className={defer ? undefined : "contents"}>

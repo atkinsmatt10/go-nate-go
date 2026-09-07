@@ -1,2 +1,2 @@
-// Drag support preserves the merchandise carousel's swipe interaction.
-export { domMax as default } from "motion/react"
+// Donation and 404 pages need animation and hover features, without drag/layout.
+export { domAnimation as default } from "motion/react"
