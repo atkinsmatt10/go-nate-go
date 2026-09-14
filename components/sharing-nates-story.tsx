@@ -210,6 +210,7 @@ export function SharingNatesStory() {
 
   // LinkedIn posts about Nate
   const linkedInUrls = [
+    "https://www.linkedin.com/feed/update/urn:li:activity:7503423003813154816/",
     "https://www.linkedin.com/feed/update/urn:li:activity:7359300295270522882/",
   ]
 
