@@ -94,7 +94,7 @@ test("keyboard activation completes one chase without moving content or losing f
   await expectStaticShark(page)
   expect(await hero.evaluate((element) => element.scrollTop)).toBe(0)
   expect(await Promise.all([hero.boundingBox(), donation.boundingBox(), video.boundingBox()])).toEqual(before)
-  await expect(donation).toHaveAttribute("href", "https://chop.donordrive.com/teams/nate-the-great")
+  await expect(donation).toHaveAttribute("href", "https://chop.donordrive.com/teams/nate-the-great/donate")
   await expectNoOverflow(page)
   expect(errors).toEqual([])
 
