@@ -66,7 +66,7 @@ test.describe("without JavaScript", () => {
     await expect(fundraisingSection.getByRole("heading", { name: "For the Next Child" })).toBeVisible()
     await expect(fundraisingSection.getByRole("link", { name: "Donate to CHOP", exact: true })).toBeVisible()
     await expect(fundraisingSection.getByRole("link", { name: "Donate to CHOP", exact: true }))
-      .toHaveAttribute("href", "https://chop.donordrive.com/teams/nate-the-great")
+      .toHaveAttribute("href", "https://chop.donordrive.com/teams/nate-the-great/donate")
     const merchandiseHeading = page.getByRole("heading", { name: "Team Natey Shark", exact: true })
     await merchandiseHeading.scrollIntoViewIfNeeded()
     const opacity = await merchandiseHeading.evaluate((element) => {
