@@ -1,147 +1,38 @@
-import type { CSSProperties, JSX } from "react"
+import type { JSX } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { HeroStoryVideo } from "@/components/hero-story-video"
+import { HeroOcean } from "@/components/hero-ocean"
 import storyPoster from "@/public/nate-story-poster.webp"
 
 import { Button } from "@/components/ui/button"
 
-interface DecorativeFish {
-  readonly className: string
-  readonly delay: number
-  readonly driftX: number
-  readonly driftY: number
-  readonly duration: number
-  readonly flip?: boolean
-}
-
-
-const decorativeFish = [
-  {
-    className: "left-[5%] top-[9%] hidden w-14 sm:block lg:w-16",
-    delay: -4.2,
-    driftX: 10,
-    driftY: -6,
-    duration: 12.4,
-  },
-  {
-    className: "right-[7%] top-[6%] w-12 lg:w-16",
-    delay: -8.1,
-    driftX: -9,
-    driftY: 7,
-    duration: 15.2,
-    flip: true,
-  },
-  {
-    className: "left-[2%] top-[51%] w-10 sm:w-12",
-    delay: -1.7,
-    driftX: 8,
-    driftY: 5,
-    duration: 10.8,
-  },
-  {
-    className: "right-[3%] top-[43%] w-11 sm:w-14",
-    delay: -6.3,
-    driftX: -12,
-    driftY: -4,
-    duration: 13.7,
-    flip: true,
-  },
-  {
-    className: "bottom-[15%] left-[34%] hidden w-12 md:block",
-    delay: -10.4,
-    driftX: 11,
-    driftY: 6,
-    duration: 16,
-  },
-  {
-    className: "bottom-[8%] right-[26%] hidden w-10 lg:block",
-    delay: -3.6,
-    driftX: -8,
-    driftY: -7,
-    duration: 11.6,
-    flip: true,
-  },
-] satisfies readonly DecorativeFish[]
-
-function FishSilhouette({
-  className,
-  delay,
-  driftX,
-  driftY,
-  duration,
-  flip = false,
-}: DecorativeFish): JSX.Element {
-  return (
-    <span
-      className={`hero-fish absolute ${className}`}
-      style={{
-        opacity: 0.09,
-        animationDelay: `${delay}s`,
-        animationDuration: `${duration}s`,
-        "--fish-x": `${driftX}px`,
-        "--fish-y": `${driftY}px`,
-      } as CSSProperties}
-    >
-      <svg
-        viewBox="0 0 64 32"
-        className={`h-auto w-full ${flip ? "-scale-x-100" : ""}`}
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="M5 16C14.5 5.5 28 4.25 42 10.25L57 3L53.25 16L57 29L42 21.75C28 27.75 14.5 26.5 5 16Z"
-          fill="currentColor"
-        />
-      </svg>
-    </span>
-  )
-}
-
 export function HeroSection(): JSX.Element {
   return (
-    <section className="hero-section relative isolate w-full overflow-hidden pb-20 pt-[calc(1.25rem+env(safe-area-inset-top,0px))] sm:pb-28 sm:pt-[calc(2rem+env(safe-area-inset-top,0px))] lg:pb-32 lg:pt-[calc(3rem+env(safe-area-inset-top,0px))]">
+    <section className="hero-section relative isolate w-full overflow-clip pb-20 pt-[calc(1.25rem+env(safe-area-inset-top,0px))] sm:pb-28 sm:pt-[calc(2rem+env(safe-area-inset-top,0px))] lg:pb-32 lg:pt-[calc(3rem+env(safe-area-inset-top,0px))]">
+      <HeroOcean />
       <div className="pointer-events-none absolute inset-0 z-0 text-[#9fc5d8]" aria-hidden="true">
-        {decorativeFish.map((fish) => (
-          <FishSilhouette
-            key={`${fish.className}-${fish.duration}`}
-            className={fish.className}
-            delay={fish.delay}
-            driftX={fish.driftX}
-            driftY={fish.driftY}
-            duration={fish.duration}
-            flip={fish.flip}
-          />
-        ))}
-
         <svg
           viewBox="0 0 1200 120"
-          className="absolute bottom-0 h-28 w-full text-[#3f5d81]/45 sm:h-32"
+          className="hero-ocean-fallback absolute bottom-0 h-28 w-full text-[#3f5d81]/45 sm:h-32"
           preserveAspectRatio="none"
         >
           <path d="M0 68C280 114 612 32 1200 70V120H0Z" fill="currentColor" />
         </svg>
         <svg
           viewBox="0 0 1200 120"
-          className="absolute bottom-0 h-20 w-full text-[#42a8a9]/22 sm:h-24"
+          className="hero-ocean-fallback absolute bottom-0 h-20 w-full text-[#42a8a9]/22 sm:h-24"
           preserveAspectRatio="none"
         >
           <path d="M0 82C340 118 760 46 1200 76V120H0Z" fill="currentColor" />
         </svg>
-        <Image
-          src="/nate shark.png"
-          width={132}
-          height={128}
-          alt=""
-          loading="eager"
-          className="absolute -bottom-3 right-3 h-auto w-24 drop-shadow-[0_12px_20px_rgb(7_27_43_/_26%)] sm:right-8 sm:w-28 lg:right-[5%] lg:w-32"
-        />
       </div>
 
       <div className="hero-content relative z-10 w-full px-4 md:px-6">
         <div className="mx-auto grid max-w-[1440px] items-center gap-4 sm:gap-9 lg:grid-cols-[minmax(360px,0.76fr)_minmax(560px,1.24fr)] lg:gap-12 xl:gap-16">
           <div className="mx-auto flex w-full max-w-xl flex-col lg:mx-0">
             <div
+              data-ocean-logo
               className="relative aspect-[5971/2238] w-full max-w-[270px] self-center sm:max-w-[310px] lg:max-w-[540px] lg:self-start"
 
             >
@@ -156,7 +47,7 @@ export function HeroSection(): JSX.Element {
             </div>
 
             <div
-              className="mt-5 text-center lg:mt-7 lg:text-left"
+              className="mt-12 text-center sm:mt-10 lg:mt-7 lg:text-left"
 
             >
               <h1 className="mx-auto max-w-[340px] text-balance text-[2.35rem] font-bold leading-[0.98] tracking-tight text-[#f7fbff] sm:max-w-none sm:text-5xl lg:mx-0 lg:text-[3.75rem]">
@@ -198,6 +89,7 @@ export function HeroSection(): JSX.Element {
           </div>
 
           <div
+            data-ocean-video
             className="relative mx-auto aspect-[6/5] w-full max-w-[330px] overflow-hidden rounded-[28px] border-[3px] border-primary shadow-[0_28px_80px_rgb(5_24_39_/_38%)] sm:max-w-[780px] sm:rounded-[32px] lg:max-w-none lg:justify-self-end"
 
           >

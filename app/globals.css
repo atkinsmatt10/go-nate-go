@@ -45,12 +45,62 @@ body:has(.home-page) {
   }
 }
 
-@keyframes hero-fish-drift {
-  to { transform: translate(var(--fish-x), var(--fish-y)); }
+.hero-ocean-canvas {
+  opacity: 0;
+  transition: opacity 1.6s ease;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .hero-fish { animation: hero-fish-drift 12s ease-in-out infinite alternate; }
+.hero-ocean-fallback {
+  transition: opacity 1.6s ease;
+}
+
+.hero-ocean[data-ready="true"] .hero-ocean-canvas {
+  opacity: 1;
+}
+
+/* A preference change or failed context must not leave the last drawn shark
+   fading behind the restored static illustration. Keep only the entrance fade. */
+.hero-ocean[data-ready="false"] .hero-ocean-canvas {
+  transition: none;
+}
+
+/* Ownership changes in the same frame as the first/last WebGL drawing. No
+   crossfade: there is always exactly one visible shark, including during load. */
+.hero-ocean:has(.hero-shark[data-scene-shark="true"]) .hero-ocean-canvas {
+  opacity: 1;
+  transition: none;
+}
+
+.hero-shark[data-scene-shark="true"] img {
+  visibility: hidden;
+}
+
+/* Keep the hit target inside the hero so keyboard focus cannot scroll the
+   overflow-hidden section. The illustration retains its original -12px crop. */
+.hero-shark img {
+  margin-top: -4px;
+  margin-bottom: -12px;
+  pointer-events: none;
+}
+
+.hero-shark-hello { visibility: hidden; }
+
+.hero-ocean[data-shark-state="acknowledgment"] .hero-shark {
+  background: rgb(66 168 169 / 18%);
+  box-shadow: 0 0 0 2px rgb(216 239 245 / 65%);
+}
+
+.hero-ocean[data-shark-state="acknowledgment"] .hero-shark-hello {
+  visibility: visible;
+}
+
+.hero-section:has(.hero-ocean[data-ready="true"]) .hero-ocean-fallback {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-ocean-canvas { display: none; transition: none; }
+  .hero-ocean-fallback { transition: none; }
 }
 
 @source '../*.{js,ts,jsx,tsx,mdx}';
