@@ -84,7 +84,7 @@ export function FundraisingProgress({ initialData }: FundraisingProgressProps = 
   const numDonations = Math.max(Math.round(data?.numDonations ?? 0), 0)
   const hasError = error !== undefined
   const progressPercentage = getProgressPercentage(raised, goal)
-  const sharkPosition = Math.min(Math.max(progressPercentage, 4), 96)
+  const sharkPosition = `clamp(var(--shark-half-size), ${progressPercentage}%, calc(100% - var(--shark-half-size)))`
   const progressTransition = {
     transitionDuration: prefersReducedMotion ? "0ms" : "900ms",
     transitionTimingFunction: "cubic-bezier(0.23, 1, 0.32, 1)",
@@ -130,8 +130,8 @@ export function FundraisingProgress({ initialData }: FundraisingProgressProps = 
             <div className="relative pt-16 sm:pt-20">
               <div
                 aria-hidden="true"
-                className="absolute top-0 z-10 h-20 w-20 -translate-x-1/2 drop-shadow-[0_12px_18px_rgb(20_43_64_/_28%)] sm:h-24 sm:w-24"
-                style={{ left: `${sharkPosition}%`, transitionProperty: "left", ...progressTransition }}
+                className="absolute top-0 z-10 h-20 w-20 -translate-x-1/2 [--shark-half-size:2.5rem] drop-shadow-[0_12px_18px_rgb(20_43_64_/_28%)] sm:h-24 sm:w-24 sm:[--shark-half-size:3rem]"
+                style={{ left: sharkPosition, transitionProperty: "left", ...progressTransition }}
               >
                 <Image src="/nate shark.png" alt="" fill className="object-contain object-bottom" sizes="96px" />
               </div>
