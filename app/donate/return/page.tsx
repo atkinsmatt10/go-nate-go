@@ -1,5 +1,6 @@
 import Image from "next/image"
 import Link from "next/link"
+import { connection } from "next/server"
 import { Suspense } from "react"
 import { CheckCircle2, Clock3, LoaderCircle, ShieldAlert, XCircle } from "lucide-react"
 import { PageTransition } from "@/components/page-transition"
@@ -191,6 +192,8 @@ async function DonationReturnStatus({ searchParams }: DonateReturnPageProps) {
   if (!sessionId && !paymentIntentId) {
     returnPageState.detail = "This link is missing the details needed to check your donation."
   } else {
+    // Stripe reads the current time before its request; keep payment status live.
+    await connection()
     try {
       returnPageState = sessionId
         ? await buildCheckoutSessionState(sessionId)
