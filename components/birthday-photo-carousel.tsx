@@ -137,7 +137,12 @@ export function BirthdayPhotoCarousel() {
 
   return (
     <div className="space-y-5">
-      <Carousel setApi={setApi} opts={{ align: "start", loop: true, duration: prefersReducedMotion ? 0 : 25 }} className="w-full">
+      <Carousel
+        setApi={setApi}
+        opts={{ align: "start", loop: true, duration: prefersReducedMotion ? 0 : 25 }}
+        className="w-full"
+        aria-label="Nate's birthday photos"
+      >
         <CarouselContent>
           {photos.map((photo) => (
             <CarouselItem key={photo.src} className="basis-[88%] md:basis-[72%] lg:basis-[58%]">
@@ -154,6 +159,10 @@ export function BirthdayPhotoCarousel() {
           ))}
         </CarouselContent>
       </Carousel>
+
+      <p className="sr-only" role="status" aria-atomic="true">
+        Photo {currentSlide + 1} of {photos.length}: {photos[currentSlide]?.alt}
+      </p>
 
       <div className="flex items-center justify-center gap-4">
         <Button
