@@ -3,7 +3,7 @@
 import type { JSX } from "react"
 import { useEffect, useRef } from "react"
 import NumberFlow, { type Format } from "@number-flow/react"
-import { motion, useInView } from "framer-motion"
+import { useInView } from "motion/react"
 import Image from "next/image"
 import Link from "next/link"
 import useSWR from "swr"
@@ -51,9 +51,9 @@ function getDonationStatusMessage(hasError: boolean, isLoading: boolean, data?: 
       month: "short", day: "numeric", hour: "numeric", minute: "2-digit",
       timeZone: "America/New_York", timeZoneName: "short",
     }).format(new Date(data.lastUpdated))
-    return `Showing the last confirmed total, updated ${updated}. Live updates are temporarily unavailable.`
+    return `Showing the last confirmed total from ${updated}. Live updates are temporarily unavailable.`
   }
-  return isLoading ? "Updating the live fundraising total." : "Live fundraising total updated."
+  return isLoading ? "Updating fundraising total…" : "Fundraising total updated."
 }
 
 export function FundraisingProgress({ initialData }: FundraisingProgressProps = {}): JSX.Element {
@@ -84,10 +84,11 @@ export function FundraisingProgress({ initialData }: FundraisingProgressProps = 
   const numDonations = Math.max(Math.round(data?.numDonations ?? 0), 0)
   const hasError = error !== undefined
   const progressPercentage = getProgressPercentage(raised, goal)
-  const sharkPosition = Math.min(Math.max(progressPercentage, 4), 96)
-  const progressTransition = prefersReducedMotion
-    ? { duration: 0 }
-    : { duration: 0.9, ease: [0.23, 1, 0.32, 1] as const }
+  const sharkPosition = `clamp(var(--shark-half-size), ${progressPercentage}%, calc(100% - var(--shark-half-size)))`
+  const progressTransition = {
+    transitionDuration: prefersReducedMotion ? "0ms" : "900ms",
+    transitionTimingFunction: "cubic-bezier(0.23, 1, 0.32, 1)",
+  }
   const donationStatusMessage = getDonationStatusMessage(hasError, isLoading, data)
 
   return (
@@ -99,11 +100,11 @@ export function FundraisingProgress({ initialData }: FundraisingProgressProps = 
               Fundraising for CHOP
             </p>
             <h2 className="mt-5 text-5xl leading-[0.95] tracking-tight text-foreground sm:text-6xl lg:text-7xl">
-              Every Dollar Is a Cheer
+              For the Next Child
             </h2>
             <p className="mx-auto mt-7 max-w-4xl text-lg leading-8 text-muted-foreground md:text-xl md:leading-9">
-              We&apos;re raising money to honor the care that saved Nate, help families spot concerning signs sooner,
-              and fund research so better treatments exist for the next child who needs them.
+              CHOP saved Nate&apos;s life. We&apos;re raising money for childhood cancer care and research
+              so more families can share our hope.
             </p>
           </header>
 
@@ -127,15 +128,13 @@ export function FundraisingProgress({ initialData }: FundraisingProgressProps = 
 
           <div className="mt-12 w-full max-w-4xl sm:mt-14">
             <div className="relative pt-16 sm:pt-20">
-              <motion.div
+              <div
                 aria-hidden="true"
-                animate={{ left: `${sharkPosition}%` }}
-                className="absolute top-0 z-10 h-20 w-20 -translate-x-1/2 drop-shadow-[0_12px_18px_rgb(20_43_64_/_28%)] sm:h-24 sm:w-24"
-                initial={false}
-                transition={progressTransition}
+                className="absolute top-0 z-10 h-20 w-20 -translate-x-1/2 [--shark-half-size:2.5rem] drop-shadow-[0_12px_18px_rgb(20_43_64_/_28%)] sm:h-24 sm:w-24 sm:[--shark-half-size:3rem]"
+                style={{ left: sharkPosition, transitionProperty: "left", ...progressTransition }}
               >
                 <Image src="/nate shark.png" alt="" fill className="object-contain object-bottom" sizes="96px" />
-              </motion.div>
+              </div>
 
               <div
                 role="progressbar"
@@ -146,15 +145,15 @@ export function FundraisingProgress({ initialData }: FundraisingProgressProps = 
                 aria-valuetext={data ? `${CURRENCY_FORMATTER.format(raised)} raised of ${CURRENCY_FORMATTER.format(goal)}` : "Total temporarily unavailable"}
                 className="relative h-6 overflow-hidden rounded-full border border-white/25 bg-secondary/65 shadow-inner"
               >
-                <motion.div
-                  animate={{ width: `${progressPercentage}%` }}
+                <div
                   className="h-full rounded-full bg-primary"
-                  initial={false}
                   style={{
+                    width: `${progressPercentage}%`,
+                    transitionProperty: "width",
+                    ...progressTransition,
                     backgroundImage:
                       "repeating-linear-gradient(130deg, rgb(255 255 255 / 0.03) 0 18px, rgb(255 255 255 / 0.15) 18px 36px)",
                   }}
-                  transition={progressTransition}
                 />
               </div>
             </div>
@@ -175,7 +174,6 @@ export function FundraisingProgress({ initialData }: FundraisingProgressProps = 
               /> : "— "}
               <span aria-hidden="true"> donations</span>
             </span>
-            <span>from amazing supporters</span>
           </div>
 
           <p className={hasError || data?.stale || !data ? "mt-4 text-sm text-muted-foreground" : "sr-only"} role="status">
@@ -187,7 +185,7 @@ export function FundraisingProgress({ initialData }: FundraisingProgressProps = 
             size="lg"
             className="mt-10 h-16 rounded-[18px] px-10 text-lg font-bold shadow-[0_16px_32px_rgb(20_43_64_/_20%)] transition-[box-shadow,transform] duration-150 ease-snappy-out hover:shadow-[0_20px_38px_rgb(20_43_64_/_28%)] active:scale-[0.98] sm:text-xl"
           >
-            <Link href="https://chop.donordrive.com/teams/nate-the-great" prefetch={false}>Donate Directly</Link>
+            <Link href="https://chop.donordrive.com/teams/nate-the-great/donate" prefetch={false}>Donate to CHOP</Link>
           </Button>
         </div>
       </div>

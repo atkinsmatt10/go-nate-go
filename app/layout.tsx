@@ -32,7 +32,7 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://gonatego.com"),
 
   title: "Nate the Great's Fundraiser · CHOP",
-  description: "Join Nate's fight against childhood brain cancer and help fund breakthrough research at CHOP.",
+  description: "Nate is home after treatment for a rare brain tumor. Help his family support childhood cancer care and research at CHOP.",
   keywords: [
     "childhood brain cancer",
     "choroid plexus papilloma",
@@ -54,7 +54,7 @@ export const metadata: Metadata = {
     siteName: "GoNateGo",
     title: "Nate the Great's Fundraiser for CHOP",
     description:
-      "Help us smash our fundraising goal and accelerate new treatments for pediatric brain tumors.",
+      "Nate is home after treatment for a rare brain tumor. Help his family support childhood cancer care and research at CHOP.",
     locale: "en_US",
     type: "website",
     images: [
@@ -74,7 +74,7 @@ export const metadata: Metadata = {
     creator: "@AtkinsMatt", // if available
     title: "Nate the Great's Fundraiser for CHOP",
     description:
-      "Support Nate's fight against childhood brain cancer by donating today.",
+      "Nate is home after treatment for a rare brain tumor. Help his family support childhood cancer care and research at CHOP.",
     images: ["/IMG_99081.png"],
   },
 

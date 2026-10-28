@@ -6,14 +6,14 @@ const birthdayOgImage = "/birthday-og-one-tough-cookie.png"
 
 export const metadata: Metadata = {
   title: "Nate is One Tough Cookie",
-  description: "Remembering Nate's first birthday celebration at Craft Hall on May 9, 2026. Thank you for cheering him on. RSVPs are closed.",
+  description: "Nate's first birthday celebration at Craft Hall on May 9, 2026. RSVPs are closed. Thank you for celebrating with us.",
   alternates: {
     canonical: "/birthday",
   },
   openGraph: {
     url: "/birthday",
     title: "Nate is One Tough Cookie",
-    description: "Remembering Nate's first birthday celebration at Craft Hall on May 9, 2026. Thank you for cheering him on. RSVPs are closed.",
+    description: "Nate's first birthday celebration at Craft Hall on May 9, 2026. RSVPs are closed. Thank you for celebrating with us.",
     images: [
       {
         url: birthdayOgImage,
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Nate is One Tough Cookie",
-    description: "Remembering Nate's first birthday celebration at Craft Hall on May 9, 2026. Thank you for cheering him on. RSVPs are closed.",
+    description: "Nate's first birthday celebration at Craft Hall on May 9, 2026. RSVPs are closed. Thank you for celebrating with us.",
     images: [birthdayOgImage],
   },
 }

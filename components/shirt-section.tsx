@@ -2,7 +2,8 @@
 
 import { useEffect, useState, useRef } from "react"
 import Image from "next/image"
-import { motion, AnimatePresence, useInView } from "framer-motion"
+import { AnimatePresence, useInView } from "motion/react"
+import * as m from "motion/react-m"
 import { Button } from "@/components/ui/button"
 import { useHapticFeedback } from "@/hooks/use-haptic-feedback"
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion"
@@ -44,6 +45,7 @@ export function ShirtSection() {
   const [currentImage, setCurrentImage] = useState(0)
   const [direction, setDirection] = useState(0)
   const sectionRef = useRef<HTMLElement>(null)
+  const hasDragged = useRef(false)
   const isInView = useInView(sectionRef, { amount: 0.25 })
   const [isPaused, setIsPaused] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
@@ -93,7 +95,7 @@ export function ShirtSection() {
     <section ref={sectionRef} id="shirt" className="w-full py-16 md:py-24 lg:py-32 bg-secondary">
       <div className="container px-4 md:px-6">
         <div className="grid items-center gap-6 lg:grid-cols-2 lg:gap-12">
-          <motion.div
+          <m.div
             className="relative"
             {...getRevealProps(prefersReducedMotion, { distance: 12 })}
           >
@@ -109,7 +111,8 @@ export function ShirtSection() {
             >
               <div className="relative aspect-square overflow-hidden rounded-2xl shadow-lg">
                 <AnimatePresence initial={false} custom={direction}>
-                  <motion.div
+                  <m.div
+                    data-motion-reveal
                     key={currentImage}
                     custom={direction}
                     variants={slideVariants}
@@ -120,6 +123,8 @@ export function ShirtSection() {
                     drag="x"
                     dragConstraints={{ left: 0, right: 0 }}
                     dragElastic={prefersReducedMotion ? 0.05 : 0.18}
+                    onPointerDownCapture={() => { hasDragged.current = false }}
+                    onDragStart={() => { hasDragged.current = true }}
                     onDragEnd={(e, { offset, velocity }) => {
                       const swipe = swipePower(offset.x, velocity.x)
 
@@ -140,15 +145,20 @@ export function ShirtSection() {
                   >
                     <a
                       href={merchandiseItems[currentImage].productUrl}
+                      draggable={false}
+                      onClick={(event) => {
+                        if (hasDragged.current && event.detail > 0) event.preventDefault()
+                      }}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="cursor-pointer group w-full h-full block"
                     >
                       <Image
                         src={merchandiseItems[currentImage].src}
+                        draggable={false}
                         width={500}
                         height={500}
-                        alt={`${merchandiseItems[currentImage].alt} - Click to shop`}
+                        alt={`Shop ${merchandiseItems[currentImage].alt}`}
                         className="w-full h-full object-contain object-center transition-transform duration-200 ease-snappy-out group-hover:scale-[1.02]"
                         quality={85}
                         sizes="(max-width: 768px) 100vw, 500px"
@@ -159,13 +169,13 @@ export function ShirtSection() {
                           <div className="text-center">
                             <div className="text-primary text-lg font-bold">{merchandiseItems[currentImage].price}</div>
                             <div className="flex items-center gap-1 text-xs text-gray-600">
-                              🛒 Click to shop
+                              Shop this item
                             </div>
                           </div>
                         </div>
                       </div>
                     </a>
-                  </motion.div>
+                  </m.div>
                 </AnimatePresence>
               </div>
               
@@ -182,7 +192,7 @@ export function ShirtSection() {
               {/* Carousel Indicators */}
               <div className="flex justify-center space-x-2 mt-4">
                 {merchandiseItems.map((_, index) => (
-                  <motion.button
+                  <m.button
                     key={index}
                     onClick={() => handleImageClick(index)}
                     className={`w-2 h-2 rounded-full transition-colors duration-200 ${
@@ -209,25 +219,25 @@ export function ShirtSection() {
                 </button>
               )}
             </div>
-          </motion.div>
+          </m.div>
           
-          <motion.div
+          <m.div
             className="space-y-4"
             {...getRevealProps(prefersReducedMotion, { delay: 0.06 })}
           >
             <div className="space-y-3">
               <h2 className="text-4xl font-bold tracking-tighter sm:text-5xl text-foreground">
-                Join the Natey Shark Team
+                Team Natey Shark
               </h2>
               <div className="flex justify-start">
                 <div className="rounded-full border border-slate-300/30 bg-slate-700/90 px-3 py-1 text-sm font-medium text-white backdrop-blur-xs transition-[background-color,border-color] duration-200 ease-snappy-out hover:border-slate-300/50 hover:bg-slate-600/90">
-                  100+ shirts from amazing supporters
+                  100+ shirts supporting Nate
                 </div>
               </div>
             </div>
             
             <p className="text-muted-foreground md:text-lg/relaxed">
-              Inspired by his family nickname, &apos;Natey Shark,&apos; our merchandise collection represents our son&apos;s incredible strength and fun-loving spirit. By wearing any of these items, you become part of our team, spreading awareness and showing your support for Nate wherever you go. All proceeds help fund the vital cancer research at CHOP that gives our family so much hope.
+              Our nickname for Nate inspired this collection, celebrating his strength and playful spirit.
             </p>
             
             {/* CHOP logo highlight */}
@@ -241,7 +251,7 @@ export function ShirtSection() {
               />
               <div>
                 <p className="font-semibold text-primary text-sm sm:text-base">100% of proceeds</p>
-                <p className="text-xs sm:text-sm text-muted-foreground">go directly to childhood cancer research</p>
+                <p className="text-xs sm:text-sm text-muted-foreground">fund childhood cancer research at CHOP</p>
               </div>
             </div>
             
@@ -256,11 +266,11 @@ export function ShirtSection() {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  Buy Now
+                  Shop Natey Shark
                 </a>
               </Button>
             </div>
-          </motion.div>
+          </m.div>
         </div>
       </div>
     </section>

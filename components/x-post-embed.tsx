@@ -117,7 +117,7 @@ export function XPostEmbed({ id, scriptStatus }: XPostEmbedProps): JSX.Element {
             className="h-8 w-8 animate-pulse rounded-full border-2 border-primary/30 border-t-primary motion-reduce:animate-none"
             aria-hidden="true"
           />
-          <span className="text-sm font-semibold text-muted-foreground">Loading post from X…</span>
+          <span className="text-sm font-semibold text-muted-foreground">Loading X post…</span>
         </div>
       ) : null}
 
@@ -128,7 +128,7 @@ export function XPostEmbed({ id, scriptStatus }: XPostEmbedProps): JSX.Element {
           rel="noopener noreferrer"
           className="flex min-h-48 w-full items-center justify-center rounded-xl border border-primary/25 bg-background/70 p-6 text-center font-semibold text-primary transition-colors hover:bg-primary/10 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
         >
-          View this post on X
+          View post on X
         </a>
       ) : null}
 

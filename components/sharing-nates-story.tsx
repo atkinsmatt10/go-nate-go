@@ -1,7 +1,8 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
-import { motion, useInView } from "framer-motion"
+import { useInView } from "motion/react"
+import * as m from "motion/react-m"
 import Image from "next/image"
 import dynamic from "next/dynamic"
 import Script from "next/script"
@@ -21,7 +22,7 @@ const InstagramPostEmbed = dynamic(
 function PostSkeleton() {
   return (
     <div className="w-full h-[500px] bg-muted/50 rounded-lg animate-pulse flex items-center justify-center">
-      <div className="text-muted-foreground text-sm">Loading...</div>
+      <div className="text-muted-foreground text-sm">Loading post…</div>
     </div>
   )
 }
@@ -31,7 +32,6 @@ function SubstackCard({
   url, 
   title, 
   subtitle,
-  description, 
   image, 
   author,
   date,
@@ -39,7 +39,6 @@ function SubstackCard({
   url: string; 
   title: string;
   subtitle?: string;
-  description?: string;
   image?: string;
   author?: string;
   date?: string;
@@ -74,13 +73,6 @@ function SubstackCard({
         {subtitle && (
           <p className="text-base text-gray-600 leading-relaxed">
             {subtitle}
-          </p>
-        )}
-
-        {/* Description/Post Preview */}
-        {description && (
-          <p className="text-sm text-gray-700 leading-relaxed">
-            {description}
           </p>
         )}
 
@@ -218,6 +210,7 @@ export function SharingNatesStory() {
 
   // LinkedIn posts about Nate
   const linkedInUrls = [
+    "https://www.linkedin.com/feed/update/urn:li:activity:7503423003813154816/",
     "https://www.linkedin.com/feed/update/urn:li:activity:7359300295270522882/",
   ]
 
@@ -227,7 +220,6 @@ export function SharingNatesStory() {
       url: "https://www.rightstorickysanchez.com/p/rally-around-nate-the-great",
       title: "Rally Around Nate The Great",
       subtitle: "This is when we're at our best.",
-      description: "Nate was born on May 2, 2025. In late June, he began vomiting and became unusually sleepy. At CHOP, imaging showed hydrocephalus caused by a rare choroid plexus tumor.",
       author: "Spike Eskin",
       image: "/24592c16-57c4-4073-816a-8bb97f89b491_3024x1684.jpg",
       date: "Jul 28",
@@ -238,8 +230,6 @@ export function SharingNatesStory() {
     {
       url: "https://www.fitlerfocus.com/p/fitler-square-rallies-behind-nate",
       title: "Fitler Square Rallies Behind \"Nate the Great\"",
-      subtitle: "A community rallies around a family facing their toughest challenge",
-      description: "Because complete resection was not safe at first, Nate had a shunt placed to control hydrocephalus and came home to grow. On January 2, 2026, his neurosurgeon completed a gross total resection.",
       author: "David Aragon",
       image: "/74d33c63-44e5-459f-94d0-4bebc5f07995_6048x5356.jpg",
       date: "Sep 22",
@@ -250,8 +240,6 @@ export function SharingNatesStory() {
     {
       url: "https://www.notboring.co/p/weekly-dose-of-optimism-163",
       title: "Weekly Dose of Optimism #163",
-      subtitle: "not boring • week 163",
-      description: "Sharing Nate's story is our way of honoring the care that saved him, helping other families spot concerning signs sooner, and raising money to fund research for the next child who needs treatment.",
       author: "Packy McCormick",
       image: "/Weeklydose.png",
       date: "Sep 26",
@@ -291,12 +279,12 @@ export function SharingNatesStory() {
       {/* Content with top padding to account for wave */}
       <div className="relative pt-[60px] md:pt-[80px] lg:pt-[100px] pb-16 md:pb-24 lg:pb-32">
         <div className="container px-4 md:px-6">
-          <motion.div
+          <m.div
             className="max-w-7xl mx-auto space-y-12"
             {...getRevealProps(prefersReducedMotion, { distance: 0, duration: 0.22, margin: "-100px" })}
           >
             {/* Section Header */}
-            <motion.div
+            <m.div
               className="text-center space-y-4"
               {...getRevealProps(prefersReducedMotion, { delay: 0.04, margin: "-50px" })}
             >
@@ -307,19 +295,18 @@ export function SharingNatesStory() {
                 Sharing Nate&apos;s Story
               </h2>
               <p className="text-muted-foreground md:text-lg max-w-2xl mx-auto">
-                Sharing Nate&apos;s story is our way of honoring the care that saved him, helping other families spot concerning
-                signs sooner, and raising money to fund research so that treatments exist for the next child who needs them.
+                By sharing Nate&apos;s story, we hope to help other families recognize concerning signs sooner.
               </p>
-            </motion.div>
+            </m.div>
 
               {/* Social Media Grid */}
-              <motion.div
+              <m.div
                 className="columns-1 sm:columns-2 lg:columns-3 gap-6"
                 {...getRevealProps(prefersReducedMotion, { delay: 0.08, margin: "-50px" })}
               >
               {/* X/Twitter Posts */}
               {tweetIds.map((tweetId, index) => (
-                <motion.div
+                <m.div
                   key={`tweet-${tweetId}`}
                   className="break-inside-avoid mb-6"
                   {...getRevealProps(prefersReducedMotion, { delay: 0.1 + index * 0.04 })}
@@ -327,12 +314,12 @@ export function SharingNatesStory() {
                   <div className="w-full">
                     <XPostEmbed id={tweetId} scriptStatus={xScriptStatus} />
                   </div>
-                </motion.div>
+                </m.div>
               ))}
 
               {/* Instagram Posts */}
               {instagramUrls.map((url, index) => (
-                <motion.div
+                <m.div
                   key={url}
                   className="break-inside-avoid mb-6"
                   {...getRevealProps(prefersReducedMotion, { delay: 0.16 + index * 0.04 })}
@@ -342,23 +329,23 @@ export function SharingNatesStory() {
                       <AccessibleInstagramPost url={url} title={`Instagram post about Nate ${index + 1}`} load={loadEmbeds} />
                     </div>
                   </div>
-                </motion.div>
+                </m.div>
               ))}
 
               {/* LinkedIn Posts */}
               {linkedInUrls.map((url, index) => (
-                <motion.div
+                <m.div
                   key={`linkedin-${index}`}
                   className="break-inside-avoid mb-6"
                   {...getRevealProps(prefersReducedMotion, { delay: 0.22 + index * 0.04 })}
                 >
                   <LinkedInEmbed url={url} />
-                </motion.div>
+                </m.div>
               ))}
 
               {/* Substack Posts */}
               {substackPosts.map((post, index) => (
-                <motion.div
+                <m.div
                   key={`substack-${index}`}
                   className="break-inside-avoid mb-6"
                   {...getRevealProps(prefersReducedMotion, { delay: 0.18 + index * 0.04 })}
@@ -367,16 +354,15 @@ export function SharingNatesStory() {
                       url={post.url}
                       title={post.title}
                       subtitle={post.subtitle}
-                      description={post.description}
                       image={post.image}
                       author={post.author}
                       date={post.date}
                     />
 
-                </motion.div>
+                </m.div>
               ))}
-            </motion.div>
-          </motion.div>
+            </m.div>
+          </m.div>
         </div>
       </div>
     </section>

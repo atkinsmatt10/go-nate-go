@@ -111,7 +111,6 @@ export async function GET(request: Request) {
     return NextResponse.json({
       amountTotal: checkoutSession.amount_total,
       currency: checkoutSession.currency,
-      customerDetails: checkoutSession.customer_details,
       id: checkoutSession.id,
       paymentStatus: checkoutSession.payment_status,
       status: checkoutSession.status,

@@ -43,7 +43,7 @@ export function HeroStoryVideo({ children }: { children: ReactNode }) {
       )}
       <noscript>
         <p className="absolute inset-x-0 bottom-0 bg-[#102f4a] p-3 text-center text-sm text-white">
-          Enable JavaScript to play the video. Nate&apos;s story is also written below.
+          Enable JavaScript to play the video, or read Nate&apos;s story below.
         </p>
       </noscript>
     </>

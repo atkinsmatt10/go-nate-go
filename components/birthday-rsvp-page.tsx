@@ -17,10 +17,10 @@ export function BirthdayRsvpPage() {
               <div className="space-y-5">
                 <p className="text-sm font-bold uppercase tracking-widest text-[#36546c]">May 9, 2026 · Craft Hall, Philadelphia</p>
                 <h1 className="text-5xl leading-tight sm:text-6xl">One Tough Cookie</h1>
-                <p className="text-xl leading-relaxed">Thank you for celebrating Nate&apos;s first birthday and surrounding our family with so much love.</p>
-                <p className="rounded-[20px] bg-[#d8eff5] p-5 text-base font-semibold">This celebration has ended. RSVPs are now closed.</p>
-                <p className="leading-relaxed">We&apos;re grateful for every person cheering Nate on. You can keep following his story and supporting childhood cancer care and research at CHOP.</p>
-                <Link href="/#donate" className="inline-flex rounded-[18px] bg-[#42a8a9] px-6 py-4 font-bold text-[#102f4a]">Support Team Nate the Great</Link>
+                <p className="text-xl leading-relaxed">Thank you for celebrating Nate&apos;s first birthday and surrounding our family with love.</p>
+                <p className="rounded-[20px] bg-[#d8eff5] p-5 text-base font-semibold">This celebration has ended. RSVPs are closed.</p>
+                <p className="leading-relaxed">Help us support childhood cancer care and research at CHOP.</p>
+                <Link href="/#donate" className="inline-flex rounded-[18px] bg-[#42a8a9] px-6 py-4 font-bold text-[#102f4a]">Support Team Nate</Link>
               </div>
             </div>
           </section>

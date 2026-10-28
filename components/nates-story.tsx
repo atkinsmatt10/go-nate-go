@@ -12,31 +12,31 @@ const journeyMilestones = [
   {
     dateLines: ["May 2,", "2025"],
     title: "Nate arrives",
-    description: "Our son Nate was born and instantly became the center of our world.",
+    description: "Nate was born and became the center of our world.",
   },
   {
     dateLines: ["Late June", "2025"],
     title: "Something's wrong",
     description:
-      "At eight weeks old, Nate began vomiting and became unusually sleepy. At CHOP, imaging showed hydrocephalus caused by a rare choroid plexus tumor.",
+      "At eight weeks, Nate began vomiting and became unusually sleepy. CHOP imaging showed hydrocephalus caused by a rare choroid plexus tumor.",
   },
   {
     dateLines: ["One", "week"],
     title: "Three surgeries",
     description:
-      "Over the next week, Nate underwent three surgeries, including an EVD placement and biopsy. Because he was so young and the tumor so vascular, a shunt controlled the hydrocephalus and gave him time to grow.",
+      "Nate had three surgeries, including an EVD placement and biopsy. With Nate so young and the tumor so vascular, a shunt controlled the hydrocephalus while he grew.",
   },
   {
     dateLines: ["Jan 2,", "2026"],
     title: "The comeback",
     description:
-      "Six months later, bigger and stronger, Nate's neurosurgeon completed a gross total resection. Recovery later required another shunt, but Nate did amazing.",
+      "Six months later, Nate was bigger and stronger. His neurosurgeon completed a gross total resection. Recovery required another shunt, but Nate did well.",
   },
   {
     dateLines: ["Today"],
     title: "Home, crawling, grinning",
     description:
-      "Nate is home and thriving — crawling, pulling himself up, smiling at everyone, and the happiest kid in any room. He's here because of the extraordinary team at CHOP.",
+      "Nate is home, crawling, pulling himself up, and smiling at everyone. We're grateful to the CHOP team who saved his life.",
   },
 ] satisfies readonly JourneyMilestone[]
 
@@ -52,9 +52,6 @@ export function NatesStory(): JSX.Element {
             <h2 className="mt-5 text-5xl font-bold tracking-tight text-foreground sm:text-6xl lg:text-7xl">
               Our Little Fighter
             </h2>
-            <p className="mx-auto mt-5 max-w-2xl text-lg leading-8 text-muted-foreground md:text-xl md:leading-9">
-              The whole story, the way we lived it — the scary parts and the ones worth cheering for.
-            </p>
           </header>
 
           <ol className="mt-16 border-y border-foreground/10 md:mt-20">
@@ -125,8 +122,7 @@ export function NatesStory(): JSX.Element {
             </div>
 
             <p className="text-center text-sm leading-6 text-muted-foreground md:text-left md:text-base md:leading-7">
-              Read the full story — diagnosis, surgeries, recovery, and the care team that saved his life — on the
-              Pediatric Brain Tumor Foundation site.
+              More from our family at the Pediatric Brain Tumor Foundation.
             </p>
 
             <a
@@ -135,7 +131,7 @@ export function NatesStory(): JSX.Element {
               rel="noopener noreferrer"
               className="inline-flex h-12 w-full items-center justify-center gap-2 whitespace-nowrap rounded-[16px] border border-foreground/10 bg-background/20 px-5 text-base font-bold text-foreground transition-[transform,background-color,border-color] duration-150 ease-snappy-out active:scale-[0.98] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-secondary hover:border-primary/50 hover:bg-background/35 md:w-auto"
             >
-              Read Nate&apos;s Full Story
+              Read Nate&apos;s Story
               <ExternalLink className="h-4 w-4" aria-hidden="true" />
             </a>
           </div>

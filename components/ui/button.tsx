@@ -45,11 +45,16 @@ export interface ButtonProps
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   (
-    { className, variant, size, asChild = false, haptic, onClick, disabled, ...props },
+    { className, variant, size, asChild = false, haptic, onClick, disabled, children, ...props },
     ref
   ) => {
     const { trigger } = useHapticFeedback()
     const Comp = asChild ? Slot : "button"
+    // Flight may wrap a single server-provided child in a lazy boundary. Slot
+    // needs its resolved element; leave invalid and multiple children to Slot.
+    const slotChild = asChild && !React.isValidElement(children) && React.Children.count(children) === 1
+      ? React.Children.toArray(children)[0]
+      : children
 
     const handleClick = React.useCallback<React.MouseEventHandler<HTMLButtonElement>>(
       (event) => {
@@ -69,7 +74,9 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         {...props}
         {...(!asChild ? { disabled } : {})}
         onClick={handleClick}
-      />
+      >
+        {slotChild}
+      </Comp>
     )
   }
 )
