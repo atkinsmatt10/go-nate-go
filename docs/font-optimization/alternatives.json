@@ -1,0 +1,51 @@
+{
+  "Nate Display core": {
+    "noGlyphNamesBytes": 10184,
+    "glyphNameCost": 216,
+    "noGaspBytes": 10384,
+    "gaspRemovalSavings": 16
+  },
+  "Nate Display extended": {
+    "noGlyphNamesBytes": 1172,
+    "glyphNameCost": 20,
+    "noGaspBytes": 1196,
+    "gaspRemovalSavings": -4
+  },
+  "Work Sans core": {
+    "clipped700Bytes": 27912,
+    "retained900Cost": 4352,
+    "noGlyphNamesBytes": 31596,
+    "glyphNameCost": 668,
+    "noGaspBytes": 32260,
+    "gaspRemovalSavings": 4
+  },
+  "Work Sans extended": {
+    "clipped700Bytes": 12868,
+    "retained900Cost": 1416,
+    "noGlyphNamesBytes": 13444,
+    "glyphNameCost": 840,
+    "noGaspBytes": 14256,
+    "gaspRemovalSavings": 28
+  },
+  "rejectedAsciiPrototype": {
+    "files": {
+      "accurate-ascii-Work-Sans-core.woff2": 21716,
+      "accurate-ascii-Work-Sans-extended.woff2": 41044,
+      "accurate-ascii-Lilita-One-extended.woff2": 10696,
+      "accurate-ascii-Lilita-One-core.woff2": 6744
+    },
+    "preloadedBytes": 28460,
+    "allFontBytes": 80200,
+    "changedPixels": 56871,
+    "pixels": 1416000,
+    "maxChannelDelta": 221,
+    "decision": "Reject: moving Latin-1 accents between faces changed kerning/run segmentation."
+  },
+  "displayGlyphNameControl": {
+    "changedPixels": 1526,
+    "pixels": 57729790,
+    "maxChannelDelta": 3,
+    "bytesSaved": 236,
+    "decision": "Retain glyph names to preserve existing rasterization."
+  }
+}

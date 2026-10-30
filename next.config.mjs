@@ -12,6 +12,13 @@ const nextConfig = {
   turbopack: {
     root: repoRoot,
   },
+  // The manual font script content-hashes every served font filename.
+  async headers() {
+    return [{
+      source: "/fonts/:fontFile",
+      headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }],
+    }]
+  },
   images: {
     formats: ['image/webp', 'image/avif'],
     qualities: [75, 85],

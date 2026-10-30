@@ -1,19 +1,10 @@
 /* app/layout.tsx */
 import type { Metadata, Viewport } from "next"
-import { Lilita_One, Work_Sans } from "next/font/google"
+import { fontPreloads } from "@/lib/font-preloads"
+import "./fonts.css"
 import "./globals.css"
 import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from "@vercel/speed-insights/next" // for performance insights
-
-const lilitaOne = Lilita_One({
-  subsets: ["latin"],
-  weight: "400",
-  variable: "--font-lilita-one",
-})
-const workSans = Work_Sans({
-  subsets: ["latin"],
-  variable: "--font-work-sans",
-})
 
 /* ---------- Viewport ---------- */
 export const viewport: Viewport = {
@@ -97,7 +88,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" dir="ltr">
-      <body className={`${lilitaOne.variable} ${workSans.variable}`}>
+      <head>
+        {fontPreloads.map((href) => (
+          <link key={href} rel="preload" href={href} as="font" type="font/woff2" crossOrigin="anonymous" />
+        ))}
+      </head>
+      <body className="campaign-fonts">
         {children}
         <SpeedInsights />
         <Analytics />

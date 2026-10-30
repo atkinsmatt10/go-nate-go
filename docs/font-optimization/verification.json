@@ -1,0 +1,1628 @@
+{
+  "browser": "156.0.8078.79",
+  "threshold": 0,
+  "comparisons": [
+    {
+      "case": "home",
+      "viewport": "desktop",
+      "size": [
+        1440,
+        7593
+      ],
+      "changedPixels": 0,
+      "totalPixels": 10933920,
+      "maxChannelDelta": 0,
+      "textEqual": true,
+      "layoutEqual": true,
+      "beforeFontBytes": 61200,
+      "afterFontBytes": 42664,
+      "beforeFonts": [
+        {
+          "file": "/_next/static/media/043945717efb3a31-s.p.woff2",
+          "bytes": 10676,
+          "status": 200,
+          "fromDiskCache": false
+        },
+        {
+          "file": "/_next/static/media/c9e6921c7fc300d8-s.p.woff2",
+          "bytes": 50524,
+          "status": 200,
+          "fromDiskCache": false
+        }
+      ],
+      "afterFonts": [
+        {
+          "file": "/fonts/nate-display-core.86469c1bf228.woff2",
+          "bytes": 10400,
+          "status": 200,
+          "fromDiskCache": false
+        },
+        {
+          "file": "/fonts/work-sans-core.3a22035e2be3.woff2",
+          "bytes": 32264,
+          "status": 200,
+          "fromDiskCache": false
+        }
+      ],
+      "beforePreloads": [
+        "/_next/static/media/043945717efb3a31-s.p.woff2",
+        "/_next/static/media/c9e6921c7fc300d8-s.p.woff2"
+      ],
+      "afterPreloads": [
+        "/fonts/nate-display-core.86469c1bf228.woff2",
+        "/fonts/work-sans-core.3a22035e2be3.woff2"
+      ],
+      "images": {
+        "before": "output/playwright/font-optimization/final/home-desktop-before.png",
+        "after": "output/playwright/font-optimization/final/home-desktop-after.png",
+        "diff": "output/playwright/font-optimization/final/home-desktop-diff.png"
+      },
+      "sha256": {
+        "before": "4b4484248cb514af32071cb80476927d6781cc1564a99914484814e0c3c0f14a",
+        "after": "4b4484248cb514af32071cb80476927d6781cc1564a99914484814e0c3c0f14a"
+      },
+      "classification": "exact"
+    },
+    {
+      "case": "birthday",
+      "viewport": "desktop",
+      "size": [
+        1440,
+        1869
+      ],
+      "changedPixels": 0,
+      "totalPixels": 2691360,
+      "maxChannelDelta": 0,
+      "textEqual": true,
+      "layoutEqual": true,
+      "beforeFontBytes": 61200,
+      "afterFontBytes": 42664,
+      "beforeFonts": [
+        {
+          "file": "/_next/static/media/043945717efb3a31-s.p.woff2",
+          "bytes": 10676,
+          "status": 200,
+          "fromDiskCache": false
+        },
+        {
+          "file": "/_next/static/media/c9e6921c7fc300d8-s.p.woff2",
+          "bytes": 50524,
+          "status": 200,
+          "fromDiskCache": false
+        }
+      ],
+      "afterFonts": [
+        {
+          "file": "/fonts/work-sans-core.3a22035e2be3.woff2",
+          "bytes": 32264,
+          "status": 200,
+          "fromDiskCache": false
+        },
+        {
+          "file": "/fonts/nate-display-core.86469c1bf228.woff2",
+          "bytes": 10400,
+          "status": 200,
+          "fromDiskCache": false
+        }
+      ],
+      "beforePreloads": [
+        "/_next/static/media/043945717efb3a31-s.p.woff2",
+        "/_next/static/media/c9e6921c7fc300d8-s.p.woff2"
+      ],
+      "afterPreloads": [
+        "/fonts/nate-display-core.86469c1bf228.woff2",
+        "/fonts/work-sans-core.3a22035e2be3.woff2"
+      ],
+      "images": {
+        "before": "output/playwright/font-optimization/final/birthday-desktop-before.png",
+        "after": "output/playwright/font-optimization/final/birthday-desktop-after.png",
+        "diff": "output/playwright/font-optimization/final/birthday-desktop-diff.png"
+      },
+      "sha256": {
+        "before": "c80bcb98a70dab22cab7c36b6271b59541a90145c5f5cd72c711956993fc35c6",
+        "after": "c80bcb98a70dab22cab7c36b6271b59541a90145c5f5cd72c711956993fc35c6"
+      },
+      "classification": "exact"
+    },
+    {
+      "case": "donate",
+      "viewport": "desktop",
+      "size": [
+        1440,
+        1000
+      ],
+      "changedPixels": 726,
+      "totalPixels": 1440000,
+      "maxChannelDelta": 1,
+      "textEqual": true,
+      "layoutEqual": true,
+      "beforeFontBytes": 61200,
+      "afterFontBytes": 42664,
+      "beforeFonts": [
+        {
+          "file": "/_next/static/media/043945717efb3a31-s.p.woff2",
+          "bytes": 10676,
+          "status": 200,
+          "fromDiskCache": false
+        },
+        {
+          "file": "/_next/static/media/c9e6921c7fc300d8-s.p.woff2",
+          "bytes": 50524,
+          "status": 200,
+          "fromDiskCache": false
+        }
+      ],
+      "afterFonts": [
+        {
+          "file": "/fonts/nate-display-core.86469c1bf228.woff2",
+          "bytes": 10400,
+          "status": 200,
+          "fromDiskCache": false
+        },
+        {
+          "file": "/fonts/work-sans-core.3a22035e2be3.woff2",
+          "bytes": 32264,
+          "status": 200,
+          "fromDiskCache": false
+        }
+      ],
+      "beforePreloads": [
+        "/_next/static/media/043945717efb3a31-s.p.woff2",
+        "/_next/static/media/c9e6921c7fc300d8-s.p.woff2"
+      ],
+      "afterPreloads": [
+        "/fonts/nate-display-core.86469c1bf228.woff2",
+        "/fonts/work-sans-core.3a22035e2be3.woff2"
+      ],
+      "images": {
+        "before": "output/playwright/font-optimization/final/donate-desktop-before.png",
+        "after": "output/playwright/font-optimization/final/donate-desktop-after.png",
+        "diff": "output/playwright/font-optimization/final/donate-desktop-diff.png"
+      },
+      "sha256": {
+        "before": "82b625c317e71a6f264d36399ba26555452b58c01defd1a1b6822c142b2d861f",
+        "after": "c1c371579b96d4ea1248b68301de95e1bf632edb555749a12dce6337958919f7"
+      },
+      "classification": "harmless compositor rounding; see unchanged-font controls"
+    },
+    {
+      "case": "return-missing",
+      "viewport": "desktop",
+      "size": [
+        1440,
+        1000
+      ],
+      "changedPixels": 0,
+      "totalPixels": 1440000,
+      "maxChannelDelta": 0,
+      "textEqual": true,
+      "layoutEqual": true,
+      "beforeFontBytes": 61200,
+      "afterFontBytes": 42664,
+      "beforeFonts": [
+        {
+          "file": "/_next/static/media/c9e6921c7fc300d8-s.p.woff2",
+          "bytes": 50524,
+          "status": 200,
+          "fromDiskCache": false
+        },
+        {
+          "file": "/_next/static/media/043945717efb3a31-s.p.woff2",
+          "bytes": 10676,
+          "status": 200,
+          "fromDiskCache": false
+        }
+      ],
+      "afterFonts": [
+        {
+          "file": "/fonts/work-sans-core.3a22035e2be3.woff2",
+          "bytes": 32264,
+          "status": 200,
+          "fromDiskCache": false
+        },
+        {
+          "file": "/fonts/nate-display-core.86469c1bf228.woff2",
+          "bytes": 10400,
+          "status": 200,
+          "fromDiskCache": false
+        }
+      ],
+      "beforePreloads": [
+        "/_next/static/media/043945717efb3a31-s.p.woff2",
+        "/_next/static/media/c9e6921c7fc300d8-s.p.woff2"
+      ],
+      "afterPreloads": [
+        "/fonts/nate-display-core.86469c1bf228.woff2",
+        "/fonts/work-sans-core.3a22035e2be3.woff2"
+      ],
+      "images": {
+        "before": "output/playwright/font-optimization/final/return-missing-desktop-before.png",
+        "after": "output/playwright/font-optimization/final/return-missing-desktop-after.png",
+        "diff": "output/playwright/font-optimization/final/return-missing-desktop-diff.png"
+      },
+      "sha256": {
+        "before": "2529e2ec85e6d3560ca9681f561cfb629ba988f8415b0c0763735cba63288d45",
+        "after": "2529e2ec85e6d3560ca9681f561cfb629ba988f8415b0c0763735cba63288d45"
+      },
+      "classification": "exact"
+    },
+    {
+      "case": "return-session-error",
+      "viewport": "desktop",
+      "size": [
+        1440,
+        1000
+      ],
+      "changedPixels": 0,
+      "totalPixels": 1440000,
+      "maxChannelDelta": 0,
+      "textEqual": true,
+      "layoutEqual": true,
+      "beforeFontBytes": 61200,
+      "afterFontBytes": 42664,
+      "beforeFonts": [
+        {
+          "file": "/_next/static/media/043945717efb3a31-s.p.woff2",
+          "bytes": 10676,
+          "status": 200,
+          "fromDiskCache": false
+        },
+        {
+          "file": "/_next/static/media/c9e6921c7fc300d8-s.p.woff2",
+          "bytes": 50524,
+          "status": 200,
+          "fromDiskCache": false
+        }
+      ],
+      "afterFonts": [
+        {
+          "file": "/fonts/nate-display-core.86469c1bf228.woff2",
+          "bytes": 10400,
+          "status": 200,
+          "fromDiskCache": false
+        },
+        {
+          "file": "/fonts/work-sans-core.3a22035e2be3.woff2",
+          "bytes": 32264,
+          "status": 200,
+          "fromDiskCache": false
+        }
+      ],
+      "beforePreloads": [
+        "/_next/static/media/043945717efb3a31-s.p.woff2",
+        "/_next/static/media/c9e6921c7fc300d8-s.p.woff2"
+      ],
+      "afterPreloads": [
+        "/fonts/nate-display-core.86469c1bf228.woff2",
+        "/fonts/work-sans-core.3a22035e2be3.woff2"
+      ],
+      "images": {
+        "before": "output/playwright/font-optimization/final/return-session-error-desktop-before.png",
+        "after": "output/playwright/font-optimization/final/return-session-error-desktop-after.png",
+        "diff": "output/playwright/font-optimization/final/return-session-error-desktop-diff.png"
+      },
+      "sha256": {
+        "before": "408df2e032118c0c32bc5e535f70fb3b42c9b9c749a3cdd42a0c2f1f21036907",
+        "after": "408df2e032118c0c32bc5e535f70fb3b42c9b9c749a3cdd42a0c2f1f21036907"
+      },
+      "classification": "exact"
+    },
+    {
+      "case": "return-intent-error",
+      "viewport": "desktop",
+      "size": [
+        1440,
+        1000
+      ],
+      "changedPixels": 0,
+      "totalPixels": 1440000,
+      "maxChannelDelta": 0,
+      "textEqual": true,
+      "layoutEqual": true,
+      "beforeFontBytes": 61200,
+      "afterFontBytes": 42664,
+      "beforeFonts": [
+        {
+          "file": "/_next/static/media/c9e6921c7fc300d8-s.p.woff2",
+          "bytes": 50524,
+          "status": 200,
+          "fromDiskCache": false
+        },
+        {
+          "file": "/_next/static/media/043945717efb3a31-s.p.woff2",
+          "bytes": 10676,
+          "status": 200,
+          "fromDiskCache": false
+        }
+      ],
+      "afterFonts": [
+        {
+          "file": "/fonts/nate-display-core.86469c1bf228.woff2",
+          "bytes": 10400,
+          "status": 200,
+          "fromDiskCache": false
+        },
+        {
+          "file": "/fonts/work-sans-core.3a22035e2be3.woff2",
+          "bytes": 32264,
+          "status": 200,
+          "fromDiskCache": false
+        }
+      ],
+      "beforePreloads": [
+        "/_next/static/media/043945717efb3a31-s.p.woff2",
+        "/_next/static/media/c9e6921c7fc300d8-s.p.woff2"
+      ],
+      "afterPreloads": [
+        "/fonts/nate-display-core.86469c1bf228.woff2",
+        "/fonts/work-sans-core.3a22035e2be3.woff2"
+      ],
+      "images": {
+        "before": "output/playwright/font-optimization/final/return-intent-error-desktop-before.png",
+        "after": "output/playwright/font-optimization/final/return-intent-error-desktop-after.png",
+        "diff": "output/playwright/font-optimization/final/return-intent-error-desktop-diff.png"
+      },
+      "sha256": {
+        "before": "408df2e032118c0c32bc5e535f70fb3b42c9b9c749a3cdd42a0c2f1f21036907",
+        "after": "408df2e032118c0c32bc5e535f70fb3b42c9b9c749a3cdd42a0c2f1f21036907"
+      },
+      "classification": "exact"
+    },
+    {
+      "case": "not-found",
+      "viewport": "desktop",
+      "size": [
+        1440,
+        1000
+      ],
+      "changedPixels": 0,
+      "totalPixels": 1440000,
+      "maxChannelDelta": 0,
+      "textEqual": true,
+      "layoutEqual": true,
+      "beforeFontBytes": 61200,
+      "afterFontBytes": 42664,
+      "beforeFonts": [
+        {
+          "file": "/_next/static/media/c9e6921c7fc300d8-s.p.woff2",
+          "bytes": 50524,
+          "status": 200,
+          "fromDiskCache": false
+        },
+        {
+          "file": "/_next/static/media/043945717efb3a31-s.p.woff2",
+          "bytes": 10676,
+          "status": 200,
+          "fromDiskCache": false
+        }
+      ],
+      "afterFonts": [
+        {
+          "file": "/fonts/nate-display-core.86469c1bf228.woff2",
+          "bytes": 10400,
+          "status": 200,
+          "fromDiskCache": false
+        },
+        {
+          "file": "/fonts/work-sans-core.3a22035e2be3.woff2",
+          "bytes": 32264,
+          "status": 200,
+          "fromDiskCache": false
+        }
+      ],
+      "beforePreloads": [
+        "/_next/static/media/043945717efb3a31-s.p.woff2",
+        "/_next/static/media/c9e6921c7fc300d8-s.p.woff2"
+      ],
+      "afterPreloads": [
+        "/fonts/nate-display-core.86469c1bf228.woff2",
+        "/fonts/work-sans-core.3a22035e2be3.woff2"
+      ],
+      "images": {
+        "before": "output/playwright/font-optimization/final/not-found-desktop-before.png",
+        "after": "output/playwright/font-optimization/final/not-found-desktop-after.png",
+        "diff": "output/playwright/font-optimization/final/not-found-desktop-diff.png"
+      },
+      "sha256": {
+        "before": "d9168826287ec6d768a9523538353e7c1aa57599c1cf702d51702ad947ab63e2",
+        "after": "d9168826287ec6d768a9523538353e7c1aa57599c1cf702d51702ad947ab63e2"
+      },
+      "classification": "exact"
+    },
+    {
+      "case": "specimen",
+      "viewport": "desktop",
+      "size": [
+        1440,
+        1063
+      ],
+      "changedPixels": 0,
+      "totalPixels": 1530720,
+      "maxChannelDelta": 0,
+      "textEqual": true,
+      "layoutEqual": true,
+      "beforeFontBytes": 98352,
+      "afterFontBytes": 58140,
+      "beforeFonts": [
+        {
+          "file": "/_next/static/media/043945717efb3a31-s.p.woff2",
+          "bytes": 10676,
+          "status": 200,
+          "fromDiskCache": false
+        },
+        {
+          "file": "/_next/static/media/c9e6921c7fc300d8-s.p.woff2",
+          "bytes": 50524,
+          "status": 200,
+          "fromDiskCache": false
+        },
+        {
+          "file": "/_next/static/media/3b0bcebad1fd47d9-s.woff2",
+          "bytes": 1376,
+          "status": 200,
+          "fromDiskCache": false
+        },
+        {
+          "file": "/_next/static/media/f0a6239bc4153746-s.woff2",
+          "bytes": 35776,
+          "status": 200,
+          "fromDiskCache": false
+        }
+      ],
+      "afterFonts": [
+        {
+          "file": "/fonts/nate-display-core.86469c1bf228.woff2",
+          "bytes": 10400,
+          "status": 200,
+          "fromDiskCache": false
+        },
+        {
+          "file": "/fonts/work-sans-core.3a22035e2be3.woff2",
+          "bytes": 32264,
+          "status": 200,
+          "fromDiskCache": false
+        },
+        {
+          "file": "/fonts/nate-display-extended.28725169e765.woff2",
+          "bytes": 1192,
+          "status": 200,
+          "fromDiskCache": false
+        },
+        {
+          "file": "/fonts/work-sans-extended.1424a1ced80d.woff2",
+          "bytes": 14284,
+          "status": 200,
+          "fromDiskCache": false
+        }
+      ],
+      "beforePreloads": [
+        "/_next/static/media/043945717efb3a31-s.p.woff2",
+        "/_next/static/media/c9e6921c7fc300d8-s.p.woff2"
+      ],
+      "afterPreloads": [
+        "/fonts/nate-display-core.86469c1bf228.woff2",
+        "/fonts/work-sans-core.3a22035e2be3.woff2"
+      ],
+      "images": {
+        "before": "output/playwright/font-optimization/final/specimen-desktop-before.png",
+        "after": "output/playwright/font-optimization/final/specimen-desktop-after.png",
+        "diff": "output/playwright/font-optimization/final/specimen-desktop-diff.png"
+      },
+      "sha256": {
+        "before": "98eef0b45f03914d4a134c70161a8d99f05d7265bc178553b80d0bb06271c597",
+        "after": "98eef0b45f03914d4a134c70161a8d99f05d7265bc178553b80d0bb06271c597"
+      },
+      "classification": "exact"
+    },
+    {
+      "case": "latin1",
+      "viewport": "desktop",
+      "size": [
+        1440,
+        1000
+      ],
+      "changedPixels": 0,
+      "totalPixels": 1440000,
+      "maxChannelDelta": 0,
+      "textEqual": true,
+      "layoutEqual": true,
+      "beforeFontBytes": 61200,
+      "afterFontBytes": 42664,
+      "beforeFonts": [
+        {
+          "file": "/_next/static/media/043945717efb3a31-s.p.woff2",
+          "bytes": 10676,
+          "status": 200,
+          "fromDiskCache": false
+        },
+        {
+          "file": "/_next/static/media/c9e6921c7fc300d8-s.p.woff2",
+          "bytes": 50524,
+          "status": 200,
+          "fromDiskCache": false
+        }
+      ],
+      "afterFonts": [
+        {
+          "file": "/fonts/nate-display-core.86469c1bf228.woff2",
+          "bytes": 10400,
+          "status": 200,
+          "fromDiskCache": false
+        },
+        {
+          "file": "/fonts/work-sans-core.3a22035e2be3.woff2",
+          "bytes": 32264,
+          "status": 200,
+          "fromDiskCache": false
+        }
+      ],
+      "beforePreloads": [
+        "/_next/static/media/043945717efb3a31-s.p.woff2",
+        "/_next/static/media/c9e6921c7fc300d8-s.p.woff2"
+      ],
+      "afterPreloads": [
+        "/fonts/nate-display-core.86469c1bf228.woff2",
+        "/fonts/work-sans-core.3a22035e2be3.woff2"
+      ],
+      "images": {
+        "before": "output/playwright/font-optimization/final/latin1-desktop-before.png",
+        "after": "output/playwright/font-optimization/final/latin1-desktop-after.png",
+        "diff": "output/playwright/font-optimization/final/latin1-desktop-diff.png"
+      },
+      "sha256": {
+        "before": "31fdd68ea50a1d9ecdf5beba14d96f70c3165b851434f823e2ddab303586a6b2",
+        "after": "31fdd68ea50a1d9ecdf5beba14d96f70c3165b851434f823e2ddab303586a6b2"
+      },
+      "classification": "exact"
+    },
+    {
+      "case": "extended-display",
+      "viewport": "desktop",
+      "size": [
+        1440,
+        1000
+      ],
+      "changedPixels": 0,
+      "totalPixels": 1440000,
+      "maxChannelDelta": 0,
+      "textEqual": true,
+      "layoutEqual": true,
+      "beforeFontBytes": 62576,
+      "afterFontBytes": 43856,
+      "beforeFonts": [
+        {
+          "file": "/_next/static/media/c9e6921c7fc300d8-s.p.woff2",
+          "bytes": 50524,
+          "status": 200,
+          "fromDiskCache": false
+        },
+        {
+          "file": "/_next/static/media/043945717efb3a31-s.p.woff2",
+          "bytes": 10676,
+          "status": 200,
+          "fromDiskCache": false
+        },
+        {
+          "file": "/_next/static/media/3b0bcebad1fd47d9-s.woff2",
+          "bytes": 1376,
+          "status": 200,
+          "fromDiskCache": false
+        }
+      ],
+      "afterFonts": [
+        {
+          "file": "/fonts/nate-display-core.86469c1bf228.woff2",
+          "bytes": 10400,
+          "status": 200,
+          "fromDiskCache": false
+        },
+        {
+          "file": "/fonts/work-sans-core.3a22035e2be3.woff2",
+          "bytes": 32264,
+          "status": 200,
+          "fromDiskCache": false
+        },
+        {
+          "file": "/fonts/nate-display-extended.28725169e765.woff2",
+          "bytes": 1192,
+          "status": 200,
+          "fromDiskCache": false
+        }
+      ],
+      "beforePreloads": [
+        "/_next/static/media/043945717efb3a31-s.p.woff2",
+        "/_next/static/media/c9e6921c7fc300d8-s.p.woff2"
+      ],
+      "afterPreloads": [
+        "/fonts/nate-display-core.86469c1bf228.woff2",
+        "/fonts/work-sans-core.3a22035e2be3.woff2"
+      ],
+      "images": {
+        "before": "output/playwright/font-optimization/final/extended-display-desktop-before.png",
+        "after": "output/playwright/font-optimization/final/extended-display-desktop-after.png",
+        "diff": "output/playwright/font-optimization/final/extended-display-desktop-diff.png"
+      },
+      "sha256": {
+        "before": "34d5691320f9484adcebfe146be615c2b8401d07f37a2f2c6b816b028e01aa61",
+        "after": "34d5691320f9484adcebfe146be615c2b8401d07f37a2f2c6b816b028e01aa61"
+      },
+      "classification": "exact"
+    },
+    {
+      "case": "extended-work",
+      "viewport": "desktop",
+      "size": [
+        1440,
+        1000
+      ],
+      "changedPixels": 0,
+      "totalPixels": 1440000,
+      "maxChannelDelta": 0,
+      "textEqual": true,
+      "layoutEqual": true,
+      "beforeFontBytes": 96976,
+      "afterFontBytes": 56948,
+      "beforeFonts": [
+        {
+          "file": "/_next/static/media/c9e6921c7fc300d8-s.p.woff2",
+          "bytes": 50524,
+          "status": 200,
+          "fromDiskCache": false
+        },
+        {
+          "file": "/_next/static/media/043945717efb3a31-s.p.woff2",
+          "bytes": 10676,
+          "status": 200,
+          "fromDiskCache": false
+        },
+        {
+          "file": "/_next/static/media/f0a6239bc4153746-s.woff2",
+          "bytes": 35776,
+          "status": 200,
+          "fromDiskCache": false
+        }
+      ],
+      "afterFonts": [
+        {
+          "file": "/fonts/nate-display-core.86469c1bf228.woff2",
+          "bytes": 10400,
+          "status": 200,
+          "fromDiskCache": false
+        },
+        {
+          "file": "/fonts/work-sans-core.3a22035e2be3.woff2",
+          "bytes": 32264,
+          "status": 200,
+          "fromDiskCache": false
+        },
+        {
+          "file": "/fonts/work-sans-extended.1424a1ced80d.woff2",
+          "bytes": 14284,
+          "status": 200,
+          "fromDiskCache": false
+        }
+      ],
+      "beforePreloads": [
+        "/_next/static/media/043945717efb3a31-s.p.woff2",
+        "/_next/static/media/c9e6921c7fc300d8-s.p.woff2"
+      ],
+      "afterPreloads": [
+        "/fonts/nate-display-core.86469c1bf228.woff2",
+        "/fonts/work-sans-core.3a22035e2be3.woff2"
+      ],
+      "images": {
+        "before": "output/playwright/font-optimization/final/extended-work-desktop-before.png",
+        "after": "output/playwright/font-optimization/final/extended-work-desktop-after.png",
+        "diff": "output/playwright/font-optimization/final/extended-work-desktop-diff.png"
+      },
+      "sha256": {
+        "before": "5a923c6929c759046dd200518dd7d3ae30d4f2c5a3df560df6b2fbdbe9e949ac",
+        "after": "5a923c6929c759046dd200518dd7d3ae30d4f2c5a3df560df6b2fbdbe9e949ac"
+      },
+      "classification": "exact"
+    },
+    {
+      "case": "cjk",
+      "viewport": "desktop",
+      "size": [
+        1440,
+        1000
+      ],
+      "changedPixels": 0,
+      "totalPixels": 1440000,
+      "maxChannelDelta": 0,
+      "textEqual": true,
+      "layoutEqual": true,
+      "beforeFontBytes": 61200,
+      "afterFontBytes": 42664,
+      "beforeFonts": [
+        {
+          "file": "/_next/static/media/043945717efb3a31-s.p.woff2",
+          "bytes": 10676,
+          "status": 200,
+          "fromDiskCache": false
+        },
+        {
+          "file": "/_next/static/media/c9e6921c7fc300d8-s.p.woff2",
+          "bytes": 50524,
+          "status": 200,
+          "fromDiskCache": false
+        }
+      ],
+      "afterFonts": [
+        {
+          "file": "/fonts/nate-display-core.86469c1bf228.woff2",
+          "bytes": 10400,
+          "status": 200,
+          "fromDiskCache": false
+        },
+        {
+          "file": "/fonts/work-sans-core.3a22035e2be3.woff2",
+          "bytes": 32264,
+          "status": 200,
+          "fromDiskCache": false
+        }
+      ],
+      "beforePreloads": [
+        "/_next/static/media/043945717efb3a31-s.p.woff2",
+        "/_next/static/media/c9e6921c7fc300d8-s.p.woff2"
+      ],
+      "afterPreloads": [
+        "/fonts/nate-display-core.86469c1bf228.woff2",
+        "/fonts/work-sans-core.3a22035e2be3.woff2"
+      ],
+      "images": {
+        "before": "output/playwright/font-optimization/final/cjk-desktop-before.png",
+        "after": "output/playwright/font-optimization/final/cjk-desktop-after.png",
+        "diff": "output/playwright/font-optimization/final/cjk-desktop-diff.png"
+      },
+      "sha256": {
+        "before": "7f6a99ac67fa60d88247534f941da68f3d1231ddf3d3fe60d8998d49c164a43b",
+        "after": "7f6a99ac67fa60d88247534f941da68f3d1231ddf3d3fe60d8998d49c164a43b"
+      },
+      "classification": "exact"
+    },
+    {
+      "case": "home",
+      "viewport": "mobile",
+      "size": [
+        780,
+        23258
+      ],
+      "changedPixels": 0,
+      "totalPixels": 18141240,
+      "maxChannelDelta": 0,
+      "textEqual": true,
+      "layoutEqual": true,
+      "beforeFontBytes": 61200,
+      "afterFontBytes": 42664,
+      "beforeFonts": [
+        {
+          "file": "/_next/static/media/043945717efb3a31-s.p.woff2",
+          "bytes": 10676,
+          "status": 200,
+          "fromDiskCache": false
+        },
+        {
+          "file": "/_next/static/media/c9e6921c7fc300d8-s.p.woff2",
+          "bytes": 50524,
+          "status": 200,
+          "fromDiskCache": false
+        }
+      ],
+      "afterFonts": [
+        {
+          "file": "/fonts/nate-display-core.86469c1bf228.woff2",
+          "bytes": 10400,
+          "status": 200,
+          "fromDiskCache": false
+        },
+        {
+          "file": "/fonts/work-sans-core.3a22035e2be3.woff2",
+          "bytes": 32264,
+          "status": 200,
+          "fromDiskCache": false
+        }
+      ],
+      "beforePreloads": [
+        "/_next/static/media/043945717efb3a31-s.p.woff2",
+        "/_next/static/media/c9e6921c7fc300d8-s.p.woff2"
+      ],
+      "afterPreloads": [
+        "/fonts/nate-display-core.86469c1bf228.woff2",
+        "/fonts/work-sans-core.3a22035e2be3.woff2"
+      ],
+      "images": {
+        "before": "output/playwright/font-optimization/final/home-mobile-before.png",
+        "after": "output/playwright/font-optimization/final/home-mobile-after.png",
+        "diff": "output/playwright/font-optimization/final/home-mobile-diff.png"
+      },
+      "sha256": {
+        "before": "a29181aa2fda748df3914a73a14fdb05881c1f25f41977d59b5e192ed3a385b7",
+        "after": "a29181aa2fda748df3914a73a14fdb05881c1f25f41977d59b5e192ed3a385b7"
+      },
+      "classification": "exact"
+    },
+    {
+      "case": "birthday",
+      "viewport": "mobile",
+      "size": [
+        780,
+        3858
+      ],
+      "changedPixels": 0,
+      "totalPixels": 3009240,
+      "maxChannelDelta": 0,
+      "textEqual": true,
+      "layoutEqual": true,
+      "beforeFontBytes": 61200,
+      "afterFontBytes": 42664,
+      "beforeFonts": [
+        {
+          "file": "/_next/static/media/043945717efb3a31-s.p.woff2",
+          "bytes": 10676,
+          "status": 200,
+          "fromDiskCache": false
+        },
+        {
+          "file": "/_next/static/media/c9e6921c7fc300d8-s.p.woff2",
+          "bytes": 50524,
+          "status": 200,
+          "fromDiskCache": false
+        }
+      ],
+      "afterFonts": [
+        {
+          "file": "/fonts/nate-display-core.86469c1bf228.woff2",
+          "bytes": 10400,
+          "status": 200,
+          "fromDiskCache": false
+        },
+        {
+          "file": "/fonts/work-sans-core.3a22035e2be3.woff2",
+          "bytes": 32264,
+          "status": 200,
+          "fromDiskCache": false
+        }
+      ],
+      "beforePreloads": [
+        "/_next/static/media/043945717efb3a31-s.p.woff2",
+        "/_next/static/media/c9e6921c7fc300d8-s.p.woff2"
+      ],
+      "afterPreloads": [
+        "/fonts/nate-display-core.86469c1bf228.woff2",
+        "/fonts/work-sans-core.3a22035e2be3.woff2"
+      ],
+      "images": {
+        "before": "output/playwright/font-optimization/final/birthday-mobile-before.png",
+        "after": "output/playwright/font-optimization/final/birthday-mobile-after.png",
+        "diff": "output/playwright/font-optimization/final/birthday-mobile-diff.png"
+      },
+      "sha256": {
+        "before": "fc1a90f06e75f397c9b07534b94989b15b4c9feb8e6a7dc8e0ad5d7599ec112f",
+        "after": "fc1a90f06e75f397c9b07534b94989b15b4c9feb8e6a7dc8e0ad5d7599ec112f"
+      },
+      "classification": "exact"
+    },
+    {
+      "case": "donate",
+      "viewport": "mobile",
+      "size": [
+        780,
+        3642
+      ],
+      "changedPixels": 0,
+      "totalPixels": 2840760,
+      "maxChannelDelta": 0,
+      "textEqual": true,
+      "layoutEqual": true,
+      "beforeFontBytes": 61200,
+      "afterFontBytes": 42664,
+      "beforeFonts": [
+        {
+          "file": "/_next/static/media/043945717efb3a31-s.p.woff2",
+          "bytes": 10676,
+          "status": 200,
+          "fromDiskCache": false
+        },
+        {
+          "file": "/_next/static/media/c9e6921c7fc300d8-s.p.woff2",
+          "bytes": 50524,
+          "status": 200,
+          "fromDiskCache": false
+        }
+      ],
+      "afterFonts": [
+        {
+          "file": "/fonts/nate-display-core.86469c1bf228.woff2",
+          "bytes": 10400,
+          "status": 200,
+          "fromDiskCache": false
+        },
+        {
+          "file": "/fonts/work-sans-core.3a22035e2be3.woff2",
+          "bytes": 32264,
+          "status": 200,
+          "fromDiskCache": false
+        }
+      ],
+      "beforePreloads": [
+        "/_next/static/media/043945717efb3a31-s.p.woff2",
+        "/_next/static/media/c9e6921c7fc300d8-s.p.woff2"
+      ],
+      "afterPreloads": [
+        "/fonts/nate-display-core.86469c1bf228.woff2",
+        "/fonts/work-sans-core.3a22035e2be3.woff2"
+      ],
+      "images": {
+        "before": "output/playwright/font-optimization/final/donate-mobile-before.png",
+        "after": "output/playwright/font-optimization/final/donate-mobile-after.png",
+        "diff": "output/playwright/font-optimization/final/donate-mobile-diff.png"
+      },
+      "sha256": {
+        "before": "b0343812c4c995b84db53eb3d1441e908171dd5bab51b5ff3a63c2ebde1aad43",
+        "after": "b0343812c4c995b84db53eb3d1441e908171dd5bab51b5ff3a63c2ebde1aad43"
+      },
+      "classification": "exact"
+    },
+    {
+      "case": "return-missing",
+      "viewport": "mobile",
+      "size": [
+        780,
+        1688
+      ],
+      "changedPixels": 0,
+      "totalPixels": 1316640,
+      "maxChannelDelta": 0,
+      "textEqual": true,
+      "layoutEqual": true,
+      "beforeFontBytes": 61200,
+      "afterFontBytes": 42664,
+      "beforeFonts": [
+        {
+          "file": "/_next/static/media/043945717efb3a31-s.p.woff2",
+          "bytes": 10676,
+          "status": 200,
+          "fromDiskCache": false
+        },
+        {
+          "file": "/_next/static/media/c9e6921c7fc300d8-s.p.woff2",
+          "bytes": 50524,
+          "status": 200,
+          "fromDiskCache": false
+        }
+      ],
+      "afterFonts": [
+        {
+          "file": "/fonts/work-sans-core.3a22035e2be3.woff2",
+          "bytes": 32264,
+          "status": 200,
+          "fromDiskCache": false
+        },
+        {
+          "file": "/fonts/nate-display-core.86469c1bf228.woff2",
+          "bytes": 10400,
+          "status": 200,
+          "fromDiskCache": false
+        }
+      ],
+      "beforePreloads": [
+        "/_next/static/media/043945717efb3a31-s.p.woff2",
+        "/_next/static/media/c9e6921c7fc300d8-s.p.woff2"
+      ],
+      "afterPreloads": [
+        "/fonts/nate-display-core.86469c1bf228.woff2",
+        "/fonts/work-sans-core.3a22035e2be3.woff2"
+      ],
+      "images": {
+        "before": "output/playwright/font-optimization/final/return-missing-mobile-before.png",
+        "after": "output/playwright/font-optimization/final/return-missing-mobile-after.png",
+        "diff": "output/playwright/font-optimization/final/return-missing-mobile-diff.png"
+      },
+      "sha256": {
+        "before": "0150c47830745f629c98bc0bff53caec717e476e59563ab217e51b5ea1229f8c",
+        "after": "0150c47830745f629c98bc0bff53caec717e476e59563ab217e51b5ea1229f8c"
+      },
+      "classification": "exact"
+    },
+    {
+      "case": "return-session-error",
+      "viewport": "mobile",
+      "size": [
+        780,
+        1688
+      ],
+      "changedPixels": 0,
+      "totalPixels": 1316640,
+      "maxChannelDelta": 0,
+      "textEqual": true,
+      "layoutEqual": true,
+      "beforeFontBytes": 61200,
+      "afterFontBytes": 42664,
+      "beforeFonts": [
+        {
+          "file": "/_next/static/media/043945717efb3a31-s.p.woff2",
+          "bytes": 10676,
+          "status": 200,
+          "fromDiskCache": false
+        },
+        {
+          "file": "/_next/static/media/c9e6921c7fc300d8-s.p.woff2",
+          "bytes": 50524,
+          "status": 200,
+          "fromDiskCache": false
+        }
+      ],
+      "afterFonts": [
+        {
+          "file": "/fonts/work-sans-core.3a22035e2be3.woff2",
+          "bytes": 32264,
+          "status": 200,
+          "fromDiskCache": false
+        },
+        {
+          "file": "/fonts/nate-display-core.86469c1bf228.woff2",
+          "bytes": 10400,
+          "status": 200,
+          "fromDiskCache": false
+        }
+      ],
+      "beforePreloads": [
+        "/_next/static/media/043945717efb3a31-s.p.woff2",
+        "/_next/static/media/c9e6921c7fc300d8-s.p.woff2"
+      ],
+      "afterPreloads": [
+        "/fonts/nate-display-core.86469c1bf228.woff2",
+        "/fonts/work-sans-core.3a22035e2be3.woff2"
+      ],
+      "images": {
+        "before": "output/playwright/font-optimization/final/return-session-error-mobile-before.png",
+        "after": "output/playwright/font-optimization/final/return-session-error-mobile-after.png",
+        "diff": "output/playwright/font-optimization/final/return-session-error-mobile-diff.png"
+      },
+      "sha256": {
+        "before": "9381b8aa3a1af0ff712fac3a2efc3b99132d479745d12462131b19b9aefbf1b7",
+        "after": "9381b8aa3a1af0ff712fac3a2efc3b99132d479745d12462131b19b9aefbf1b7"
+      },
+      "classification": "exact"
+    },
+    {
+      "case": "return-intent-error",
+      "viewport": "mobile",
+      "size": [
+        780,
+        1688
+      ],
+      "changedPixels": 298434,
+      "totalPixels": 1316640,
+      "maxChannelDelta": 3,
+      "textEqual": true,
+      "layoutEqual": true,
+      "beforeFontBytes": 61200,
+      "afterFontBytes": 42664,
+      "beforeFonts": [
+        {
+          "file": "/_next/static/media/c9e6921c7fc300d8-s.p.woff2",
+          "bytes": 50524,
+          "status": 200,
+          "fromDiskCache": false
+        },
+        {
+          "file": "/_next/static/media/043945717efb3a31-s.p.woff2",
+          "bytes": 10676,
+          "status": 200,
+          "fromDiskCache": false
+        }
+      ],
+      "afterFonts": [
+        {
+          "file": "/fonts/work-sans-core.3a22035e2be3.woff2",
+          "bytes": 32264,
+          "status": 200,
+          "fromDiskCache": false
+        },
+        {
+          "file": "/fonts/nate-display-core.86469c1bf228.woff2",
+          "bytes": 10400,
+          "status": 200,
+          "fromDiskCache": false
+        }
+      ],
+      "beforePreloads": [
+        "/_next/static/media/043945717efb3a31-s.p.woff2",
+        "/_next/static/media/c9e6921c7fc300d8-s.p.woff2"
+      ],
+      "afterPreloads": [
+        "/fonts/nate-display-core.86469c1bf228.woff2",
+        "/fonts/work-sans-core.3a22035e2be3.woff2"
+      ],
+      "images": {
+        "before": "output/playwright/font-optimization/final/return-intent-error-mobile-before.png",
+        "after": "output/playwright/font-optimization/final/return-intent-error-mobile-after.png",
+        "diff": "output/playwright/font-optimization/final/return-intent-error-mobile-diff.png"
+      },
+      "sha256": {
+        "before": "4410cebb522f39c372bdef331509fca319765508021456b687a042c13988bf09",
+        "after": "9381b8aa3a1af0ff712fac3a2efc3b99132d479745d12462131b19b9aefbf1b7"
+      },
+      "classification": "harmless compositor rounding; see unchanged-font controls"
+    },
+    {
+      "case": "not-found",
+      "viewport": "mobile",
+      "size": [
+        780,
+        1688
+      ],
+      "changedPixels": 2081,
+      "totalPixels": 1316640,
+      "maxChannelDelta": 1,
+      "textEqual": true,
+      "layoutEqual": true,
+      "beforeFontBytes": 61200,
+      "afterFontBytes": 42664,
+      "beforeFonts": [
+        {
+          "file": "/_next/static/media/043945717efb3a31-s.p.woff2",
+          "bytes": 10676,
+          "status": 200,
+          "fromDiskCache": false
+        },
+        {
+          "file": "/_next/static/media/c9e6921c7fc300d8-s.p.woff2",
+          "bytes": 50524,
+          "status": 200,
+          "fromDiskCache": false
+        }
+      ],
+      "afterFonts": [
+        {
+          "file": "/fonts/nate-display-core.86469c1bf228.woff2",
+          "bytes": 10400,
+          "status": 200,
+          "fromDiskCache": false
+        },
+        {
+          "file": "/fonts/work-sans-core.3a22035e2be3.woff2",
+          "bytes": 32264,
+          "status": 200,
+          "fromDiskCache": false
+        }
+      ],
+      "beforePreloads": [
+        "/_next/static/media/043945717efb3a31-s.p.woff2",
+        "/_next/static/media/c9e6921c7fc300d8-s.p.woff2"
+      ],
+      "afterPreloads": [
+        "/fonts/nate-display-core.86469c1bf228.woff2",
+        "/fonts/work-sans-core.3a22035e2be3.woff2"
+      ],
+      "images": {
+        "before": "output/playwright/font-optimization/final/not-found-mobile-before.png",
+        "after": "output/playwright/font-optimization/final/not-found-mobile-after.png",
+        "diff": "output/playwright/font-optimization/final/not-found-mobile-diff.png"
+      },
+      "sha256": {
+        "before": "fb7eb6210508a79959cf93a6f25e4a697895b822a21d2df00cee705a5688f9e4",
+        "after": "9e53264abc1cf791465808e9c4fc7b0504ba6858d9f7f3a93b1a4ca5fa32d75f"
+      },
+      "classification": "harmless compositor rounding; see unchanged-font controls"
+    },
+    {
+      "case": "specimen",
+      "viewport": "mobile",
+      "size": [
+        780,
+        4622
+      ],
+      "changedPixels": 0,
+      "totalPixels": 3605160,
+      "maxChannelDelta": 0,
+      "textEqual": true,
+      "layoutEqual": true,
+      "beforeFontBytes": 98352,
+      "afterFontBytes": 58140,
+      "beforeFonts": [
+        {
+          "file": "/_next/static/media/c9e6921c7fc300d8-s.p.woff2",
+          "bytes": 50524,
+          "status": 200,
+          "fromDiskCache": false
+        },
+        {
+          "file": "/_next/static/media/043945717efb3a31-s.p.woff2",
+          "bytes": 10676,
+          "status": 200,
+          "fromDiskCache": false
+        },
+        {
+          "file": "/_next/static/media/3b0bcebad1fd47d9-s.woff2",
+          "bytes": 1376,
+          "status": 200,
+          "fromDiskCache": false
+        },
+        {
+          "file": "/_next/static/media/f0a6239bc4153746-s.woff2",
+          "bytes": 35776,
+          "status": 200,
+          "fromDiskCache": false
+        }
+      ],
+      "afterFonts": [
+        {
+          "file": "/fonts/nate-display-core.86469c1bf228.woff2",
+          "bytes": 10400,
+          "status": 200,
+          "fromDiskCache": false
+        },
+        {
+          "file": "/fonts/work-sans-core.3a22035e2be3.woff2",
+          "bytes": 32264,
+          "status": 200,
+          "fromDiskCache": false
+        },
+        {
+          "file": "/fonts/work-sans-extended.1424a1ced80d.woff2",
+          "bytes": 14284,
+          "status": 200,
+          "fromDiskCache": false
+        },
+        {
+          "file": "/fonts/nate-display-extended.28725169e765.woff2",
+          "bytes": 1192,
+          "status": 200,
+          "fromDiskCache": false
+        }
+      ],
+      "beforePreloads": [
+        "/_next/static/media/043945717efb3a31-s.p.woff2",
+        "/_next/static/media/c9e6921c7fc300d8-s.p.woff2"
+      ],
+      "afterPreloads": [
+        "/fonts/nate-display-core.86469c1bf228.woff2",
+        "/fonts/work-sans-core.3a22035e2be3.woff2"
+      ],
+      "images": {
+        "before": "output/playwright/font-optimization/final/specimen-mobile-before.png",
+        "after": "output/playwright/font-optimization/final/specimen-mobile-after.png",
+        "diff": "output/playwright/font-optimization/final/specimen-mobile-diff.png"
+      },
+      "sha256": {
+        "before": "4e28315d83f87deb79c6fddd437c0fc7da4bab9361bdc238f3e2b484d3b253f8",
+        "after": "4e28315d83f87deb79c6fddd437c0fc7da4bab9361bdc238f3e2b484d3b253f8"
+      },
+      "classification": "exact"
+    },
+    {
+      "case": "latin1",
+      "viewport": "mobile",
+      "size": [
+        780,
+        1688
+      ],
+      "changedPixels": 0,
+      "totalPixels": 1316640,
+      "maxChannelDelta": 0,
+      "textEqual": true,
+      "layoutEqual": true,
+      "beforeFontBytes": 61200,
+      "afterFontBytes": 42664,
+      "beforeFonts": [
+        {
+          "file": "/_next/static/media/043945717efb3a31-s.p.woff2",
+          "bytes": 10676,
+          "status": 200,
+          "fromDiskCache": false
+        },
+        {
+          "file": "/_next/static/media/c9e6921c7fc300d8-s.p.woff2",
+          "bytes": 50524,
+          "status": 200,
+          "fromDiskCache": false
+        }
+      ],
+      "afterFonts": [
+        {
+          "file": "/fonts/nate-display-core.86469c1bf228.woff2",
+          "bytes": 10400,
+          "status": 200,
+          "fromDiskCache": false
+        },
+        {
+          "file": "/fonts/work-sans-core.3a22035e2be3.woff2",
+          "bytes": 32264,
+          "status": 200,
+          "fromDiskCache": false
+        }
+      ],
+      "beforePreloads": [
+        "/_next/static/media/043945717efb3a31-s.p.woff2",
+        "/_next/static/media/c9e6921c7fc300d8-s.p.woff2"
+      ],
+      "afterPreloads": [
+        "/fonts/nate-display-core.86469c1bf228.woff2",
+        "/fonts/work-sans-core.3a22035e2be3.woff2"
+      ],
+      "images": {
+        "before": "output/playwright/font-optimization/final/latin1-mobile-before.png",
+        "after": "output/playwright/font-optimization/final/latin1-mobile-after.png",
+        "diff": "output/playwright/font-optimization/final/latin1-mobile-diff.png"
+      },
+      "sha256": {
+        "before": "1b6842b064a558d419b658714c50a98d7b186dee2ea9231edf9d2b485a20d61a",
+        "after": "1b6842b064a558d419b658714c50a98d7b186dee2ea9231edf9d2b485a20d61a"
+      },
+      "classification": "exact"
+    },
+    {
+      "case": "extended-display",
+      "viewport": "mobile",
+      "size": [
+        780,
+        1688
+      ],
+      "changedPixels": 0,
+      "totalPixels": 1316640,
+      "maxChannelDelta": 0,
+      "textEqual": true,
+      "layoutEqual": true,
+      "beforeFontBytes": 62576,
+      "afterFontBytes": 43856,
+      "beforeFonts": [
+        {
+          "file": "/_next/static/media/043945717efb3a31-s.p.woff2",
+          "bytes": 10676,
+          "status": 200,
+          "fromDiskCache": false
+        },
+        {
+          "file": "/_next/static/media/c9e6921c7fc300d8-s.p.woff2",
+          "bytes": 50524,
+          "status": 200,
+          "fromDiskCache": false
+        },
+        {
+          "file": "/_next/static/media/3b0bcebad1fd47d9-s.woff2",
+          "bytes": 1376,
+          "status": 200,
+          "fromDiskCache": false
+        }
+      ],
+      "afterFonts": [
+        {
+          "file": "/fonts/work-sans-core.3a22035e2be3.woff2",
+          "bytes": 32264,
+          "status": 200,
+          "fromDiskCache": false
+        },
+        {
+          "file": "/fonts/nate-display-core.86469c1bf228.woff2",
+          "bytes": 10400,
+          "status": 200,
+          "fromDiskCache": false
+        },
+        {
+          "file": "/fonts/nate-display-extended.28725169e765.woff2",
+          "bytes": 1192,
+          "status": 200,
+          "fromDiskCache": false
+        }
+      ],
+      "beforePreloads": [
+        "/_next/static/media/043945717efb3a31-s.p.woff2",
+        "/_next/static/media/c9e6921c7fc300d8-s.p.woff2"
+      ],
+      "afterPreloads": [
+        "/fonts/nate-display-core.86469c1bf228.woff2",
+        "/fonts/work-sans-core.3a22035e2be3.woff2"
+      ],
+      "images": {
+        "before": "output/playwright/font-optimization/final/extended-display-mobile-before.png",
+        "after": "output/playwright/font-optimization/final/extended-display-mobile-after.png",
+        "diff": "output/playwright/font-optimization/final/extended-display-mobile-diff.png"
+      },
+      "sha256": {
+        "before": "5cb8fde332aa279a84cac9add2af4a5b429731147b262f9dc87000d587489e3f",
+        "after": "5cb8fde332aa279a84cac9add2af4a5b429731147b262f9dc87000d587489e3f"
+      },
+      "classification": "exact"
+    },
+    {
+      "case": "extended-work",
+      "viewport": "mobile",
+      "size": [
+        780,
+        1688
+      ],
+      "changedPixels": 0,
+      "totalPixels": 1316640,
+      "maxChannelDelta": 0,
+      "textEqual": true,
+      "layoutEqual": true,
+      "beforeFontBytes": 96976,
+      "afterFontBytes": 56948,
+      "beforeFonts": [
+        {
+          "file": "/_next/static/media/c9e6921c7fc300d8-s.p.woff2",
+          "bytes": 50524,
+          "status": 200,
+          "fromDiskCache": false
+        },
+        {
+          "file": "/_next/static/media/043945717efb3a31-s.p.woff2",
+          "bytes": 10676,
+          "status": 200,
+          "fromDiskCache": false
+        },
+        {
+          "file": "/_next/static/media/f0a6239bc4153746-s.woff2",
+          "bytes": 35776,
+          "status": 200,
+          "fromDiskCache": false
+        }
+      ],
+      "afterFonts": [
+        {
+          "file": "/fonts/nate-display-core.86469c1bf228.woff2",
+          "bytes": 10400,
+          "status": 200,
+          "fromDiskCache": false
+        },
+        {
+          "file": "/fonts/work-sans-core.3a22035e2be3.woff2",
+          "bytes": 32264,
+          "status": 200,
+          "fromDiskCache": false
+        },
+        {
+          "file": "/fonts/work-sans-extended.1424a1ced80d.woff2",
+          "bytes": 14284,
+          "status": 200,
+          "fromDiskCache": false
+        }
+      ],
+      "beforePreloads": [
+        "/_next/static/media/043945717efb3a31-s.p.woff2",
+        "/_next/static/media/c9e6921c7fc300d8-s.p.woff2"
+      ],
+      "afterPreloads": [
+        "/fonts/nate-display-core.86469c1bf228.woff2",
+        "/fonts/work-sans-core.3a22035e2be3.woff2"
+      ],
+      "images": {
+        "before": "output/playwright/font-optimization/final/extended-work-mobile-before.png",
+        "after": "output/playwright/font-optimization/final/extended-work-mobile-after.png",
+        "diff": "output/playwright/font-optimization/final/extended-work-mobile-diff.png"
+      },
+      "sha256": {
+        "before": "2b53d2720607a94759938559cd854c23510db5a2fda15d96941ed91d094d60ec",
+        "after": "2b53d2720607a94759938559cd854c23510db5a2fda15d96941ed91d094d60ec"
+      },
+      "classification": "exact"
+    },
+    {
+      "case": "cjk",
+      "viewport": "mobile",
+      "size": [
+        780,
+        1688
+      ],
+      "changedPixels": 0,
+      "totalPixels": 1316640,
+      "maxChannelDelta": 0,
+      "textEqual": true,
+      "layoutEqual": true,
+      "beforeFontBytes": 61200,
+      "afterFontBytes": 42664,
+      "beforeFonts": [
+        {
+          "file": "/_next/static/media/043945717efb3a31-s.p.woff2",
+          "bytes": 10676,
+          "status": 200,
+          "fromDiskCache": false
+        },
+        {
+          "file": "/_next/static/media/c9e6921c7fc300d8-s.p.woff2",
+          "bytes": 50524,
+          "status": 200,
+          "fromDiskCache": false
+        }
+      ],
+      "afterFonts": [
+        {
+          "file": "/fonts/nate-display-core.86469c1bf228.woff2",
+          "bytes": 10400,
+          "status": 200,
+          "fromDiskCache": false
+        },
+        {
+          "file": "/fonts/work-sans-core.3a22035e2be3.woff2",
+          "bytes": 32264,
+          "status": 200,
+          "fromDiskCache": false
+        }
+      ],
+      "beforePreloads": [
+        "/_next/static/media/043945717efb3a31-s.p.woff2",
+        "/_next/static/media/c9e6921c7fc300d8-s.p.woff2"
+      ],
+      "afterPreloads": [
+        "/fonts/nate-display-core.86469c1bf228.woff2",
+        "/fonts/work-sans-core.3a22035e2be3.woff2"
+      ],
+      "images": {
+        "before": "output/playwright/font-optimization/final/cjk-mobile-before.png",
+        "after": "output/playwright/font-optimization/final/cjk-mobile-after.png",
+        "diff": "output/playwright/font-optimization/final/cjk-mobile-diff.png"
+      },
+      "sha256": {
+        "before": "ec141b791249799f7045e23705fd9ae408a124b8a03dd3cbed8dba48cc78d282",
+        "after": "ec141b791249799f7045e23705fd9ae408a124b8a03dd3cbed8dba48cc78d282"
+      },
+      "classification": "exact"
+    }
+  ],
+  "totalChangedPixels": 301241,
+  "totalPixels": 66245520,
+  "passed": false,
+  "review": {
+    "visibleRegressions": 0,
+    "exactViews": 21,
+    "views": 24,
+    "fontOnlyControls": [
+      {
+        "case": "not-found",
+        "pixels": 1316640,
+        "changed": 4,
+        "maxChannelDelta": 1
+      },
+      {
+        "case": "donate",
+        "pixels": 1440000,
+        "changed": 0,
+        "maxChannelDelta": 0
+      },
+      {
+        "case": "return-missing",
+        "pixels": 1316640,
+        "changed": 0,
+        "maxChannelDelta": 0
+      },
+      {
+        "case": "return-session-error",
+        "pixels": 1316640,
+        "changed": 0,
+        "maxChannelDelta": 0
+      }
+    ],
+    "roundingClassification": "Independent paints vary by 1-3/255 in blurred backgrounds/shadows, reproduced in separate contexts using unchanged fonts. A 192px font-only control varies at four edge pixels by 1/255. No glyph geometry, advance, text, or line-box change.",
+    "repertoireGrid": {
+      "changedPixels": 0,
+      "pixels": 10160640,
+      "weights": [
+        400,
+        700
+      ],
+      "families": [
+        "Nate Display",
+        "Work Sans"
+      ],
+      "range": "U+0020-U+017F"
+    },
+    "notes": [
+      "No text or font region masked; threshold is zero.",
+      "Strict comparator correctly exits nonzero for raw rounding pixels; reviewed classification is separate from its raw passed flag.",
+      "Footer source-density mismatch (1842 pixels) was fixed in the verification setup by selecting the same existing 2x candidate. Site image code and inputs were not changed."
+    ]
+  },
+  "checks": {
+    "diffCheck": "passed",
+    "lint": "passed",
+    "typecheck": "passed",
+    "productionBuildWebpack": "passed; isolated font patch and same-content comparison builds",
+    "generatorReproducibility": "passed; pinned clean uv environment produced identical four SHA-256 filenames",
+    "cacheHeaders": "200, WOFF2 content type, one-year immutable cache verified",
+    "evidenceViewer": "nine comparisons load all images; overlay and amplified-diff controls verified"
+  }
+}
