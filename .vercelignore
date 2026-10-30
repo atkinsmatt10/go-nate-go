@@ -4,5 +4,7 @@ node_modules
 output
 test-results
 playwright-report
+.playwright-cli
+*.tsbuildinfo
 tasks
 video-sources
