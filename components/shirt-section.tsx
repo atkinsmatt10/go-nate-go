@@ -190,30 +190,30 @@ export function ShirtSection() {
               </div>
               
               {/* Carousel Indicators */}
-              <div className="flex justify-center space-x-2 mt-4">
+              <div className="mt-4 flex justify-center gap-1">
                 {merchandiseItems.map((_, index) => (
-                  <m.button
+                  <button
                     key={index}
+                    type="button"
                     onClick={() => handleImageClick(index)}
-                    className={`w-2 h-2 rounded-full transition-colors duration-200 ${
-                      index === currentImage ? 'bg-primary' : 'bg-gray-300'
-                    }`}
+                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full transition-colors duration-150 active:bg-white/15 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                     aria-label={`Go to ${merchandiseItems[index].alt}`}
                     aria-pressed={index === currentImage}
-                    whileTap={prefersReducedMotion ? undefined : { scale: 0.92 }}
-                    animate={{
-                      scale: index === currentImage ? 1.12 : 1,
-                      opacity: index === currentImage ? 1 : 0.7
-                    }}
-                    transition={prefersReducedMotion ? { duration: 0 } : CAROUSEL_TRANSITION}
-                  />
+                  >
+                    <m.span
+                      aria-hidden="true"
+                      className={`h-2 w-2 rounded-full ${index === currentImage ? 'bg-primary' : 'bg-gray-300'}`}
+                      animate={{ scale: index === currentImage ? 1.12 : 1, opacity: index === currentImage ? 1 : 0.7 }}
+                      transition={prefersReducedMotion ? { duration: 0 } : CAROUSEL_TRANSITION}
+                    />
+                  </button>
                 ))}
               </div>
               {!prefersReducedMotion && (
                 <button
                   type="button"
                   onClick={() => setIsPaused((paused) => !paused)}
-                  className="mx-auto mt-4 block rounded-full border border-white/40 px-4 py-2 text-sm text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+                  className="mx-auto mt-4 block min-h-11 rounded-full border border-white/40 px-4 py-2 text-sm text-white transition-colors duration-150 active:bg-white/15 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
                 >
                   {isPaused ? "Resume slideshow" : "Pause slideshow"}
                 </button>

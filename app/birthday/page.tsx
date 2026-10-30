@@ -1,8 +1,10 @@
-import type { Metadata } from "next"
+import type { Metadata, Viewport } from "next"
 import { BirthdayRsvpPage } from "@/components/birthday-rsvp-page"
 import { PageTransition } from "@/components/page-transition"
 
 const birthdayOgImage = "/birthday-og-one-tough-cookie.png"
+
+export const viewport: Viewport = { themeColor: "#eef5fb" }
 
 export const metadata: Metadata = {
   title: "Nate is One Tough Cookie",

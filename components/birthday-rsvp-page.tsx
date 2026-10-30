@@ -6,9 +6,9 @@ import { Footer } from "@/components/footer"
 export function BirthdayRsvpPage() {
   return (
     <>
-      <main className="min-h-dvh bg-[#eef5fb] px-4 py-8 text-[#223b54] sm:px-6 sm:py-12">
+      <main className="birthday-page safe-area-inline min-h-dvh bg-[#eef5fb] pb-[calc(2rem+env(safe-area-inset-bottom,0px))] pt-[calc(2rem+env(safe-area-inset-top,0px))] text-[#223b54] sm:[--page-gutter:1.5rem] sm:pb-[calc(3rem+env(safe-area-inset-bottom,0px))] sm:pt-[calc(3rem+env(safe-area-inset-top,0px))]">
         <div className="mx-auto max-w-5xl">
-          <Link href="/" className="inline-flex rounded-full border border-[#9fc5d8] bg-white px-5 py-3 font-semibold underline-offset-4 hover:underline">
+          <Link href="/" className="inline-flex touch-manipulation select-none rounded-full border border-[#9fc5d8] bg-white px-5 py-3 font-semibold underline-offset-4 transition-colors duration-150 active:bg-[#d8eff5] hover:underline">
             Back to Go Nate Go
           </Link>
           <section className="mt-8 overflow-hidden rounded-[32px] border border-[#9fc5d8] bg-white shadow-sm">
@@ -20,7 +20,7 @@ export function BirthdayRsvpPage() {
                 <p className="text-xl leading-relaxed">Thank you for celebrating Nate&apos;s first birthday and surrounding our family with love.</p>
                 <p className="rounded-[20px] bg-[#d8eff5] p-5 text-base font-semibold">This celebration has ended. RSVPs are closed.</p>
                 <p className="leading-relaxed">Help us support childhood cancer care and research at CHOP.</p>
-                <Link href="/#donate" className="inline-flex rounded-[18px] bg-[#42a8a9] px-6 py-4 font-bold text-[#102f4a]">Support Team Nate</Link>
+                <Link href="/#donate" className="inline-flex touch-manipulation select-none rounded-[18px] bg-[#42a8a9] px-6 py-4 font-bold text-[#102f4a] transition-colors duration-150 active:bg-[#369799]">Support Team Nate</Link>
               </div>
             </div>
           </section>

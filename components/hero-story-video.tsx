@@ -33,9 +33,9 @@ export function HeroStoryVideo({ children }: { children: ReactNode }) {
           type="button"
           onClick={() => setIsPlaying(true)}
           aria-label="Play Nate's story · 3:40"
-          className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-black/10 text-white transition-colors hover:bg-black/20 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-inset focus-visible:ring-white"
+          className="group absolute inset-0 flex flex-col items-center justify-center gap-3 bg-black/10 text-white transition-colors duration-150 active:bg-black/25 hover:bg-black/20 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-inset focus-visible:ring-white"
         >
-          <span className="flex h-20 w-20 items-center justify-center rounded-full border-2 border-white bg-[#102f4a]/90 shadow-lg">
+          <span className="flex h-20 w-20 items-center justify-center rounded-full border-2 border-white bg-[#102f4a]/90 shadow-lg transition-transform duration-150 ease-snappy-out group-active:scale-[0.96] motion-reduce:transition-none motion-reduce:group-active:scale-100">
             <Play className="ml-1 h-9 w-9 fill-current" aria-hidden="true" />
           </span>
           <span className="rounded-full bg-[#102f4a]/95 px-5 py-2 text-sm font-bold">Play Nate&apos;s story · 3:40</span>

@@ -164,25 +164,25 @@ export function BirthdayPhotoCarousel() {
         Photo {currentSlide + 1} of {photos.length}: {photos[currentSlide]?.alt}
       </p>
 
-      <div className="flex items-center justify-center gap-4">
+      <div className="flex items-center justify-center gap-3">
         <Button
           type="button"
           size="icon"
           variant="outline"
-          className="h-10 w-10 rounded-full border-[#9fc5d8] bg-white/90 text-[#223b54] transition-[transform,border-color,background-color,box-shadow] duration-200 ease-snappy-out active:scale-[0.98] hover:-translate-y-0.5 hover:border-[#42a8a9] hover:bg-white hover:shadow-[0_12px_24px_rgba(42,63,84,0.14)]"
+          className="h-11 w-11 shrink-0 rounded-full border-[#9fc5d8] bg-white/90 text-[#223b54] transition-[transform,border-color,background-color,box-shadow] duration-150 ease-snappy-out active:scale-[0.98] hover:-translate-y-0.5 hover:border-[#42a8a9] hover:bg-white hover:shadow-[0_12px_24px_rgba(42,63,84,0.14)]"
           onClick={() => api?.scrollPrev(prefersReducedMotion)}
         >
           <ArrowLeft className="h-4 w-4" />
           <span className="sr-only">Previous photo</span>
         </Button>
 
-        <div className="flex items-center gap-2">
+        <div className="flex min-w-0 items-center gap-1 sm:gap-2">
           {photos.map((photo, index) => (
             <span
               key={photo.src}
               className={cn(
-                "h-2.5 rounded-full transition-[width,background-color] duration-200 ease-snappy-out",
-                index === currentSlide ? "w-7 bg-[#42a8a9]" : "w-2.5 bg-[#c8dfea]",
+                "h-2 rounded-full transition-[width,background-color] duration-200 ease-snappy-out sm:h-2.5",
+                index === currentSlide ? "w-6 bg-[#42a8a9] sm:w-7" : "w-2 bg-[#c8dfea] sm:w-2.5",
               )}
             />
           ))}
@@ -192,7 +192,7 @@ export function BirthdayPhotoCarousel() {
           type="button"
           size="icon"
           variant="outline"
-          className="h-10 w-10 rounded-full border-[#9fc5d8] bg-white/90 text-[#223b54] transition-[transform,border-color,background-color,box-shadow] duration-200 ease-snappy-out active:scale-[0.98] hover:-translate-y-0.5 hover:border-[#42a8a9] hover:bg-white hover:shadow-[0_12px_24px_rgba(42,63,84,0.14)]"
+          className="h-11 w-11 shrink-0 rounded-full border-[#9fc5d8] bg-white/90 text-[#223b54] transition-[transform,border-color,background-color,box-shadow] duration-150 ease-snappy-out active:scale-[0.98] hover:-translate-y-0.5 hover:border-[#42a8a9] hover:bg-white hover:shadow-[0_12px_24px_rgba(42,63,84,0.14)]"
           onClick={() => api?.scrollNext(prefersReducedMotion)}
         >
           <ArrowRight className="h-4 w-4" />

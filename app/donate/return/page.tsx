@@ -147,13 +147,9 @@ async function buildPaymentIntentState(paymentIntentId: string): Promise<ReturnP
 function DonateReturnLoading() {
   return (
     <main
-      className="relative min-h-dvh overflow-hidden text-foreground"
-      style={{
-        background:
-          "linear-gradient(140deg, #4bb8ba 0%, #345576 34%, #223b54 66%, #15283a 100%)",
-      }}
+      className="donation-return-page relative min-h-dvh overflow-hidden text-foreground"
     >
-      <div className="relative mx-auto flex min-h-dvh w-full max-w-3xl items-center px-4 py-12 sm:px-6">
+      <div className="safe-area-inline relative mx-auto flex min-h-dvh w-full max-w-3xl items-center pb-[calc(3rem+env(safe-area-inset-bottom,0px))] pt-[calc(3rem+env(safe-area-inset-top,0px))] sm:[--page-gutter:1.5rem]">
         <div
           className="w-full rounded-3xl border border-border bg-secondary p-6 shadow-2xl md:p-8"
           role="status"
@@ -216,11 +212,7 @@ async function DonationReturnStatus({ searchParams }: DonateReturnPageProps) {
 
   return (
     <main
-      className="relative min-h-dvh overflow-hidden text-foreground"
-      style={{
-        background:
-          "linear-gradient(140deg, #4bb8ba 0%, #345576 34%, #223b54 66%, #15283a 100%)",
-      }}
+      className="donation-return-page relative min-h-dvh overflow-hidden text-foreground"
     >
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute -left-24 top-0 h-72 w-72 rounded-full bg-primary/20 blur-3xl" />
@@ -235,7 +227,7 @@ async function DonationReturnStatus({ searchParams }: DonateReturnPageProps) {
         }}
       />
 
-      <div className="relative mx-auto flex min-h-dvh w-full max-w-3xl items-center px-4 py-12 sm:px-6">
+      <div className="safe-area-inline relative mx-auto flex min-h-dvh w-full max-w-3xl items-center pb-[calc(3rem+env(safe-area-inset-bottom,0px))] pt-[calc(3rem+env(safe-area-inset-top,0px))] sm:[--page-gutter:1.5rem]">
         <div className="w-full rounded-3xl border border-border bg-secondary p-6 shadow-2xl md:p-8">
           <div className="mb-6 flex items-start justify-between gap-4">
             <div className="space-y-3">

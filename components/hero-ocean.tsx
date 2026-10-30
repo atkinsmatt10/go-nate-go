@@ -247,7 +247,7 @@ export function HeroOcean(): JSX.Element {
         aria-disabled="false"
         data-scene-shark="false"
         onClick={() => activateSharkRef.current?.()}
-        className="hero-shark pointer-events-auto absolute bottom-0 right-3 z-20 min-h-11 min-w-11 w-24 cursor-pointer rounded-2xl focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d8eff5] sm:right-8 sm:w-28 lg:right-[5%] lg:w-32"
+        className="hero-shark pointer-events-auto absolute bottom-0 right-3 z-20 min-h-11 min-w-11 w-24 cursor-pointer rounded-2xl transition-[background-color,box-shadow] duration-150 active:bg-primary/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d8eff5] sm:right-8 sm:w-28 lg:right-[5%] lg:w-32"
       >
         <Image src="/nate shark.png" width={132} height={128} sizes="(max-width: 639px) 96px, (max-width: 1023px) 112px, 128px" alt="" loading="eager" draggable={false} className="h-auto w-full drop-shadow-[0_12px_20px_rgb(7_27_43_/_26%)]" />
         <span aria-hidden="true" className="hero-shark-hello absolute inset-x-0 top-3 text-center text-sm font-bold text-[#f7fbff]">Hi, friend!</span>

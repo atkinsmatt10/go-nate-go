@@ -1,5 +1,7 @@
-import type { Metadata } from "next"
+import type { Metadata, Viewport } from "next"
 import type { ReactNode } from "react"
+
+export const viewport: Viewport = { themeColor: "#4bb8ba" }
 
 export const metadata: Metadata = {
   title: "Your donation · Team Nate the Great",

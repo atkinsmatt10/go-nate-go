@@ -12,10 +12,9 @@ export const viewport: Viewport = {
   initialScale: 1,
   /* remove maximumScale to allow pinch-zoom */
   userScalable: true,
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#42a8a9" },
-    { media: "(prefers-color-scheme: dark)", color: "#0d3b3c" },
-  ],
+  viewportFit: "cover",
+  interactiveWidget: "resizes-content",
+  themeColor: "#2a3f54",
 }
 
 /* ---------- Metadata ---------- */

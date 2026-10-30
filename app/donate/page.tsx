@@ -639,7 +639,7 @@ export default function DonatePage() {
   return (
     <MotionProvider>
     <PageTransition>
-      <main className="relative min-h-dvh overflow-hidden bg-[#f4fbff] text-[#1f3147]">
+      <main className="donate-page relative min-h-dvh overflow-hidden bg-[#f4fbff] text-[#1f3147]">
       <a
         href="#donation-form"
         className="sr-only absolute left-3 top-3 z-30 rounded-md bg-white px-3 py-2 text-sm font-semibold text-[#1d344d] focus:not-sr-only focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#2f6272] focus-visible:ring-offset-2"
@@ -665,7 +665,7 @@ export default function DonatePage() {
       </div>
 
       <m.div
-        className="relative mx-auto w-full max-w-6xl px-4 pb-10 pt-4 sm:px-6 sm:pt-6 lg:pb-16 lg:pt-8"
+        className="safe-area-inline relative mx-auto w-full max-w-6xl pb-[calc(2.5rem+env(safe-area-inset-bottom,0px))] pt-[calc(1rem+env(safe-area-inset-top,0px))] sm:[--page-gutter:1.5rem] sm:pt-[calc(1.5rem+env(safe-area-inset-top,0px))] lg:pb-[calc(4rem+env(safe-area-inset-bottom,0px))] lg:pt-[calc(2rem+env(safe-area-inset-top,0px))]"
         variants={prefersReducedMotion ? undefined : staggerParentVariants}
         initial={false}
         animate="show"
@@ -677,7 +677,7 @@ export default function DonatePage() {
           <Link
             href="/"
             transitionTypes={["nav-back"]}
-            className="inline-flex items-center gap-2 rounded-full border border-[#a6c0d4] bg-white/85 px-4 py-2 text-sm font-semibold text-[#223b54] shadow-xs transition-[background-color,border-color,color,transform,box-shadow] duration-150 ease-snappy-out active:scale-[0.98] hover:-translate-y-0.5 hover:border-[#42a8a9] hover:bg-white focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#2f6272] focus-visible:ring-offset-2"
+            className="inline-flex min-h-11 touch-manipulation select-none items-center gap-2 rounded-full border border-[#a6c0d4] bg-white/85 px-4 py-2 text-sm font-semibold text-[#223b54] shadow-xs transition-[background-color,border-color,color,transform,box-shadow] duration-150 ease-snappy-out active:scale-[0.98] hover:-translate-y-0.5 hover:border-[#42a8a9] hover:bg-white focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#2f6272] focus-visible:ring-offset-2"
           >
             <ArrowLeft className="h-4 w-4" aria-hidden="true" />
             Back Home
@@ -933,7 +933,7 @@ export default function DonatePage() {
                     <button
                       type="button"
                       onClick={resetCheckoutState}
-                      className="w-full text-center text-sm font-semibold text-[#4f667b] underline-offset-4 transition-colors duration-200 hover:text-[#223b54] hover:underline focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#2f6272] focus-visible:ring-offset-2"
+                      className="min-h-11 w-full rounded-lg text-center text-sm font-semibold text-[#4f667b] underline-offset-4 transition-colors duration-150 active:bg-[#d8eff5] hover:text-[#223b54] hover:underline focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#2f6272] focus-visible:ring-offset-2"
                     >
                       Edit Donation Details
                     </button>

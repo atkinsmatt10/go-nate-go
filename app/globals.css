@@ -34,8 +34,35 @@ body:has(.home-page) {
   padding-right: max(1rem, env(safe-area-inset-right, 0px));
 }
 
-.home-page > footer {
-  padding-bottom: calc(2rem + env(safe-area-inset-bottom, 0px));
+html:has(.donate-page),
+body:has(.donate-page) {
+  background-color: #f8fcff;
+}
+
+html:has(.birthday-page),
+body:has(.birthday-page) {
+  background-color: #eef5fb;
+}
+
+html:has(.donation-return-page),
+body:has(.donation-return-page) {
+  background-color: #4bb8ba;
+}
+
+.birthday-page + footer {
+  background-color: var(--color-background);
+}
+
+/* Share horizontal protection without changing each page's normal gutter. */
+.safe-area-inline {
+  padding-left: max(var(--page-gutter, 1rem), env(safe-area-inset-left, 0px));
+  padding-right: max(var(--page-gutter, 1rem), env(safe-area-inset-right, 0px));
+}
+
+.donation-return-page {
+  background-image:
+    linear-gradient(to bottom, #4bb8ba calc(env(safe-area-inset-top, 0px) + 1rem), rgb(75 184 186 / 0) calc(env(safe-area-inset-top, 0px) + 8rem)),
+    linear-gradient(140deg, #4bb8ba 0%, #345576 34%, #223b54 66%, #15283a 100%);
 }
 
 @media (min-width: 768px) {
@@ -441,6 +468,13 @@ body:has(.home-page) {
 @layer base {
   * {
     @apply border-border;
+  }
+  button,
+  [role="button"] {
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
   }
   body {
     @apply bg-background text-foreground font-sans;
